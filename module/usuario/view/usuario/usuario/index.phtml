@@ -1,0 +1,72 @@
+<div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
+  <div class="col-sm-4">
+    <?php echo $this->partial('menu/configuracoes', array('ativo' => 12)) ?>
+  </div>
+
+  <div class="col-sm-8">
+    <?php echo $this->partial('form/pesquisa', array('form'=> $formPesquisa, 'route'=> '')) ?>
+    <div class="row" style="margin-bottom:10px;padding:0px;">
+       <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('usuarioNovo'); ?>'" style="float: right;width:100px;">
+      <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
+      Novo</button>
+
+      <button type="button" class="btn btn-default active" onclick="" style="float: left;width:100px;">
+      <img src="<?php echo $this->basePath('img/usuario.png') ?>" alt="Novo">
+      Usuários</button>
+    </div>
+    <div class="row">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">usuários</h3>
+        </div>
+        <div class="panel-body">
+          <?php if($usuarios->count() > 0): ?>
+            <table class="table">
+              <tr>
+                <th style="text-align: center">Nome</th>
+                <th style="text-align: center">Email</th>
+                <th style="text-align: center">Telefone</th>
+                <th style="text-align: center">Tipo</th>
+                <th style="text-align: center">Status</th>
+                <th style="text-align: center">Ações</th>
+            </tr>
+            <?php foreach($usuarios as $usuario): ?>
+            <tr>
+              <td style="text-align: center"><?= $usuario['nome']; ?></td>
+              <td style="text-align: center"><?= $usuario['email']; ?></td>
+              <td style="text-align: center"><?= $usuario['telefone']; ?></td>
+              <td style="text-align: center"><?= $usuario['perfil']; ?></td>
+
+              <td style="text-align: center"><?= $this->status($usuario['ativo']); ?></td>
+              <td style="text-align: center;">
+                <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar" 
+                onclick="location.href='<?= $this->url('usuarioAlterar', array('id' => $usuario['id'])); ?>'" style="cursor: pointer;">
+                <span style="margin-right:4px;"></span>  
+                <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" style="cursor: pointer;" onclick="alerta('<?= $this->url('usuarioDeletar', array('id' => $usuario['id'])) ?>', 'desativar');">
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </table>
+        <?php else: ?>
+          <div class="alert alert-info">Nenhum usuário encontrado!</div>
+        <?php endif; ?>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:0px;">
+      <div style="float:right;">
+        <?php echo $this->paginationControl($usuarios,
+                                      'Sliding',
+                                      'view/paginator', array('route' => 'usuario')); 
+        ?>
+      </div>
+    </div>
+
+  </div>
+
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        formUnidade();
+      });
+    </script>

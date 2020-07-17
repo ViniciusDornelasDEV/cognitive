@@ -1,0 +1,19 @@
+<?php if(!$this->params)$this->params = array();?>
+
+<?php $form->prepare(); ?>
+
+<?php if($this->route || $this->route):?>
+    <?php $form->setAttribute('action', $this->url($this->route, $this->params)); ?>
+<?php endif; ?>
+
+<?= $this->form()->openTag($form); ?>
+<?php $formElements = $form->getElements(); ?>
+        <h2 class="form-signin-heading">E-mail cadastrado</h2>
+
+        <?= $this->formElement($formElements['login']); ?>
+        <?= $this->formElementErrors($formElements['login'], array('class' => 'alert alert-danger')); ?>
+        <label class="checkbox">
+            <a href="<?= $this->url('login') ?>"> Logar-se</a>
+        </label>
+            <?= $this->formElement($formElements['submit']); ?>
+<?= $this->form()->closeTag($form); ?>

@@ -1,0 +1,62 @@
+ <div class="row">
+          
+      </div>
+    </div>
+    </div>
+    <div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
+       <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('tipousuarioNovo'); ?>'" style="float: right;width:100px;">
+      <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
+      Novo</button>
+
+      <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('usuario'); ?>'" style="float: left;width:100px;">
+      <img src="<?php echo $this->basePath('img/usuario.png') ?>" alt="Novo">
+      Usuários</button>
+
+
+      <button type="button" class="btn btn-default active" onclick="" style="float: left;width:100px;margin-left:5px;">
+      <img src="<?php echo $this->basePath('img/tipousuario.png') ?>" alt="Novo">
+      Tipos</button>
+
+    </div>
+    <!-- LISTAGEM DOS CHAMADOS -->
+    <div class="container theme-showcase" role="main">
+      <div class="row">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Listagem de tipos de usuário</h3>
+            </div>
+            <div class="panel-body">
+              <?php if($tiposUsuario->count() > 0): ?>
+                <table class="table">
+                  <tr>
+                    <th style="text-align: center">Nome do perfil</th>
+                    <th style="text-align: center">Ações</th>
+                </tr>
+                <?php foreach($tiposUsuario as $tipo): ?>
+                <tr>
+                  <td style="text-align: center"><?= $tipo['perfil']; ?></td>
+                  <td style="text-align: center;">
+                    <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar" 
+                    onclick="location.href='<?= $this->url('tipousuarioAlterar', array('id' => $tipo['id'])); ?>'" style="cursor: pointer;">
+                    <span style="margin-right:4px;"></span>  
+                    <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" style="cursor: pointer;" onclick="alerta('<?= $this->url('tipousuarioDeletar', array('id' => $tipo['id'])) ?>', 'desativar');">
+                  </td>
+                </tr>
+                <?php endforeach; ?>
+              </table>
+            <?php else: ?>
+              <div class="alert alert-info">Nenhum tipo de usuário encontrado!</div>
+            <?php endif; ?>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container theme-showcase" style="margin-top:0px;" role="main">
+        <div style="float:right;">
+          <?php echo $this->paginationControl($tiposUsuario,
+                                        'Sliding',
+                                        'view/paginator', array('route' => 'tipousuario')); 
+          ?>
+        </div>
+      </div>

@@ -1,0 +1,19 @@
+<?php if(!$this->params)$this->params = array();?>
+
+<?php $form->prepare(); ?>
+
+<?php if($this->route || $this->route):?>
+    <?php $form->setAttribute('action', $this->url($this->route, $this->params)); ?>
+<?php endif; ?>
+
+<?= $this->form()->openTag($form); ?>
+<?php $formElements = $form->getElements(); ?>
+        <h2 class="form-signin-heading">Favor logar-se</h2>
+
+        <?= $this->formElement($formElements['login']); ?>
+        <?= $this->formElement($formElements['password']); ?>
+        <label class="checkbox">
+            <a href="<?= $this->url('recuperarSenha') ?>"> Recuperar senha</a>
+        </label>
+            <input class="btn btn-lg btn-success btn-block" type="submit" value="Entrar" style="float: right;" name="submit">
+<?= $this->form()->closeTag($form); ?>

@@ -1,0 +1,48 @@
+<div class="container-fluid">
+  <div class="row" role="main" style="margin-bottom:10px;padding:0px;">
+     <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('novoMenu'); ?>'" style="float: right;width:100px;">
+    <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
+    Novo</button>
+  </div>
+
+    <div class="row">
+      <div class="panel panel-primary" style="width: 100%">
+        <div class="panel-heading">
+          <h3 class="panel-title">Menus</h3>
+        </div>
+        <div class="panel-body">
+          <?php if($menus->count() > 0): ?>
+            <table class="table">
+              <tr>
+                <th style="text-align: center">Nome</th>
+                <th style="text-align: center">Ações</th>
+            </tr>
+            <?php foreach($menus as $menu): ?>
+            <tr>
+              <td style="text-align: center"><?= $menu['nome']; ?></td>
+              <td style="text-align: center;">
+                <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar" 
+                onclick="location.href='<?= $this->url('alterarMenu', array('id' => 1)); ?>'" style="cursor: pointer;">
+                <span style="margin-right:4px;"></span> 
+                  <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" 
+                onclick="alert('Tem certeza que deseja deletar o menu?');" style="cursor: pointer;">
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </table>
+        <?php else: ?>
+          <div class="alert alert-info">Nenhum menu encontrado!</div>
+        <?php endif; ?>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:0px;" role="main">
+      <div style="float:right;">
+        <?php echo $this->paginationControl($menus,
+                                      'Sliding',
+                                      'view/paginator', array('route' => 'indexMenu')); 
+        ?>
+      </div>
+    </div>
+  </div>   

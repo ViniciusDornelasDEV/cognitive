@@ -1,0 +1,29 @@
+<div class="container theme-showcase" role="main" style="margin-bottom:10px;max-width: 35%;">
+
+      <button type="button" class="btn btn-warning" onclick="location.href='<?= $this->url('alterarDadosEmpresa'); ?>'" style="float: left;margin-left: 10px;">
+          <img src="<?php echo $this->basePath('img/listar.png') ?>" alt="Meus dados">
+          Meus dados
+      </button>  
+      
+      <button type="button" class="btn btn-danger" disabled style="float: left; margin-left: 10px;">
+        <img src="<?php echo $this->basePath('img/status.png') ?>" alt="Alterar senha">
+        Alterar senha
+      </button>
+
+  </div>
+
+    <div class="container theme-showcase" role="main" style="max-width: 35%;">
+      <div class="row">
+          <div class="panel panel-primary">
+          <div class="panel-heading">
+              <h3 class="panel-title">Alteração de senha</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                  <?php echo $this->partial('form/umacoluna', array('form'=> $form, 'route'=> '')) ?>
+
+            </div>
+          </div>
+      </div>
+    </div>
+    </div>

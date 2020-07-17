@@ -1,0 +1,93 @@
+ <div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
+      <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('tipousuarioNovo'); ?>'" style="float: right;width:100px;">
+      <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
+      Novo</button>
+<ol class="breadcrumb" style="margin-bottom: 0px;">
+  <li><a href="<?= $this->url('telaInicio'); ?>">Home</a></li>
+  <li><a href="<?= $this->url('tipousuario'); ?>">Tipos de usuário</a></li>
+  <li class="active">Alterar</li>
+</ol>
+  </div>
+
+    <div class="container theme-showcase" role="main">
+      <div class="row">
+          <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">Alterar tipo de usuário</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                  <?php echo $this->partial('form/generic', array('form'=> $formTipo, 'route'=> '')) ?>
+            </div>
+          </div>
+      </div>
+    </div>
+    </div>
+
+ <div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
+      <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('tipousuarioAlterar', array('id' => $tipoUsuario->id)); ?>'" style="float: right;width:100px;">
+      <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
+      Novo</button>
+  </div>
+    <!-- VINCULAR UNIDADE -->
+	<div class="container theme-showcase" role="main">
+		<div class="row">
+		  	<div class="panel panel-default">
+		  		<div class="panel-heading">
+		      		<h3 class="panel-title">Vincular recurso</h3>
+		    	</div>
+			    <div class="panel-body">
+			    	<div class="form-group">
+			    		<?php echo $this->partial('form/generic', array('form'=> $formRecurso, 'route'=> '')) ?>
+
+			        </div>
+		        </div>
+	      	</div>
+	    </div>
+    </div>
+
+    <!-- LISTAGEM DE UNIDADES -->
+    <?php if(!$recursos || $recursos->count() == 0): ?>
+      <div class="container theme-showcase" role="main" style="padding: 0px;">
+        <div class="alert alert-info">Nenhum recurso vinculado!</div>
+      </div>
+
+    <?php else: ?>
+
+     <div class="container theme-showcase" role="main">
+      <div class="row">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Recursos vinculados</h3>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <tr>
+                  <th style="text-align: center">Módulo</th>
+                  <th style="text-align: center">Recurso</th>
+                  <th style="text-align: center">Descrição</th>
+                  <th style="text-align: center">Ações</th>
+              </tr>
+              <?php foreach ($recursos as $recurso): ?>
+              <tr>
+                <td style="text-align: center"><?= $recurso->nome_modulo; ?></td>
+                <td style="text-align: center"><?= $recurso->nome; ?></td>
+                <td style="text-align: center"><?= $recurso->descricao ?></td>
+                <td style="text-align: center">
+                  <img src="<?php echo $this->basePath('img/deletar.png') ?>" onclick="alerta('<?= $this->url('recursoDeletar', array('id' => $recurso->id, 'tipousuario' => $tipoUsuario->id)); ?>', 'deletar');" title="Deletar">
+                </td>
+
+              
+              </tr>
+            <?php endforeach; ?>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    <?php endif; ?>
+    <script type="text/javascript">
+	    $(document).ready(function() {
+			  $('#descricao_recurso').attr('disabled', 'disabled');
+		  });
+    </script>

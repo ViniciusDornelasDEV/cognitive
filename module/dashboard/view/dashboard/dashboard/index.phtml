@@ -1,0 +1,85 @@
+<div class="container fluid" role="main" style="">
+      <div class="row">
+          <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                  <form class="form-inline" role="form" method="POST" action="#">
+                      <div class="row">
+                        <div class='col-sm-4'>
+                          <div class="form-group">
+                            <label for="disabledTextInput"><?= $formPesquisa->get('menu')->getLabel(); ?></label>
+                            <?= $this->formElement($formPesquisa->get('menu')); ?>
+                          </div>
+                        </div>
+
+                        <div class='col-sm-4'>
+                          <div class="form-group">
+                            <label for="disabledTextInput"><?= $formPesquisa->get('nome')->getLabel(); ?></label>
+                            <?= $this->formElement($formPesquisa->get('nome')); ?>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row" style="margin-top:20px;">
+                        <button type="submit" name="pesquisar" class="btn btn-success" style="float: right;margin-right: 10px;">
+                        <img src="<?= $this->basePath('img/pesquisar.png'); ?>" alt="Pesquisar"> Pesquisar</button>
+                        <button type="submit" name="limpar" class="btn btn-default" style="float: right;margin-right: 10px;">
+                        <img src="<?= $this->basePath('img/limpar.png'); ?>"> Limpar</button>
+                      </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="container-fluid">
+  <div class="row" role="main" style="margin-bottom:10px;padding:0px;">
+     <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('novoDashboard'); ?>'" style="float: right;width:100px;">
+    <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
+    Novo</button>
+  </div>
+
+    <div class="row">
+      <div class="panel panel-primary" style="width: 100%">
+        <div class="panel-heading">
+          <h3 class="panel-title">Dashboards do cliente Magazine Luiza</h3>
+        </div>
+        <div class="panel-body">
+          <?php if($dashboards->count() > 0): ?>
+            <table class="table">
+              <tr>
+                <th style="text-align: center">Menu</th>
+                <th style="text-align: center">Nome</th>
+                <th style="text-align: center">Ações</th>
+            </tr>
+            <?php foreach($dashboards as $dashboard): ?>
+            <tr>
+              <td style="text-align: center"><?= $dashboard['menu']; ?></td>
+              <td style="text-align: center"><?= $dashboard['nome']; ?></td>
+              <td style="text-align: center;">
+                  <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar" 
+                onclick="location.href='<?= $this->url('alterarDashboard', array('id' => 1)); ?>'" style="cursor: pointer;">
+                <span style="margin-right:4px;"></span> 
+                  <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" 
+                onclick="alert('Tem certeza que deseja deletar o dashboard?');" style="cursor: pointer;">
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </table>
+        <?php else: ?>
+          <div class="alert alert-info">Nenhum dashboard encontrado!</div>
+        <?php endif; ?>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:0px;" role="main">
+      <div style="float:right;">
+        <?php echo $this->paginationControl($dashboards,
+                                      'Sliding',
+                                      'view/paginator', array('route' => 'indexDashboard')); 
+        ?>
+      </div>
+    </div>
+  </div>   
