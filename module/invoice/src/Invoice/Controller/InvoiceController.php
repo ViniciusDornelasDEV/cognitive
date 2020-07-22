@@ -8,6 +8,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Session\Container;
+use Zend\File\Transfer\Adapter\Http as fileTransfer;
 
 use Invoice\Form\Invoice as formInvoice;
 use Invoice\Form\Pesquisa as formPesquisa;
@@ -15,11 +16,26 @@ use Invoice\Form\Pesquisa as formPesquisa;
 class InvoiceController extends BaseController
 {
     public function indexAction(){
+      //instancia e pega parametross de form de pesquisa
     	$formPesquisa = new formPesquisa('frmPesquisa');
-      $invoices = array();
-      for ($i=0; $i < 10; $i++) { 
-        $invoices[$i] = array('descricao' => 'Invoice de junho', 'valor' => 'R$ 500,00', 'data_referencia' => '15/06/2020');
+      $params = array();
+      if($this->getRequest()->isPost()){
+        $dados = $this->getRequest()->getPost();
+        if(isset($dados['limpar'])){
+          return $this->redirect()->toRoute('indexInvoice', array('page' => $this->params()->fromRoute('page')));
+        }
+
+        $formPesquisa->setData($dados);
+        if($formPesquisa->isValid()){
+          $params = $formPesquisa->getData();
+        }
       }
+
+      //seta cliente e realiza pesqusa
+      $container = new Container();
+      $params['cliente'] = $container->cliente['id'];
+      $invoices = $this->getServiceLocator()->get('Invoice')->getInvoicesByParams($params)->toArray();
+      
       $paginator = new Paginator(new ArrayAdapter($invoices));
       $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
       $paginator->setItemCountPerPage(10);
@@ -27,64 +43,169 @@ class InvoiceController extends BaseController
       
       return new ViewModel(array(
           'invoices'      => $paginator,
-          'formPesquisa'  => $formPesquisa
+          'formPesquisa'  => $formPesquisa,
+          'cliente'       => $container->cliente       
       ));
     }
 
     public function novoAction(){
     	$formInvoice = new formInvoice('frmInvoice');
-      /*if($this->getRequest()->isPost()){
-          $formBairro->setData($this->getRequest()->getPost());
-          if($formBairro->isValid()){
-              $dados = $formBairro->getData();
-          	$result = $this->getServiceLocator()->get('Bairro')->insert($dados);
-              if($result){
-                  $this->flashMessenger()->addSuccessMessage('Bairro inserido com sucesso!');                
-                  return $this->redirect()->toRoute('indexBairro');
-              }else{
-                  //falha, exibir mensagem
-                  $this->flashMessenger()->addErrorMessage('Falha ao inserir bairro!'); 
-              }
+      $container = new Container();
+      
+      if($this->getRequest()->isPost()){
+        $formInvoice->setData($this->getRequest()->getPost());
+        if($formInvoice->isValid()){
+          $dados = $formInvoice->getData();
+
+          //fazer upload de arquivo
+          $file = $this->getRequest()->getfiles()->toArray();
+          if(!empty($file['arquivo']['name'])){
+            //fazer upload do arquivo
+            $id = $this->getServiceLocator()->get('Invoice')->getNextInsertId('tb_invoice');
+            $dados['arquivo'] = $this->uploadImagem($file, $container->cliente['id'], $id->Auto_increment);
           }
 
-      }*/
+          //salvar invoice 
+          $dados['cliente'] = $container->cliente['id'];
+          $this->getServiceLocator()->get('Invoice')->insert($dados);
+          $this->flashMessenger()->addSuccessMessage('Invoice inserido com sucesso!');
+          return $this->redirect()->toRoute('indexInvoice');
+        }
+      }
 
-    	return new ViewModel(array('formInvoice' => $formInvoice));
+    	return new ViewModel(array(
+        'formInvoice' => $formInvoice,
+        'cliente'     => $container->cliente
+      ));
     }
 
     public function alterarAction(){
-      /*$idBairro = $this->params()->fromRoute('id');
-      $serviceBairro = $this->getServiceLocator()->get('Bairro');
-      $formBairro = new formBairro('frmBairro', $this->getServiceLocator());
+      //pesquisar e validar invoice
+      $container = new Container();
+      $idInvoice = $this->params()->fromRoute('id');
+      $invoice = $this->getServiceLocator()->get('Invoice')->getRecord($idInvoice);
+      if(!$invoice){
+        $this->flashMessenger()->addWarningMessage('Invoice não encontrado!');
+        return $this->redirect()->toRoute('indexInvoice');
+      }
+      $formInvoice = new formInvoice('frmInvoice');
+      
+      //se veio post, alterar invoice
+      if($this->getRequest()->isPost()){
+        $formInvoice->setData($this->getRequest()->getPost());
+        if($formInvoice->isValid()){
+          $dados = $formInvoice->getData();
+          unset($dados['arquivo']);
+          $file = $this->getRequest()->getfiles()->toArray();
+          if(!empty($file['arquivo']['name'])){
+            //fazer upload do arquivo
+            $dados['arquivo'] = $this->uploadImagem($file, $container->cliente['id'], $idInvoice);
+          }
 
-      $bairro = $serviceBairro->getRecord($idBairro);
-      if(!$bairro){
-      	$this->flashMessenger()->addWarningMessage('Bairro não encontrado!');
-      	return $this->redirect()->toRoute('indexBairro');
+          $this->getServiceLocator()->get('Invoice')->update($dados, array('id' => $idInvoice));
+          $this->flashMessenger()->addSuccessMessage('Invoice alterado com sucesso!');
+          return $this->redirect()->toRoute('alterarInvoice', array('id' => $idInvoice));
+        }
       }
 
-      $formBairro->setData($bairro);
+      $formInvoice->setData($invoice);
 
-      if($this->getRequest()->isPost()){
-      	$formBairro->setData($this->getRequest()->getPost());
-      	if($formBairro->isValid()){
-              $dados = $formBairro->getData();
-
-      		$serviceBairro->update($dados, array('id' => $idBairro));
-              $this->flashMessenger()->addSuccessMessage('Bairro alterado com sucesso!');
-      		return $this->redirect()->toRoute('indexBairro');
-      	}
-      }*/
-      $formInvoice = new formInvoice('frmInvoice');
-
-      $formInvoice->setData(array(
-        'descricao'        =>  'Invoice de junho',
-        'valor'            =>  'R$ 500,00',
-        'data_referencia'  =>  '15/06/2020'
-      ));
       return new ViewModel(array(
-        'formInvoice' => $formInvoice
+        'formInvoice' =>  $formInvoice,
+        'cliente'     =>  $container->cliente,
+        'invoice'     =>  $invoice
       ));
+    }
+
+    public function pagarinvoiceAction(){
+      $invoice = $this->getServiceLocator()->get('Invoice')->getRecord($this->params()->fromRoute('id'));
+      $container = new Container();
+      if($invoice['cliente'] != $container->cliente['id']){
+        $this->flashMessenger()->addWarningMessage('Invoice não encontrado');
+        return $this->redirect()->toRoute('indexInvoice');
+      }
+
+      //pagar invoice
+      $this->getServiceLocator()->get('Invoice')->update(array('pago' => 'S'), array('id' => $invoice['id']));
+      $this->flashMessenger()->addSuccessMessage('Invoice pago com sucesso!');
+      return $this->redirect()->toRoute('indexInvoice');
+    }
+
+    public function downloadinvoiceAction(){
+      $invoice = $this->getServiceLocator()->get('Invoice')->getRecord($this->params()->fromRoute('id'));
+      $container = new Container();
+
+      if(!$invoice || $invoice['cliente'] != $container->cliente['id']){
+        $this->flashMessenger()->addWarningMessage('Invoice não encontrado!');
+        return $this->redirect()->toRoute('indexInvoice');
+      }
+
+      $fileName = $invoice->arquivo;
+
+      if(!is_file($fileName)) {
+          //Não foi possivel encontrar o arquivo
+      }
+      $fileContents = file_get_contents($fileName);
+
+      $response = $this->getResponse();
+      $response->setContent($fileContents);
+
+      $headers = $response->getHeaders();
+      $headers->clearHeaders()
+          ->addHeaderLine('Content-Type', 'whatever your content type is')
+          ->addHeaderLine('Content-Disposition', 'attachment; filename="' . $fileName . '"')
+          ->addHeaderLine('Content-Length', strlen($fileContents));
+      return $this->response;
+    }
+
+    public function deletarinvoiceAction(){
+      $invoice = $this->getServiceLocator()->get('Invoice')->getRecord($this->params()->fromRoute('id'));
+      $container = new Container();
+
+      if(!$invoice || $invoice['cliente'] != $container->cliente['id']){
+        $this->flashMessenger()->addWarningMessage('Invoice não encontrado!');
+        return $this->redirect()->toRoute('indexInvoice');
+      }
+
+      $this->getServiceLocator()->get('Invoice')->delete(array('id' => $invoice->id));
+      $this->flashMessenger()->addSuccessMessage('Invoice excluído com sucesso!');
+      return $this->redirect()->toRoute('indexInvoice');
+    }
+
+    private function uploadImagem($arquivo, $idCliente, $idInvoice){
+        $upload_adapter = new fileTransfer();
+        //Adicionando validators
+        //$upload_adapter->addValidator('Size', false, '5242880');
+        $container = new Container();
+        //Decobrir extensao
+        $extensao = $this->getExtensao($arquivo['arquivo']['name']);
+        
+        $caminho_arquivo = 'public/empresas/'.$idCliente;
+        if(!file_exists($caminho_arquivo)){
+            mkdir($caminho_arquivo);
+        }
+
+        $caminho_arquivo = 'public/empresas/'.$idCliente.'/invoices';
+        if(!file_exists($caminho_arquivo)){
+            mkdir($caminho_arquivo);
+        }
+
+        $caminho_arquivo = $caminho_arquivo.'/'.$idInvoice.'.'.$extensao;
+        if(file_exists($caminho_arquivo)){
+            unlink($caminho_arquivo);
+        }
+
+        $upload_adapter->addFilter('Rename', $caminho_arquivo);
+        if(!$upload_adapter->receive()){
+          $msg = '';
+          foreach ($upload_adapter->getMessages() as $value) {
+            $msg .= $value.'<br>';
+          }
+          $this->flashMessenger()->addWarningMessage($msg);
+          return false; 
+        }
+
+        return 'public/empresas/'.$idCliente.'/invoices/'.$idInvoice.'.'.$extensao;
     }
 
 }

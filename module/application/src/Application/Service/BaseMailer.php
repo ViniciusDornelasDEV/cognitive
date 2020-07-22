@@ -102,12 +102,12 @@ class BaseMailer {
         $transport = new SmtpTransport();
         //@todo update with their icarus account -- using tech studio 
         $options = new SmtpOptions(array(
-            'host' => 'mail.sabordovale.net',
+            'host' => 'smtp.hostinger.com.br',
             'port' => 587,
             'connection_class' => 'login',
             'connection_config' => array(
-                'username' => 'contato@sabordovale.net',
-                'password' => 'FNQ^U-om0RYp',
+                'username' => 'contato@sistemacognitive.tk',
+                'password' => 'I5media2020',
             ),
         ));
         $transport->setOptions($options);

@@ -35,6 +35,45 @@ return array(
                     ),
                 ),
             ),
+            'pagarInvoice' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/invoice/pagar[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Invoice\Controller\Invoice',
+                        'action'     => 'pagarinvoice',
+                    ),
+                ),
+            ),
+            'downloadInvoice' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/invoice/download[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Invoice\Controller\Invoice',
+                        'action'     => 'downloadinvoice',
+                    ),
+                ),
+            ),
+            'deletarInvoice' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/invoice/deletar[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Invoice\Controller\Invoice',
+                        'action'     => 'deletarinvoice',
+                    ),
+                ),
+            ),
         ),
     ),
 	'controllers' => array(

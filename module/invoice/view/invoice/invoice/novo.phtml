@@ -14,7 +14,7 @@
       <div class="row">
           <div class="panel panel-default">
           <div class="panel-heading">
-              <h3 class="panel-title">Cadastro de invoice para o cliente Magazine Luiza</h3>
+              <h3 class="panel-title">Cadastro de invoice para o cliente <?= $cliente['nome'] ?></h3>
             </div>
             <div class="panel-body">
                 <div class="form-group">
@@ -25,3 +25,10 @@
       </div>
     </div>
     </div>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#valor").maskMoney({symbol:'R$ ', showSymbol:true, thousands:'.', decimal:',', symbolStay: true, allowZero: true});
+        $("#data_vencimento").mask("99/99/9999");
+      });
+    </script>

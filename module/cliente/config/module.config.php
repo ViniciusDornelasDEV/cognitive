@@ -36,6 +36,58 @@ return array(
                     ),
                 ),
             ),
+            'ativarUsuarioCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/cliente/ativar[/:token]',
+                    'defaults' => array(
+                        'controller' => 'Cliente\Controller\Cliente',
+                        'action'     => 'ativarusuariocliente',
+                    ),
+                ),
+            ),
+            'deletarUsuarioCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/cliente/usuario/deletar[/:id][/:usuario]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                        'usuario'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Cliente\Controller\Cliente',
+                        'action'     => 'deletarusuariocliente',
+                    ),
+                ),
+            ),
+
+            'inativarCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/cliente/deletar[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Cliente\Controller\Cliente',
+                        'action'     => 'inativarcliente',
+                    ),
+                ),
+            ),
+
+            'selecionarCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/cliente/selecionar[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Cliente\Controller\Cliente',
+                        'action'     => 'selecionarcliente',
+                    ),
+                ),
+            ),
         ),
     ),
 	'controllers' => array(

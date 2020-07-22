@@ -3,13 +3,17 @@
       <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
       Novo</button>
 
-      <button type="button" class="btn btn-default" onclick="alert('Realiza download do arquivo');" style="float: right;">
-      <img src="<?php echo $this->basePath('img/download.png') ?>" alt="Download arquivo">
-      Download arquivo</button>
+      <a href="<?= $this->url('downloadInvoice', array('id' => $invoice['id'])) ?>">
+        <button type="button" class="btn btn-default" style="float: right;">
+        <img src="<?php echo $this->basePath('img/download.png') ?>" alt="Download arquivo">
+        Download arquivo</button>
+      </a>
 
-      <button type="button" class="btn btn-default" onclick="alert('Tem certeza que deseja marcar o invoice como pago?');" style="float: right;">
+      <?php if($invoice['pago'] == 'N'): ?>
+      <button type="button" class="btn btn-default" onclick="alerta('<?= $this->url('pagarInvoice', array('id' => $invoice['id'])); ?>', 'Tem certeza que deseja marcar o invoice como pago?');" style="float: right;">
       <img src="<?php echo $this->basePath('img/pagar.gif') ?>" alt="Pagar invoice">
       Pagar invoice</button>
+    <?php endif; ?>
 
     <ol class="breadcrumb" style="margin-bottom: 0px;">
       <li><a href="<?= $this->url('home'); ?>">Home</a> / </li>
@@ -22,7 +26,7 @@
       <div class="row">
           <div class="panel panel-default">
           <div class="panel-heading">
-              <h3 class="panel-title">Alterar invoice do cliente Magazine Luiza</h3>
+              <h3 class="panel-title">Alterar invoice do cliente <?= $cliente['nome'] ?></h3>
             </div>
             <div class="panel-body">
                 <div class="form-group">

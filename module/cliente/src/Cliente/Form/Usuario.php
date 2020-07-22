@@ -19,9 +19,9 @@ use Application\Form\Base as BaseForm;
         parent::__construct($name);          
         $this->genericTextInput('nome', '* Nome: ', true);
 
-        $this->genericTextInput('sobrenome', '* Sobrenome: ', true);
+        $this->genericTextInput('sobrenome', 'Sobrenome: ', false);
 
-        $this->addEmailElement('email', '* Email corporativo', true);
+        $this->addEmailElement('login', '* Email corporativo', true);
 
         $this->genericTextInput('cargo', 'Cargo: ', false);
 

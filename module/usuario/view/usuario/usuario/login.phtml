@@ -9,7 +9,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<?= $this->formElement($form->get('email')); ?>
+						<?= $this->formElement($form->get('login')); ?>
 					</div>
 				</div>
 
@@ -30,16 +30,4 @@
 <br>
 
 </div>
-	</section>
-	<script type="text/javascript">
-	var maskBehavior = function (val) {
-	 return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-	},
-	options = {onKeyPress: function(val, e, field, options) {
-	 field.mask(maskBehavior.apply({}, arguments), options);
-	 }
-	};
-	 
-	$('#telefone').mask(maskBehavior, options);
- 
-    </script>
+</section>

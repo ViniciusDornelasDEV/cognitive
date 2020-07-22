@@ -18,7 +18,9 @@ use Application\Form\Base as BaseForm;
 
         parent::__construct($name);          
 
-        $this->_addDropdown('menu', '* Menu:', true, array('1' => 'Dashboard acessos', '2' => 'Dashboard financeiro'));
+        $this->_addDropdown('menu', 'Menu:', false, array('' => '-- Selecione --', '1' => 'Dashboard acessos', '2' => 'Dashboard financeiro'));
+
+        $this->addImageFileInput('icone', '* Ícone: ');
 
         $this->genericTextInput('nome', '* Nome: ', true);
 

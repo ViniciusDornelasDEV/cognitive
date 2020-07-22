@@ -20,59 +20,64 @@ use Zend\Stdlib\Parameters;
 
 abstract class BaseController extends AbstractActionController {
     
-    private $baseUrl = 'https://edelivery.local/';
+       protected function getIdentity($property = null) {
+        $storage = $this->getServiceLocator()->get('session');
 
-    public function requestGET($url, $jwtToken, $dump = false){
-        $request = new Request();
-        $request->getHeaders()->addHeaders(array(
-            'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization' =>  $jwtToken
+        if (!$storage) {
+            return false;
+        }
+
+        $data = $storage->read();
+
+        if ($property && isset($data[$property])) {
+            return $data[$property];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns TRUE if session is still valid (i.e. it hasn't expired).
+     * 
+     * @access public
+     * @return void
+     */
+    public function sessionIsValid() {
+        return time() <= $this->getIdentity('expiry');
+    }
+
+    protected function saveToS3($bucket, $src, $filename, $type) {
+
+        $aws = $this->getServiceLocator()->get('aws');
+
+        $s3 = $aws->get('s3');
+
+        $result = $s3->putObject(array(
+            'Bucket' => $bucket,
+            'SourceFile' => $src,
+            'Key' => $filename,
+            'ContentType' => $type,
         ));
 
-        $request->setUri($this->baseUrl.$url);
-        $request->setMethod('GET');
-        
-        $client = new Client();
-        $client->setOptions(array('sslverifypeer' => null, 'sslallowselfsigned' => null));
-        $response = $client->dispatch($request);        
-        
-        if($dump){
-            print_r($response->getBody());
-            die();
-        }
-
-        return json_decode($response->getBody(), true);
+        return $result;
     }
 
-    public function requestPOST($url, $params, $jwtToken, $dump = false){
-        $request = new Request();
-        $request->getHeaders()->addHeaders(array(
-            'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization' => $jwtToken
+    protected function deleteFromS3($filename, $bucket) {
+
+        $aws = $this->getServiceLocator()->get('aws');
+
+        $s3 = $aws->get('s3');
+
+        $result = $s3->deleteObject(array(
+            'Bucket' => $bucket,
+            'Key' => $filename
         ));
-        $request->setUri($this->baseUrl.$url);
-        $request->setMethod('POST');
-        $request->setPost(new Parameters($params));
 
-        $client = new Client();
-        $client->setOptions(array('sslverifypeer' => null, 'sslallowselfsigned' => null));
-        $response = $client->dispatch($request);
-
-        if($dump){
-            print_r($response->getBody());
-            die();
-        }
-
-        return json_decode($response->getBody(), true);
+        return $result;
     }
 
-    public function paramsToArray($dados){
-        //params precisa ser um array
-        $params = array();
-        foreach ($dados as $key => $dado) {
-            $params[$key] = $dado;
-        }
-        return $params;
+    public function getExtensao($name){
+        $extensao = explode('.', $name);
+        return $extensao[1];
     }
-    
 }

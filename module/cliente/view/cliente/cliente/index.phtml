@@ -1,29 +1,5 @@
 <div class="container fluid" role="main" style="">
-      <div class="row">
-          <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="form-group">
-                  <form class="form-inline" role="form" method="POST" action="#">
-                      <div class="row">
-                        <div class='col-sm-4'>
-                          <div class="form-group">
-                            <label for="disabledTextInput"><?= $formPesquisa->get('nome')->getLabel(); ?></label>
-                            <?= $this->formElement($formPesquisa->get('nome')); ?>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row" style="margin-top:20px;">
-                        <button type="submit" name="pesquisar" class="btn btn-success" style="float: right;margin-right: 10px;">
-                        <img src="<?= $this->basePath('img/pesquisar.png'); ?>" alt="Pesquisar"> Pesquisar</button>
-                        <button type="submit" name="limpar" class="btn btn-default" style="float: right;margin-right: 10px;">
-                        <img src="<?= $this->basePath('img/limpar.png'); ?>"> Limpar</button>
-                      </div>
-                </form>
-            </div>
-          </div>
-        </div>
-      </div>
+      <?php echo $this->partial('form/pesquisa', array('form'=> $formPesquisa, 'route'=> '')) ?>
     </div>
 
 <div class="container-fluid">
@@ -43,21 +19,23 @@
             <table class="table">
               <tr>
                 <th style="text-align: center">Nome</th>
+                <th style="text-align: center">Status</th>
                 <th style="text-align: center">Ações</th>
             </tr>
             <?php foreach($clientes as $cliente): ?>
             <tr>
               <td style="text-align: center"><?= $cliente['nome']; ?></td>
+              <td style="text-align: center"><?= $this->ativo($cliente['ativo']); ?></td>
               <td style="text-align: center;">
                   <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar cliente" 
                 onclick="location.href='<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>'" style="cursor: pointer;">
                 <span style="margin-right:4px;"></span> 
                   <img src="<?= $this->basePath('img/ok.gif'); ?>" title="Selecionar cliente" 
-                onclick="alert('Seleciona o cliente');" style="cursor: pointer;">
+                onclick="alerta('<?= $this->url('selecionarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja selecionar o cliente <?= $cliente['nome'] ?>?');" style="cursor: pointer;">
 
                 <span style="margin-right:4px;"></span> 
                   <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" 
-                onclick="alert('Tem certeza que deseja desativar o cliente?');" style="cursor: pointer;">
+                 style="cursor: pointer;" onclick="alerta('<?= $this->url('inativarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja inativar o cliente <?= $cliente['nome'] ?>?');">
               </td>
             </tr>
             <?php endforeach; ?>
@@ -78,3 +56,33 @@
       </div>
     </div>
   </div>   
+
+  <script type="text/javascript">
+    //AUTOCOMPLETE CLIENTES
+      var clientes = [];
+      <?php foreach ($clientesComplete as $cliente) : ?>
+        clientes["<?= $cliente['id']; ?>"] = "<?= $cliente['nome'] ?>";
+      <?php endforeach; ?>
+
+      //autocomplete
+      var clientesArray = $.map(clientes, function (value, key) { return { value: value, data: key }; });
+
+      $('#nome').autocomplete({
+        lookup: clientesArray,
+        lookupFilter: function(suggestion, originalQuery, queryLowerCase) {
+            var re = new RegExp('\\b' + $.Autocomplete.utils.escapeRegExChars(queryLowerCase), 'gi');
+            return re.test(suggestion.value);
+        },
+        onSelect: function(suggestion) {
+            /*if($('#telefone').val() == ''){  
+              CarregaCliente(suggestion.data, true);
+            }*/
+        },
+        onHint: function (hint) {
+            //$('#autocomplete-ajax-x').val(hint);
+        },
+        onInvalidateSelection: function() {
+            //$('#selction-ajax').html('You selected: none');
+        }
+      });
+  </script>

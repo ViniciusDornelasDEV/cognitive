@@ -46,26 +46,6 @@ class BaseTable {
         $this->tableGateway = $tableGateway;
     }
 
-    public function adapterBase(){
-        $adapter = $this->getTableGateway()->getAdapter();
-        return new \Zend\Db\Adapter\Adapter(array(
-            'driver' => 'PdoMysql',
-            'database' => 'sistemae_base',
-            'username' => 'root',
-            'password' => '',
-         ));
-    }
-
-    public function adapterCli($nomeBase){
-        return  new \Zend\Db\Adapter\Adapter(array(
-                'driver' => 'PdoMysql',
-                'database' => $nomeBase,
-                'username' => 'root',
-                'password' => ''
-             ));
-    }
-
-
     /**
      * setServiceLocator function.
      * 

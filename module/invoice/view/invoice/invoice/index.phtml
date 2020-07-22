@@ -1,36 +1,5 @@
 <div class="container fluid" role="main" style="">
-      <div class="row">
-          <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="form-group">
-                  <form class="form-inline" role="form" method="POST" action="#">
-                      <div class="row">
-                        <div class='col-sm-4'>
-                          <div class="form-group">
-                            <label for="disabledTextInput"><?= $formPesquisa->get('data_inicio')->getLabel(); ?></label>
-                            <?= $this->formElement($formPesquisa->get('data_inicio')); ?>
-                          </div>
-                        </div>
-
-                        <div class='col-sm-4'>
-                          <div class="form-group">
-                            <label for="disabledTextInput"><?= $formPesquisa->get('data_fim')->getLabel(); ?></label>
-                            <?= $this->formElement($formPesquisa->get('data_fim')); ?>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row" style="margin-top:20px;">
-                        <button type="submit" name="pesquisar" class="btn btn-success" style="float: right;margin-right: 10px;">
-                        <img src="<?= $this->basePath('img/pesquisar.png'); ?>" alt="Pesquisar"> Pesquisar</button>
-                        <button type="submit" name="limpar" class="btn btn-default" style="float: right;margin-right: 10px;">
-                        <img src="<?= $this->basePath('img/limpar.png'); ?>"> Limpar</button>
-                      </div>
-                </form>
-            </div>
-          </div>
-        </div>
-      </div>
+      <?php echo $this->partial('form/pesquisa', array('form'=> $formPesquisa, 'route'=> '')) ?>
     </div>
 
 <div class="container-fluid">
@@ -43,7 +12,7 @@
     <div class="row">
       <div class="panel panel-primary" style="width: 100%">
         <div class="panel-heading">
-          <h3 class="panel-title">Invoices do cliente Magazine Luiza</h3>
+          <h3 class="panel-title">Invoices do cliente <?= $cliente['nome'] ?></h3>
         </div>
         <div class="panel-body">
           <?php if($invoices->count() > 0): ?>
@@ -52,25 +21,34 @@
                 <th style="text-align: center">Descrição</th>
                 <th style="text-align: center">Valor</th>
                 <th style="text-align: center">Data de referência</th>
+                <th style="text-align: center">Status</th>
                 <th style="text-align: center">Ações</th>
             </tr>
             <?php foreach($invoices as $invoice): ?>
             <tr>
               <td style="text-align: center"><?= $invoice['descricao']; ?></td>
-              <td style="text-align: center"><?= $invoice['valor']; ?></td>
-              <td style="text-align: center"><?= $invoice['data_referencia']; ?></td>
+              <td style="text-align: center"><?= $this->exibirMonetario($invoice['valor']); ?></td>
+              <td style="text-align: center"><?= $this->converterData($invoice['data_vencimento']); ?></td>
+              <td style="text-align: center"><?= $invoice['pago'] == 'S' ? 'Pago' : 'Em aberto' ?></td>
               <td style="text-align: center;">
                   <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar" 
-                onclick="location.href='<?= $this->url('alterarInvoice', array('id' => 1)); ?>'" style="cursor: pointer;">
+                onclick="location.href='<?= $this->url('alterarInvoice', array('id' => $invoice['id'])); ?>'" style="cursor: pointer;">
+                <?php if($invoice['pago'] == 'S'): ?>
+                  <span style="margin-right:4px;"></span> 
+                    <img src="<?= $this->basePath('img/pago.png'); ?>" title="Invoice pago" style="cursor: pointer;">
+                <?php else: ?>
+                  <span style="margin-right:4px;"></span> 
+                    <img src="<?= $this->basePath('img/pagar.gif'); ?>" title="Pagar invoice"  
+                  onclick="alerta('<?= $this->url('pagarInvoice', array('id' => $invoice['id'])); ?>', 'Tem certeza que deseja marcar o invoice como pago?');" style="cursor: pointer;">
+                <?php endif; ?>
+
                 <span style="margin-right:4px;"></span> 
-                  <img src="<?= $this->basePath('img/pagar.gif'); ?>" title="Pagar invoice"  
-                onclick="alert('Tem certeza que deseja marcar o invoice como pago?');" style="cursor: pointer;">
-                <span style="margin-right:4px;"></span> 
-                  <img src="<?= $this->basePath('img/download.png'); ?>" title="Download do arquivo" 
-                onclick="alert('Realiza download do invoice');" style="cursor: pointer;">
+                <a href="<?= $this->url('downloadInvoice', array('id' => $invoice['id'])) ?>">
+                  <img src="<?= $this->basePath('img/download.png'); ?>" title="Download do arquivo" style="cursor: pointer;">
+                </a>
                 <span style="margin-right:4px;"></span> 
                   <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" 
-                onclick="alert('Tem certeza que deseja deletar o invoice?');" style="cursor: pointer;">
+                onclick="alerta('<?= $this->url('deletarInvoice', array('id' => $invoice['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o invoice?');" style="cursor: pointer;">
               </td>
             </tr>
             <?php endforeach; ?>
@@ -91,3 +69,10 @@
       </div>
     </div>
   </div>   
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#data_inicio").mask("99/99/9999");
+        $("#data_fim").mask("99/99/9999");
+      });
+    </script>

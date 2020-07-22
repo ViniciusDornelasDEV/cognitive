@@ -12,7 +12,7 @@ return array(
         'password'      => ''
     ),*/
     'db'   => array(
-        'dsn' => 'mysql:dbname=sistemae_base;host=localhost',
+        'dsn' => 'mysql:dbname=bd_cognitive;host=localhost',
         'username'      => 'root',
         'password'      => ''
     ),

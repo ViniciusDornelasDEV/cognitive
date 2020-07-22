@@ -88,4 +88,10 @@ class DashboardController extends BaseController
       ));
     }
 
+    public function visualizardashboardAction(){
+
+
+      return new ViewModel(array());
+    }
+
 }

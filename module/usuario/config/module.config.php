@@ -6,20 +6,10 @@ return array(
             'login' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/funcionarios/login',
+                    'route'    => '/login',
                     'defaults' => array(
                         'controller' => 'Usuario\Controller\Usuario',
                         'action'     => 'login',
-                    ),
-                ),
-            ),
-            'loginCliente' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/cliente/login',
-                    'defaults' => array(
-                        'controller' => 'Usuario\Controller\Usuario',
-                        'action'     => 'logincliente',
                     ),
                 ),
             ),
@@ -46,15 +36,22 @@ return array(
             ),
             //Novo usuario
             'usuarioNovo' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/usuario/novo[/:id]',
-                    'constraints' => array(
-                        'id'     => '[0-9]+',
-                    ),
+                    'route'    => '/usuario/novo',
                     'defaults' => array(
                         'controller' => 'Usuario\Controller\Usuario',
                         'action'     => 'novo',
+                    ),
+                ),
+            ),
+            'ativarUsuario' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/usuario/ativar[/:token]',
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'ativarusuario',
                     ),
                 ),
             ),

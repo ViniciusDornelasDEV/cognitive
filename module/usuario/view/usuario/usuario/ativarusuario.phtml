@@ -1,0 +1,21 @@
+    <div class="container theme-showcase" role="main">
+      <?php if($usuario): ?>
+      <div class="row">
+          <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">Confirme seus dados para ativar a conta</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                  <?php echo $this->partial('form/umacoluna', array('form'=> $formAtivar, 'route'=> '')) ?>
+
+            </div>
+          </div>
+      </div>
+    </div>
+    <?php else: ?>
+      <div class="alert alert-warning" role="alert">
+        Usuário não encontrado, verifique se seu link é válido ou entre em contato com o administrador.
+      </div>
+    <?php endif; ?>
+  </div>

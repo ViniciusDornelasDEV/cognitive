@@ -4,15 +4,15 @@
       Novo</button>
 
     <ol class="breadcrumb" style="margin-bottom: 0px;">
-      <li><a href="<?= $this->url('telaInicio'); ?>">Home</a></li>
-      <li><a href="<?= $this->url('usuario'); ?>">Usuários</a></li>
+      <li><a href="<?= $this->url('home'); ?>">Home</a> / </li>
+      <li><a href="<?= $this->url('usuario'); ?>">Usuários / </a></li>
       <li class="active">Novo</li>
     </ol>
   </div>
 
     <div class="container theme-showcase" role="main">
       <div class="row">
-          <div class="panel panel-primary">
+          <div class="panel panel-default" style="width: 100%">
           <div class="panel-heading">
               <h3 class="panel-title">Cadastro de usuário</h3>
             </div>
@@ -25,19 +25,3 @@
       </div>
     </div>
     </div>
-
-    <script type="text/javascript">
-      var maskBehavior = function (val) {
-       return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-      },
-      options = {onKeyPress: function(val, e, field, options) {
-       field.mask(maskBehavior.apply({}, arguments), options);
-       }
-      };
-       
-      $('#telefone').mask(maskBehavior, options);
-
-      $(document).ready(function() {
-        $('#cliente').attr('disabled', 'disabled');
-      });
-    </script>

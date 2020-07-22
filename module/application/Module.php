@@ -56,9 +56,9 @@ class Module
         //caso haja algum erro não renderizar o layout(ele tem o menu!)
         $eventManager->attach('dispatch.error', function($event){
             $exception = $event->getResult()->exception;
-            if ($exception) {
+            /*if ($exception) {
                 $service = $this->serviceManager->get('ExceptionLog')->logException($exception);
-            }
+            }*/
         });
 
         //capturar rota
@@ -82,6 +82,13 @@ class Module
             if(!$this->verificaAcesso($session, $usuario, $rota)){
                 $this->dispatchToLogout($e);
             }
+        }
+
+        //passar cliente para a view
+        $container = new Container();
+        if(isset($container->cliente)){
+           $viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
+           $viewModel->clienteSelecionado = $container->cliente;
         }
 
     }
@@ -123,8 +130,8 @@ class Module
                 'Mailer' => function() {
 
                     $from = array(
-                        'name' => 'eDelivery',
-                        'email' => 'contato@sistemaedelivery.com',
+                        'name' => 'Cognitive',
+                        'email' => 'contato@sistemacognitive.tk',
                         'contact_details' => array('rua' => 'Paraopeba 610'));
 
                     $mailer = new Service\Mailer($from);
@@ -163,9 +170,7 @@ class Module
     }
 
     public function verificaAcesso($session, $usuario, $rota = 'home') { 
-        $rotasPublicas = array('logout', 'login', 'recuperarSenha', 'home',
-        'indexCliente', 'novoCliente', 'alterarCliente', 'indexMenu', 'novoMenu', 'alterarMenu',
-        'indexDashboard', 'novoDashboard', 'alterarDashboard', 'indexInvoice', 'novoInvoice', 'alterarInvoice');
+        $rotasPublicas = array('logout', 'login', 'recuperarSenha', 'ativarUsuarioCliente', 'ativarUsuario');
          if(in_array($rota, $rotasPublicas)) {
             return true;
         }

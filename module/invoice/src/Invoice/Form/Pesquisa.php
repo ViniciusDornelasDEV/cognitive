@@ -27,4 +27,11 @@ use Application\Form\Base as BaseForm;
         ));
     }
 
+    public function getData($flag = 17){
+      $data = parent::getData();
+      $data['data_inicio'] = parent::converterData($data['data_inicio']);
+      $data['data_fim'] = parent::converterData($data['data_fim']);
+      return $data;
+    }
+
  }

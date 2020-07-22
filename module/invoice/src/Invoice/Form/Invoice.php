@@ -22,13 +22,20 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('valor', '* Valor: ', true);
 
-        $this->genericTextInput('data_referencia', '* Data de referência: ', true);
+        $this->genericTextInput('data_vencimento', '* Data de vencimento: ', true);
 
-        $this->addImageFileInput('arquivo', '* Arquivo: ');
+        $this->addImageFileInput('arquivo', 'Arquivo: ');
         
+        $this->_addDropdown('pago', '* Status:', true, array('N' => 'Em aberto', 'S' => 'Pago'));
+
         $this->setAttributes(array(
             'class'  => 'form-inline'
         ));
+    }
+
+    public function setData($data){
+      $data->data_vencimento = parent::converterData($data->data_vencimento);
+      parent::setData($data);
     }
 
  }

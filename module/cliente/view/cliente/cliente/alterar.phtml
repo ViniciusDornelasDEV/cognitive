@@ -26,6 +26,14 @@
       </div>
     </div>
 
+
+    <div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
+      <button type="button" class="btn btn-default" onclick="location.href='<?=  $this->url('alterarCliente', array('id' => $idCliente)); ?>'" style="float: right;width:100px;">
+      <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
+      Novo usuário</button>
+    </div>
+
+
     <div class="container theme-showcase" role="main">
       <div class="row">
         <div class="panel panel-success">
@@ -60,11 +68,14 @@
               <?php foreach($usuarios as $usuario): ?>
               <tr>
                 <td style="text-align: center"><?= $usuario['nome']; ?></td>
-                <td style="text-align: center"><?= $usuario['email']; ?></td>
-                <td style="text-align: center">Ativo</td>
+                <td style="text-align: center"><?= $usuario['login']; ?></td>
+                <td style="text-align: center"><?= $this->ativo($usuario['ativo']); ?></td>
                 <td style="text-align: center;">
                   <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar" 
-                  onclick="location.href='<?= $this->url('alterarCliente', array('id' => 1, 'usuario' => 1)); ?>'" style="cursor: pointer;">
+                  onclick="location.href='<?= $this->url('alterarCliente', array('id' => $idCliente, 'usuario' => $usuario['id'])); ?>'" style="cursor: pointer;">
+                  <span style="margin-right:4px;"></span> 
+                  <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" 
+                onclick="alerta('<?= $this->url('deletarUsuarioCliente', array('id' => $idCliente, 'usuario' => $usuario['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o usuário?');" style="cursor: pointer;">
                 </td>
               </tr>
               <?php endforeach; ?>
@@ -76,3 +87,15 @@
         </div>
       </div>
     </div>
+
+    <script type="text/javascript">
+      var maskBehavior = function (val) {
+       return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+      },
+      options = {onKeyPress: function(val, e, field, options) {
+       field.mask(maskBehavior.apply({}, arguments), options);
+       }
+      };
+       
+      $('#telefone').mask(maskBehavior, options);
+    </script>

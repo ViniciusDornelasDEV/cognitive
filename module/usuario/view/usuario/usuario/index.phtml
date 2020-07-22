@@ -1,21 +1,19 @@
-<div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
-  <div class="col-sm-4">
-    <?php echo $this->partial('menu/configuracoes', array('ativo' => 12)) ?>
-  </div>
-
-  <div class="col-sm-8">
-    <?php echo $this->partial('form/pesquisa', array('form'=> $formPesquisa, 'route'=> '')) ?>
-    <div class="row" style="margin-bottom:10px;padding:0px;">
-       <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('usuarioNovo'); ?>'" style="float: right;width:100px;">
+ <div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
+      <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('usuarioNovo'); ?>'" style="float: right;width:100px;">
       <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
       Novo</button>
 
-      <button type="button" class="btn btn-default active" onclick="" style="float: left;width:100px;">
-      <img src="<?php echo $this->basePath('img/usuario.png') ?>" alt="Novo">
-      Usuários</button>
-    </div>
+    <ol class="breadcrumb" style="margin-bottom: 0px;">
+      <li class="active">Usuário</li>
+    </ol>
+  </div>
+<div class="container fluid" role="main" style="">
+    <?php echo $this->partial('form/pesquisa', array('form'=> $formPesquisa, 'route'=> '')) ?>
+</div>
+
+  <div class="container-fluid">
     <div class="row">
-      <div class="panel panel-primary">
+      <div class="panel panel-primary" style="width: 100%">
         <div class="panel-heading">
           <h3 class="panel-title">usuários</h3>
         </div>
@@ -24,8 +22,7 @@
             <table class="table">
               <tr>
                 <th style="text-align: center">Nome</th>
-                <th style="text-align: center">Email</th>
-                <th style="text-align: center">Telefone</th>
+                <th style="text-align: center">Login</th>
                 <th style="text-align: center">Tipo</th>
                 <th style="text-align: center">Status</th>
                 <th style="text-align: center">Ações</th>
@@ -33,16 +30,15 @@
             <?php foreach($usuarios as $usuario): ?>
             <tr>
               <td style="text-align: center"><?= $usuario['nome']; ?></td>
-              <td style="text-align: center"><?= $usuario['email']; ?></td>
-              <td style="text-align: center"><?= $usuario['telefone']; ?></td>
+              <td style="text-align: center"><?= $usuario['login']; ?></td>
               <td style="text-align: center"><?= $usuario['perfil']; ?></td>
 
-              <td style="text-align: center"><?= $this->status($usuario['ativo']); ?></td>
+              <td style="text-align: center"><?= $this->ativo($usuario['ativo']); ?></td>
               <td style="text-align: center;">
                 <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar" 
                 onclick="location.href='<?= $this->url('usuarioAlterar', array('id' => $usuario['id'])); ?>'" style="cursor: pointer;">
                 <span style="margin-right:4px;"></span>  
-                <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" style="cursor: pointer;" onclick="alerta('<?= $this->url('usuarioDeletar', array('id' => $usuario['id'])) ?>', 'desativar');">
+                <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" style="cursor: pointer;" onclick="alerta('<?= $this->url('usuarioDeletar', array('id' => $usuario['id'])) ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o usuário?');">
               </td>
             </tr>
             <?php endforeach; ?>
@@ -61,8 +57,8 @@
         ?>
       </div>
     </div>
-
   </div>
+
 
 
     <script type="text/javascript">

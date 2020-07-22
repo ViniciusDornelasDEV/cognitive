@@ -21,7 +21,7 @@ use Application\Form\Base as BaseForm;
 
         $this->addImageFileInput('logo', 'Logo: ');
 
-        $this->genericTextInput('cliente_azure', 'Cliente id na azure: ', false);
+        $this->genericTextInput('id_azure', 'Cliente id na azure: ', false);
 
         $this->genericTextInput('usuario_azure', 'Usuário na azure: ', false);
 

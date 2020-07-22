@@ -35,6 +35,19 @@ return array(
                     ),
                 ),
             ),
+            'visualizarDashboard' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/dashboards/visualizar[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Dashboard\Controller\Dashboard',
+                        'action'     => 'visualizardashboard',
+                    ),
+                ),
+            ),
         ),
     ),
 	'controllers' => array(
