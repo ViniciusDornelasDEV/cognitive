@@ -176,8 +176,6 @@ class InvoiceController extends BaseController
         $upload_adapter = new fileTransfer();
         //Adicionando validators
         //$upload_adapter->addValidator('Size', false, '5242880');
-        $container = new Container();
-        //Decobrir extensao
         $extensao = $this->getExtensao($arquivo['arquivo']['name']);
         
         $caminho_arquivo = 'public/empresas/'.$idCliente;

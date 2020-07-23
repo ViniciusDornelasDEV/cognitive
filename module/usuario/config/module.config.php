@@ -164,12 +164,22 @@ return array(
                 ),
             ),
             'recuperarSenha' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
                     'route'    => '/recuperarsenha',
                     'defaults' => array(
                         'controller' => 'Usuario\Controller\Usuario',
                         'action'     => 'recuperarsenha',
+                    ),
+                ),
+            ),
+            'tokenRecuperar' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/usuario/recuperarsenha/token[/:token]',
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'tokenrecuperar',
                     ),
                 ),
             ),

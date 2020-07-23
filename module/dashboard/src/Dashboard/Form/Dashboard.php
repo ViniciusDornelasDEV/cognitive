@@ -13,14 +13,18 @@ use Application\Form\Base as BaseForm;
      * @param array $fields
      * @return void
      */
-   public function __construct($name)
+   public function __construct($name, $serviceLocator, $idCliente)
     {
 
         parent::__construct($name);          
+        $this->setServiceLocator($serviceLocator);
 
-        $this->_addDropdown('menu', 'Menu:', false, array('' => '-- Selecione --', '1' => 'Dashboard acessos', '2' => 'Dashboard financeiro'));
+        $categorias = $this->serviceLocator->get('CategoriaDashboard')->getRecordsFromArray(array('cliente' => $idCliente), 'nome')->toArray();
+        
+        $categorias = $this->prepareForDropDown($categorias, array('id', 'nome'));
+        $this->_addDropdown('categoria', 'Categoria:', false, $categorias);
 
-        $this->addImageFileInput('icone', '* Ícone: ');
+        $this->addImageFileInput('icone', 'Ícone: ');
 
         $this->genericTextInput('nome', '* Nome: ', true);
 

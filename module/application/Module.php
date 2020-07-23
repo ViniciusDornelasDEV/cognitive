@@ -84,11 +84,14 @@ class Module
             }
         }
 
-        //passar cliente para a view
+        //passar cliente para o layout
         $container = new Container();
         if(isset($container->cliente)){
-           $viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
-           $viewModel->clienteSelecionado = $container->cliente;
+          $viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
+          $viewModel->clienteSelecionado = $container->cliente;
+
+          //passar menu para o layout
+          $viewModel->menuDashboards = $this->serviceManager->get('Dashboard')->getMenu($container->cliente['id']);
         }
 
     }
@@ -170,7 +173,7 @@ class Module
     }
 
     public function verificaAcesso($session, $usuario, $rota = 'home') { 
-        $rotasPublicas = array('logout', 'login', 'recuperarSenha', 'ativarUsuarioCliente', 'ativarUsuario');
+        $rotasPublicas = array('logout', 'login', 'recuperarSenha', 'ativarUsuarioCliente', 'ativarUsuario', 'tokenRecuperar');
          if(in_array($rota, $rotasPublicas)) {
             return true;
         }

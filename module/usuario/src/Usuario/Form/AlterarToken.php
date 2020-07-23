@@ -1,10 +1,9 @@
 <?php
 
  namespace Usuario\Form;
- 
-use Application\Form\Base as BaseForm;
- 
- class RecuperarSenha extends BaseForm
+ use Application\Form\Base as BaseForm; 
+
+ class AlterarToken extends BaseForm
  {
      
     /**
@@ -16,8 +15,12 @@ use Application\Form\Base as BaseForm;
      */
    public function __construct($name)
     {
+
         parent::__construct($name);
-       $this->addEmailElement('login', 'Email', false, 'Email');
+        $this->_addPassword('senha', '* Nova senha: ', 'Senha');
+        
+        $this->_addPassword('confirma_senha', '* Confirmar senha: ', 'Confirmar senha', 'senha');
+ 
         $this->setAttributes(array(
             'class'  => 'form-signin',
             'role'   => 'form'

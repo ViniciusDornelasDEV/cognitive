@@ -46,56 +46,33 @@
           <img src="<?= $this->basePath($clienteSelecionado['logo']); ?>" class="rounded mx-auto d-block" alt="Responsive image">
         </a>
         <ul>
-          <li>
-            <a href="<?= $this->url('visualizarDashboard'); ?>">
-              <i class="fa fa-book"></i>
-              <span>Dashboard 01</span>
-            </a>
-          </li>
-          <li>
-            <a href="<?= $this->url('visualizarDashboard'); ?>">
-              <i class="fa fa-book"></i>
-              <span>Dashboard 02</span>
-            </a>
-          </li>
-          <li class="sidebar-dropdown">
-            <a href="#">
-              <i class="fa fa-tachometer-alt"></i>
-              <span>Dashboard acessos</span>
-            </a>
-            <div class="sidebar-submenu">
-              <ul>
-                <li>
-                  <a href="<?= $this->url('visualizarDashboard'); ?>"><img src="<?= $this->basePath('img/visualizar.png'); ?>"> Dashboard 1</a>
-                </li>
-                <li>
-                  <a href="<?= $this->url('visualizarDashboard'); ?>"><img src="<?= $this->basePath('img/visualizar.png'); ?>">  Dashboard 2</a>
-                </li>
-                <li>
-                  <a href="<?= $this->url('visualizarDashboard'); ?>"><img src="<?= $this->basePath('img/visualizar.png'); ?>">  Dashboard 3</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="sidebar-dropdown">
-            <a href="#">
-              <i class="fa fa-tachometer-alt"></i>
-              <span>Dashboard financeiro</span>
-            </a>
-            <div class="sidebar-submenu">
-              <ul>
-                <li>
-                  <a href="<?= $this->url('visualizarDashboard'); ?>"><img src="<?= $this->basePath('img/visualizar.png'); ?>">  Dashboard 1</a>
-                </li>
-                <li>
-                  <a href="<?= $this->url('visualizarDashboard'); ?>"><img src="<?= $this->basePath('img/visualizar.png'); ?>">  Dashboard 2</a>
-                </li>
-                <li>
-                  <a href="<?= $this->url('visualizarDashboard'); ?>"><img src="<?= $this->basePath('img/visualizar.png'); ?>">  Dashboard 3</a>
-                </li>
-              </ul>
-            </div>
-          </li>
+          <?php foreach ($menuDashboards as $menu): ?>
+            <?php if($menu['dashboards'] == false): ?>
+              <li>
+                <a href="<?= $this->url('visualizarDashboard', array('id' => $menu['id'])); ?>">
+                  <img src="<?= $this->basePath($menu['icone']); ?>">
+                  <span><?= $menu['nome'] ?></span>
+                </a>
+              </li>
+            <?php else: ?>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <img src="<?= $this->basePath($menu['icone_categoria']) ?>">
+                  <span><?= $menu['nome_categoria'] ?></span>
+                </a>
+                <div class="sidebar-submenu">
+                  <ul>
+                    <?php foreach ($menu['dashboards'] as $dashboard): ?>
+                      <li>
+                        <a href="<?= $this->url('visualizarDashboard', array('id' => $dashboard['id'])); ?>"><img src="<?= $this->basePath($dashboard['icone']); ?>"> <?= $dashboard['nome'] ?></a>
+                      </li>
+                    <?php endforeach; ?>
+                  </ul>
+                </div>
+              </li>
+
+            <?php endif; ?>
+          <?php endforeach; ?>
           
            <li class="sidebar-dropdown">
             <a href="#">
@@ -105,7 +82,7 @@
             <div class="sidebar-submenu">
               <ul>
                 <li>
-                  <a href="<?= $this->url('indexMenu') ?>">Categorias de dashboard</a>
+                  <a href="<?= $this->url('indexCategoria') ?>">Categorias de dashboard</a>
                 </li>
                 <li>
                   <a href="<?= $this->url('indexCliente'); ?>">Clientes</a>

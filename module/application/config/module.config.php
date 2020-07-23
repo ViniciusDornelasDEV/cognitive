@@ -20,42 +20,6 @@ return array(
                     ),
                 ),
             ),
-            'indexMenu' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
-                'options' => array(
-                    'route'    => '/personalizar/menu[/:page]',
-                    'constraints' => array(
-                            'page'     => '[0-9]+',
-                        ),
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
-                        'action'     => 'indexmenu',
-                    ),
-                ),
-            ),
-            'novoMenu' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/personalizar/menu/novo',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
-                        'action'     => 'novomenu',
-                    ),
-                ),
-            ),
-            'alterarMenu' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
-                'options' => array(
-                    'route'    => '/personalizar/menu/alterar[/:id]',
-                    'constraints' => array(
-                            'id'     => '[0-9]+',
-                        ),
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
-                        'action'     => 'alterarmenu',
-                    ),
-                ),
-            ),
         ),
     ),
     'service_manager' => array(

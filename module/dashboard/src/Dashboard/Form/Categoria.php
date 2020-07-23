@@ -1,10 +1,10 @@
 <?php
 
- namespace Application\Form;
+ namespace Dashboard\Form;
  
 use Application\Form\Base as BaseForm; 
 
- class Menu extends BaseForm {
+ class Categoria extends BaseForm {
      
     /**
      * Sets up generic form.

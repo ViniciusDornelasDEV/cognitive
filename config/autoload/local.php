@@ -6,14 +6,14 @@ defined('SITE_URL')
 
 return array(
     
-    /*'db'   => array(
-        'dsn' => 'mysql:dbname=sistemae_base;host=localhost',
-        'username'      => 'root',
-        'password'      => ''
-    ),*/
     'db'   => array(
+        'dsn' => 'mysql:dbname=u331072745_cognitive;host=localhost',
+        'username'      => 'u331072745_cognitive',
+        'password'      => '=p6LKr4XBX'
+    ),
+    /*'db'   => array(
         'dsn' => 'mysql:dbname=bd_cognitive;host=localhost',
         'username'      => 'root',
         'password'      => ''
-    ),
+    ),*/
 );

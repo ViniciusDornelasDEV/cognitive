@@ -48,11 +48,76 @@ return array(
                     ),
                 ),
             ),
+            'deletarDashboard' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/dashboards/deletar[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Dashboard\Controller\Dashboard',
+                        'action'     => 'deletar',
+                    ),
+                ),
+            ),
+
+            //CATEGORIA
+            'indexCategoria' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/personalizar/categorias[/:page]',
+                    'constraints' => array(
+                            'page'     => '[0-9]+',
+                        ),
+                    'defaults' => array(
+                        'controller' => 'Dashboard\Controller\Categoria',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+            'novoCategoria' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/personalizar/categoria/novo',
+                    'defaults' => array(
+                        'controller' => 'Dashboard\Controller\Categoria',
+                        'action'     => 'novo',
+                    ),
+                ),
+            ),
+            'alterarCategoria' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/personalizar/categoria/alterar[/:id]',
+                    'constraints' => array(
+                            'id'     => '[0-9]+',
+                        ),
+                    'defaults' => array(
+                        'controller' => 'Dashboard\Controller\Categoria',
+                        'action'     => 'alterar',
+                    ),
+                ),
+            ),
+            'deletarCategoria' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/personalizar/categoria/deletar[/:id]',
+                    'constraints' => array(
+                            'id'     => '[0-9]+',
+                        ),
+                    'defaults' => array(
+                        'controller' => 'Dashboard\Controller\Categoria',
+                        'action'     => 'deletar',
+                    ),
+                ),
+            ),
         ),
     ),
 	'controllers' => array(
         'invokables' => array(
             'Dashboard\Controller\Dashboard'    => 'Dashboard\Controller\DashboardController',
+            'Dashboard\Controller\Categoria'    => 'Dashboard\Controller\CategoriaController',
         ),
     ),
     'view_manager' => array(

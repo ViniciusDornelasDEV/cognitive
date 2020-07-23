@@ -25,18 +25,18 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
-                /*'HorarioFuncionamento' => function($sm) {
-                    $tableGateway = new TableGateway('tb_horario_funcionamento', $sm->get('db_adapter_main'));
-                    $updates = new Model\HorarioFuncionamento($tableGateway);
-                    $updates->setServiceLocator($sm);
-                    return $updates;
-                },
-                'Recesso' => function($sm) {
-                    $tableGateway = new TableGateway('tb_recesso', $sm->get('db_adapter_main'));
+                'CategoriaDashboard' => function($sm) {
+                    $tableGateway = new TableGateway('tb_dashboard_categoria', $sm->get('db_adapter_main'));
                     $updates = new BaseTable($tableGateway);
                     $updates->setServiceLocator($sm);
                     return $updates;
-                },*/
+                },
+                'Dashboard' => function($sm) {
+                    $tableGateway = new TableGateway('tb_dashboard', $sm->get('db_adapter_main'));
+                    $updates = new Model\Dashboard($tableGateway);
+                    $updates->setServiceLocator($sm);
+                    return $updates;
+                },
             ),
         );
     }

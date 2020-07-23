@@ -21,6 +21,7 @@ use Usuario\Form\PesquisaUsuario as pesquisaForm;
 use Usuario\Form\AlterarSenha as alterarSenhaForm;
 use Usuario\Form\RecuperarSenha as novaSenhaForm;
 use Usuario\Form\AtivarUsuario as formAtivarUsuario;
+use Usuario\Form\AlterarToken as alterarToken;
 
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\ArrayAdapter;
@@ -149,7 +150,7 @@ class UsuarioController extends BaseController
               //Pegar usuário logado
               $serviceUsuario = $this->getServiceLocator()->get('Usuario');
               $usuario = $this->getServiceLocator()->get('session')->read();
-              $bcrypt = new bcrypt();                
+              $bcrypt = new Bcrypt();                
 
               if(!$bcrypt->verify($dados['senha_atual'], $usuario['senha'])){
                   $this->flashMessenger()->addWarningMessage('Senha atual não confere!');
@@ -172,38 +173,95 @@ class UsuarioController extends BaseController
   }
 
   public function recuperarsenhaAction(){
-      $this->layout('layout/site');
-      $form = new novaSenhaForm('frmRecuperaSenha');
-      
-      if($this->getRequest()->isPost()){
-          $dados = $this->getRequest()->getPost();
-          $form->setData($dados);
-          if($form->isValid()){
-              $bcrypt = new bcrypt();                
-              //alterar senha
-              $serviceUsuario = $this->getServiceLocator()->get('Usuario');
-              $novaSenha = 'otp'.date('Y+m()ds').rand(0, 99999);
-              $usuario = array('senha' => $bcrypt->create($novaSenha));
-
-              if($serviceUsuario->updateSinc($usuario, array('email' => $dados->login),  $this->getServiceLocator()->get('session')->read())){
-                  $this->flashMessenger()->addSuccessMessage('Verifique a nova senha em sua conta de e-mail!');  
-                  $mailer = $this->getServiceLocator()->get('mailer');
-                  $mailer->mailUser($dados->login, 'Recuperar senha', 'Sua nova senha de acesso ao sistema: '.$novaSenha);
-                  return $this->redirect()->toRoute('login');
-              }else{
-                  $this->flashMessenger()->addErrorMessage('Falha ao recuperar senha!');
+      $this->layout('layout/login');
+        $form = new novaSenhaForm('frmRecuperaSenha');
+        
+        if($this->getRequest()->isPost()){
+            $dados = $this->getRequest()->getPost();
+            $form->setData($dados);
+            if($form->isValid()){
+                $bcrypt = new bcrypt();                
+                //alterar senha
+                $serviceUsuario = $this->getServiceLocator()->get('Usuario');
+                //pesquisar usuário por email
+                $usuario = $serviceUsuario->getRecord($dados->login, 'login');
+                if(!$usuario){
+                  $this->flashMessenger()->addErrorMessage('Email não encontrado!');
                   return $this->redirect()->toRoute('recuperarSenha');
-              }
+                }
 
-              
-          }
-          
-      }
-      
-      
+                //gerar o token
+                $token = date('is').sprintf('%07X', mt_rand(0, 0xFFFFFFF)).'+'.$usuario->id;
+                
+                //recuperar baseUrl
+                $uri = $this->getRequest()->getUri();
+                $base = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
+                $base = $base.'/usuario/recuperarsenha/token/'.$token;
+                if($serviceUsuario->update(array('token_recuperar' => $token, 'token_expira' => date('Y-m-d H:i',strtotime('+1 hour',strtotime(date('Y-m-d H:i'))))), array('id' => $usuario->id))){
+                    $this->flashMessenger()->addSuccessMessage('Enviamos um link de recuperação para seu email!');  
+                    $mailer = $this->getServiceLocator()->get('mailer');
+                    $mailer->mailUser($usuario->login, 'Cognitive, recuperar senha', 'Acesse o link paa recuperar a senha: <br>'.$base.'
+                        <br>O link tem validade de uma hora!');
+                    return $this->redirect()->toRoute('login');
+                }else{
+                    $this->flashMessenger()->addErrorMessage('Falha ao recuperar senha!');
+                    return $this->redirect()->toRoute('recuperarSenha');
+                }
 
-      return new ViewModel(array('form' => $form));
+                
+            }   
+        }
+        return new ViewModel(array('form' => $form));
   }
+
+  public function tokenrecuperarAction(){
+        $this->layout('layout/login');
+
+        //receber o token
+        $token = $this->params()->fromRoute('token');
+
+        //verificar  se existe esse token na base de dados, pesquisar usuário
+        $usuario = $this->getServiceLocator()->get('Usuario')->getRecord($token, 'token_recuperar');
+        
+        //verificar se token é do usuário
+        $idUsuario = explode('+', $token);
+        $idUsuario = $idUsuario[1];
+        if(!$usuario || $idUsuario != $usuario['id'] || empty($token)){
+            $this->flashMessenger()->addWarningMessage('Token inválido!');
+            return $this->redirect()->toRoute('recuperarSenha');
+        }
+
+        //verificar se não expirou
+        if(strtotime(date('Y-m-d H:i')) < $usuario['token_expira']){
+            $this->flashMessenger()->addWarningMessage('Token inválido!');
+            return $this->redirect()->toRoute('recuperarSenha');
+        }
+
+        $form = new alterarToken('frmUsuario');
+        if($this->getRequest()->isPost()){
+            $dados = $this->getRequest()->getPost();
+            $form->setData($dados);
+            if($form->isValid()){
+                //Pegar usuário logado
+                $bcrypt = new bcrypt();                
+
+                //alterar senha
+                $dadosUsuario = array();
+                $dadosUsuario['senha'] = $bcrypt->create($dados['senha']);
+                $dadosUsuario['token_recuperar'] = '';
+                $dadosUsuario['token_expira'] = '';
+                if($this->getServiceLocator()->get('Usuario')->update($dadosUsuario, array('id' => $usuario['id']))){
+                    $this->flashMessenger()->addSuccessMessage('Senha alterada com sucesso!');  
+                    return $this->redirect()->toRoute('login');
+                }else{
+                    $this->flashMessenger()->addErrorMessage('Falha ao alterar senha!');
+                    return $this->redirect()->toRoute('recuperarSenha');
+                }
+                
+            }
+        }
+        return new ViewModel(array('form' => $form));
+    }
 
   private function criarAutorizacao() {
       //pesquisar perfil de usuário

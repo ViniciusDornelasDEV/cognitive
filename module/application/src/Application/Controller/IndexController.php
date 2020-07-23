@@ -28,36 +28,4 @@ class IndexController extends BaseController
       return new ViewModel();
     }
 
-    public function indexmenuAction(){
-      $menus = array();
-      for ($i=0; $i < 4; $i++) { 
-        $menus[$i] = array('nome' => 'Dashboards '.$i);
-      }
-      $paginator = new Paginator(new ArrayAdapter($menus));
-      $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
-      $paginator->setItemCountPerPage(10);
-      $paginator->setPageRange(5);
-      
-      return new ViewModel(array(
-          'menus'      => $paginator,
-      ));
-    }
-
-    public function novomenuAction(){
-      $formMenu = new formMenu('frmMenu');
-
-      return new ViewModel(array(
-        'formMenu'  =>  $formMenu
-      ));
-    }
-
-    public function alterarmenuAction(){
-      $formMenu = new formMenu('frmMenu');
-      $formMenu->setData(array('nome' => 'Dashboards 1'));
-
-      return new ViewModel(array(
-        'formMenu'  =>  $formMenu
-      ));
-    }
-
 }
