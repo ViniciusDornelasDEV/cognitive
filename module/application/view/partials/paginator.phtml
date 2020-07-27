@@ -1,31 +1,28 @@
 <?php if ($this->pageCount): ?>
-<ul>
-  <li>
-    <a href="<?php echo $this->url($this->route, array('page' => $this->previous)); ?>">
-      &laquo;
-    </a>
-  </li>
-
-<!-- Numbered page links -->
-<?php foreach ($this->pagesInRange as $page): ?>
-  <?php if ($page != $this->current): ?>
-    <li>
-      <a href="<?php echo $this->url($this->route, array('page' => $page)); ?>">
-          <?php echo $page; ?>
+  <div class="bt-anterior">
+      <a href="<?php echo $this->url($this->route, array('page' => $this->previous)); ?>">
+        <i class="fas fa-angle-left"></i>
       </a>
-    </li>
-  <?php else: ?>
-    <li class="active">
-      <a href="">
-        <?php echo $page; ?>
-      </a>
-    </li>
-  <?php endif; ?>
-<?php endforeach; ?>
+  </div>
 
-  <li>
-    <a href="<?php echo $this->url($this->route, array('page' => $this->next)); ?>">
-      &raquo;
-    </a>
-  </li>
+
+  <!-- Numbered page links -->
+<div class="link-page">
+  <?php foreach ($this->pagesInRange as $page): ?>
+    <?php if ($page != $this->current): ?>
+      <a href="<?php echo $this->url($this->route, array('page' => $page)); ?>"><?= $page; ?></a> 
+    <?php else: ?>
+      <span><?= $page; ?></span> 
+      
+    <?php endif; ?>
+  <?php endforeach; ?>
+</div>
+
+  <div class="bt-proximo">
+      <a href="<?php echo $this->url($this->route, array('page' => $this->next)); ?>">
+          <i class="fas fa-angle-right"></i>
+      </a>
+  </div>
+
+
 <?php endif; ?>

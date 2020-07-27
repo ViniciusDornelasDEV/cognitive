@@ -17,7 +17,7 @@ use Application\Form\Base as BaseForm;
     {
 
         parent::__construct($name);          
-        $this->genericTextInput('nome', '* Nome: ', true);
+        $this->genericTextInput('nome', 'Nome: ', false);
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

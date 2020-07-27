@@ -12,7 +12,7 @@ use Zend\File\Transfer\Adapter\Http as fileTransfer;
 
 use Dashboard\Form\Dashboard as formDashboard;
 use Dashboard\Form\Pesquisa as formPesquisa;
-
+use Dashboard\Classes\PowerBI as powerBiApi; 
 class DashboardController extends BaseController
 {
 
@@ -41,7 +41,6 @@ class DashboardController extends BaseController
       $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
       $paginator->setItemCountPerPage(10);
       $paginator->setPageRange(5);
-      
       return new ViewModel(array(
           'dashboards'      => $paginator,
           'formPesquisa'  => $formPesquisa,
@@ -136,8 +135,12 @@ class DashboardController extends BaseController
     public function visualizardashboardAction(){
       $dashboard = $this->getServiceLocator()->get('Dashboard')->getRecord($this->params()->fromRoute('id'));
 
+      $powerBi = new powerBiApi();
+      $embed = $powerBi->getUrl($dashboard['workspace_id'], $dashboard['report_id']);
+
       return new ViewModel(array(
-        'dashboard' => $dashboard
+        'dashboard' => $dashboard,
+        'embed'     => $embed
       ));
     }
 

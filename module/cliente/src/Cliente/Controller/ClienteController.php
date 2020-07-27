@@ -25,6 +25,7 @@ class ClienteController extends BaseController
       $params = array();
       if($this->getRequest()->isPost()){
         $dados = $this->getRequest()->getPost();
+        
         if(isset($dados['limpar'])){
           return $this->redirect()->toRoute('indexCliente', array('page' => $this->params()->fromRoute('page')));
         }
@@ -161,7 +162,7 @@ class ClienteController extends BaseController
         'formCliente' => $formCliente,
         'formUsuario' => $formUsuario,
         'usuarios'    => $usuarios,
-        'idCliente'   =>  $idCliente
+        'cliente'     =>  $cliente
       ));
     }
 

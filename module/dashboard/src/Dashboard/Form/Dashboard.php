@@ -30,7 +30,11 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('descricao', '* Descrição: ', true);
 
-        $this->genericTextInput('link_bi', 'Link PowerBI: ', false);
+        //workspace_id
+        $this->genericTextInput('workspace_id', 'Workspace ID: ', false);
+
+        //report_id
+        $this->genericTextInput('report_id', 'Dashboard ID: ', false);
 
         $this->genericTextInput('link_google', 'Link google: ', false);
 

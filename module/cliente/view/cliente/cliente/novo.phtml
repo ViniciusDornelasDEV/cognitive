@@ -1,27 +1,13 @@
- <div class="container theme-showcase" role="main" style="margin-bottom:10px;padding:0px;">
-      <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('novoCliente'); ?>'" style="float: right;width:100px;">
-      <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
-      Novo</button>
+<div class="cont-admin">
+  <div class="content-sistema">
+    <h1><a href="<?= $this->url('indexCliente'); ?>">Clientes</a> / novo </h1>
+    <div class="conteudo-sistema">
+      <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
+      <br>
+      <h2>Inserir cliente</h2>
 
-    <ol class="breadcrumb" style="margin-bottom: 0px;">
-      <li><a href="<?= $this->url('home'); ?>">Home</a> / </li>
-      <li><a href="<?= $this->url('indexCliente'); ?>">Clientes / </a></li>
-      <li class="active">Novo</li>
-    </ol>
+      <?php echo $this->partial('form/generic', array('form'=> $formCliente, 'route'=> ''))  ?>
+
+    </div>
   </div>
-
-    <div class="container theme-showcase" role="main">
-      <div class="row">
-          <div class="panel panel-default">
-          <div class="panel-heading">
-              <h3 class="panel-title">Cadastro de cliente</h3>
-            </div>
-            <div class="panel-body">
-                <div class="form-group">
-                  <?php echo $this->partial('form/generic', array('form'=> $formCliente, 'route'=> '')) ?>
-
-            </div>
-          </div>
-      </div>
-    </div>
-    </div>
+</div>

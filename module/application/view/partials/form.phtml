@@ -1,19 +1,5 @@
-<?php if(!$this->params)$this->params = array();?>
-<?php $form->prepare(); ?>
-<?php 
-	if(!isset($colunas)){
-		$colunas = 4;
-	}
-?>
-<?php if($this->route || $this->route):?>
-    <?php $form->setAttribute('action', $this->url($this->route, $this->params)); ?>
-<?php else: ?>
-	<?php $form->setAttribute('action', "#"); ?>
-<?php endif;?>
-
+<form class="formulario campos-info" role="form" method="POST" action="#">
 <?= $this->form()->openTag($form); ?>
-<?php $row = 0; ?>
-
 <?php foreach ($form->getElements() as $element): ?>
 		<?php 
 			$attributes = $element->getAttributes();
@@ -21,44 +7,17 @@
 				echo $this->formElement($element);
 				continue;
 			}
-			$row++; 
-			if($row == $colunas): 
-				$row = 1;
-		?>
-		<?php endif; ?>
-
-	        <div class='col-sm-<?= $colunas ?>' style="margin-top: 10px;">
-                <div class="form-group" id="group-<?= $element->getName(); ?>">
-	        <?php if($element->getLabel()) :?>
-	        
-	        <label for="<?=$element->getName()?>"><?=$element->getLabel()?></label>
-	        
-	        <?php endif;?>
-	        	<?php 
-	        		if(isset($quebra)){
-	        			echo '<br>';
-	        		}
-	        	?>
-	        	<?= $this->formElement($element); ?>
-	        	<?= $this->formElementErrors($element, array('class' => 'alert alert-danger')); ?>
-	     		</div>
-            </div>
-
+    ?>
+    <p class="b3">
+      <label for="<?=$element->getName()?>"><?=$element->getLabel()?></label>
+      <?= $this->formElement($element); ?>
+      <?= $this->formElementErrors($element, array('class' => 'alert alert-danger')); ?>
+    </p>
 <?php endforeach; ?>
 
-	<div class='col-sm-12' style="margin-top: 15px;">
-	<?php 
-		if(isset($this->botao)): 
-			echo $this->botao;
-		else:
-	?>
-	<button type="submit" class="btn btn-success" style="float: right;">
-		<img src="<?php echo $this->basePath('img/salvar.png') ?>" alt="Salvar">
-		Salvar
-	</button>
-<?php endif; ?>
-	</div>
-
-<?php if(!isset($fecharForm)): ?>
-	<?= $this->form()->closeTag($form); ?>
-<?php endif; ?>
+<p>
+  <button type="submit" name="Salvar" style="float: right;" value="Salvar">
+    <i class="fas fa-save"></i> Salvar
+  </button>
+</p>
+</form>

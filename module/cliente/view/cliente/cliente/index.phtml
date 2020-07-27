@@ -1,63 +1,57 @@
-<div class="container fluid" role="main" style="">
+<div class="cont-admin">
+  <div class="content-sistema">
+    <h1>Clientes </h1>
+    <div class="conteudo-sistema">
+      <h2>Pesquisar cliente</h2>
       <?php echo $this->partial('form/pesquisa', array('form'=> $formPesquisa, 'route'=> '')) ?>
-    </div>
 
-<div class="container-fluid">
-  <div class="row" role="main" style="margin-bottom:10px;padding:0px;">
-     <button type="button" class="btn btn-default" onclick="location.href='<?= $this->url('novoCliente'); ?>'" style="float: right;width:100px;">
-    <img src="<?php echo $this->basePath('img/novo.png') ?>" alt="Novo">
-    Novo</button>
-  </div>
 
-    <div class="row">
-      <div class="panel panel-primary" style="width: 100%">
-        <div class="panel-heading">
-          <h3 class="panel-title">Clientes</h3>
-        </div>
-        <div class="panel-body">
-          <?php if($clientes->count() > 0): ?>
-            <table class="table">
-              <tr>
-                <th style="text-align: center">Nome</th>
-                <th style="text-align: center">Status</th>
-                <th style="text-align: center">Ações</th>
-            </tr>
-            <?php foreach($clientes as $cliente): ?>
-            <tr>
-              <td style="text-align: center"><?= $cliente['nome']; ?></td>
-              <td style="text-align: center"><?= $this->ativo($cliente['ativo']); ?></td>
-              <td style="text-align: center;">
-                  <img src="<?= $this->basePath('img/editar.png'); ?>" title="Editar cliente" 
-                onclick="location.href='<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>'" style="cursor: pointer;">
-                <span style="margin-right:4px;"></span> 
-                  <img src="<?= $this->basePath('img/ok.gif'); ?>" title="Selecionar cliente" 
-                onclick="alerta('<?= $this->url('selecionarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja selecionar o cliente <?= $cliente['nome'] ?>?');" style="cursor: pointer;">
 
-                <span style="margin-right:4px;"></span> 
-                  <img src="<?= $this->basePath('img/deletar.png'); ?>" title="Deletar" 
-                 style="cursor: pointer;" onclick="alerta('<?= $this->url('inativarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja inativar o cliente <?= $cliente['nome'] ?>?');">
-              </td>
-            </tr>
-            <?php endforeach; ?>
-          </table>
+
+      <div class="bloco-padrao">
+        <h2>Clientes</h2>
+
+        <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
+        <br>
+        <?php if($clientes->count() > 0): ?>
+        <table class="table">
+          <tbody>
+              <tr class="topo-tabela">
+                  <th style="text-align: center;">Nome</th>
+                  <th style="text-align: center">Status</th>
+                  <th style="text-align: center">Ações</th>
+              </tr>
+              <?php foreach($clientes as $cliente): ?>
+                <tr>
+                    <td style="text-align: center"><?= $cliente['nome']; ?></td>
+                    <td style="text-align: center"><?= $this->ativo($cliente['ativo']); ?></td>
+                    <td style="text-align: center;">
+                        <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
+                        <a onclick="alerta('<?= $this->url('selecionarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja selecionar o cliente <?= $cliente['nome'] ?>?');" class="bt-selecionar"><i class="fas fa-check-circle"></i></a>
+                        <a onclick="alerta('<?= $this->url('inativarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja inativar o cliente <?= $cliente['nome'] ?>?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+                    </td>
+                </tr>
+              <?php endforeach; ?>
+          </tbody>
+        </table>
         <?php else: ?>
           <div class="alert alert-info">Nenhum cliente encontrado!</div>
         <?php endif; ?>
-        </div>
-      </div>
-    </div>
 
-    <div class="row" style="margin-top:0px;" role="main">
-      <div style="float:right;">
-        <?php echo $this->paginationControl($clientes,
-                                      'Sliding',
-                                      'view/paginator', array('route' => 'indexCliente')); 
-        ?>
       </div>
-    </div>
-  </div>   
 
-  <script type="text/javascript">
+      <div class="paginacao">
+          <?php echo $this->paginationControl($clientes,
+            'Sliding',
+            'view/paginator', array('route' => 'indexCliente')); 
+          ?>
+      </div>
+      
+
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
     //AUTOCOMPLETE CLIENTES
       var clientes = [];
       <?php foreach ($clientesComplete as $cliente) : ?>
@@ -86,3 +80,7 @@
         }
       });
   </script>
+
+
+
+
