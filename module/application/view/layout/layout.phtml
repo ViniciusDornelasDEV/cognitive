@@ -34,21 +34,70 @@
     <div class="logo">
         <a href="<?= $this->url('indexCliente'); ?>">
           <span style="background-image: url(<?= $this->basePath($clienteSelecionado['logo']); ?>);"></span>
-          <h1>Danilo Luna</h1>
+          <h1><?= $usuario['nome'] ?></h1>
         </a>
     </div>
-    <ul>
-        <li><a href=""><i class="fas fa-home"></i>Principal</a></li>
-        <li><a href="<?= $this->url('visualizarDashboard', array('id' => 1)); ?>"><i class="fas fa-angle-right"></i>Dashboard avulsa 1</a></li>
-        
-        <li><a href="<?= $this->url('indexCategoria') ?>"><i class="fas fa-angle-right"></i>Categorias de dashboard</a></li>
-        <li><a href="<?= $this->url('indexCliente'); ?>"><i class="fas fa-angle-right"></i>Clientes</a></li>
-        <li><a href="<?= $this->url('indexDashboard') ?>"><i class="fas fa-angle-right"></i>Dashboards</a></li>
-        <li><a href="<?= $this->url('indexInvoice') ?>"><i class="fas fa-angle-right"></i>Invoices</a></li>
-        <li><a href="<?= $this->url('usuario'); ?>"><i class="fas fa-angle-right"></i>Usuários</a></li>
-        <li><hr></li>
-        <li><a><i class="fas fa-sign-out-alt"></i>Logout</a></li>
-    </ul>
+    
+
+    <div class="cf nestable-lists">
+        <div class="dd" id="nestable3">
+            <ul class="dd-list">
+                
+
+
+              <?php foreach ($menuDashboards as $menu): ?>
+                <?php if($menu['dashboards'] == false): ?>
+                  <li class="dd-item dd3-item" data-id="14">
+                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath($menu['icone']); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('visualizarDashboard', array('id' => $menu['id'])); ?>'"><?= $menu['nome'] ?></div>
+                      </li>
+                <?php else: ?>
+
+                  <li class="dd-item dd3-item" data-id="15"><button data-action="collapse" type="button">Collapse</button><button data-action="expand" type="button" style="display: none;">Expand</button>
+                      <div class="dd-handle dd3-handle"><img src="<?= $this->basePath($menu['icone_categoria']) ?>" alt=""></div><div class="dd3-content"><?= $menu['nome_categoria'] ?></div>
+                      <ol class="dd-list">
+                        <?php foreach ($menu['dashboards'] as $dashboard): ?>
+                            <li class="dd-item dd3-item" data-id="16">
+                                <div class="dd-handle dd3-handle">
+                                  <img src="<?= $this->basePath($dashboard['icone']); ?>" alt="">
+                                </div>
+                                <div class="dd3-content" onclick="location.href='<?= $this->url('visualizarDashboard', array('id' => $dashboard['id'])); ?>'"><?= $dashboard['nome'] ?></div>
+                            </li>
+                        <?php endforeach; ?>
+                      </ol>
+                  </li>
+                <?php endif; ?>
+              <?php endforeach; ?>
+              <li class="dd-item dd3-item" data-id="15"><button data-action="collapse" type="button">Collapse</button><button data-action="expand" type="button" style="display: none;">Expand</button>
+                  <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content">Configuraçõs</div>
+                  <ol class="dd-list">
+                      <li class="dd-item dd3-item" data-id="16">
+                          <div class="dd-handle dd3-handle">
+                            <img src="<?= $this->basePath('img/ico-home.png'); ?>" alt="">
+                          </div>
+                          <div class="dd3-content" onclick="location.href='<?= $this->url('indexCliente'); ?>'">Clientes</div>
+                      </li>
+                      <li class="dd-item dd3-item" data-id="17">
+                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexCategoria'); ?>'">Categorias de dashboard</div>
+                      </li>
+                      <li class="dd-item dd3-item" data-id="18">
+                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexDashboard'); ?>'">Dashboards</div>
+                      </li>
+                      <li class="dd-item dd3-item" data-id="18">
+                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexInvoice'); ?>'">Invoices</div>
+                      </li>
+                      <li class="dd-item dd3-item" data-id="18">
+                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('usuario'); ?>'">Usuários</div>
+                      </li>
+                  </ol>
+              </li>
+              <li class="dd-item dd3-item" data-id="14">
+                  <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('logout'); ?>'">Logout</div>
+              </li>
+            </ul>
+        </div> 
+    </div>
+    
+    
 </nav> 
 
 <section class="wrapper-slide">
@@ -59,14 +108,19 @@
     </div>
     <!-- end .slideThree -->
 </section>
+<div class="cont-admin">
+  <div class="content-sistema">
+  <?= $this->flashMessenger()->render('error', array('alert', 'alert-danger')) ?>   
 
-<?= $this->flashMessenger()->render('error', array('alert', 'alert-danger')) ?>   
+  <?= $this->flashMessenger()->render('warning', array('alert',  'alert-warning')) ?>
 
-<?= $this->flashMessenger()->render('warning', array('alert',  'alert-warning')) ?>
-
-<?= $this->flashMessenger()->render('success', array('alert',  'alert-success')) ?>
+  <?= $this->flashMessenger()->render('success', array('alert',  'alert-success')) ?>
 
 <?php echo $this->content; ?>
+
+
+  </div>
+</div>
 
 </div>
 
@@ -81,6 +135,10 @@
                 $('#conteiner').addClass('claro').removeClass('escuro');
             }
         }).trigger('change');
+    });
+
+    $(document).ready(function(){
+      $('#nestable3').nestable();
     });
    
 </script>

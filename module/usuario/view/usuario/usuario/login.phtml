@@ -1,53 +1,23 @@
-	<section id="content">
-<div class="container">
+<div class="bloco-login">
+        <div class="logo"></div>
+        <form role="form" name="formLogin" action="#" method="POST" class="register-form">
+            <p>
+                <i class="fas fa-user"></i>
+                <?= $this->formElement($form->get('login')); ?>        
+            </p> 
 
-<div class="row">
-	<h1 class="text-center">Login</h1>
-    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-		<form role="form" name="formLogin" action="#" method="POST" class="register-form">
-			<hr class="colorgraph">
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="form-group">
-						<?= $this->formElement($form->get('login')); ?>
-					</div>
-				</div>
+            <p>
+                <i class="fas fa-key"></i>
+                <?= $this->formElement($form->get('password')); ?>     
+            </p>
 
-			</div>
-			<div class="form-group">
-				<?= $this->formElement($form->get('password')); ?>
-			</div>
+            <p>
+                <input type="submit" value="Logar-se">
+            </p>
 
-			
-			<hr class="colorgraph">
-			<div class="row">
-				<div class="col-md-6">
-          <input type="submit" value="Logar-se" class="btn btn-primary btn-lg pull-right">
-        </div>
-
-        <div class="col-md-6">
-          <input type="button" value="Recuperar senha" onclick="location.href='<?= $this->url('recuperarSenha'); ?>'" class="btn btn-primary btn-lg pull-right">
-        </div>
-			</div>
-
-
-      <hr class="colorgraph">
-      <div class="row">
-        <div class="col-md-6">
-          <input type="button" value="Login google" class="btn btn-primary btn-lg pull-right">
-        </div>
-
-        <div class="col-md-6">
-          <input type="button" value="Login microsoft" class="btn btn-primary btn-lg pull-right">
-        </div>
-      </div>
-
-      
-		</form>
-	</div>
-</div>
-
-<br>
-
-</div>
-</section>
+            <p class="ac">
+                Esqueceu sua Senha? <a href="<?= $this->url('recuperarSenha'); ?>">Recupere aqui</a>
+            </p>        
+            
+        </form>   
+    </div>

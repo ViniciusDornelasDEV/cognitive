@@ -18,7 +18,9 @@
    public function __construct($name = null)
     {
         parent::__construct($name);
-        $this->addEmailElement('login', 'Email', false, 'Email');
+        //$this->addEmailElement('login', 'Email', false, 'Email');
+        $this->genericTextInput('login', 'Email', false, 'Email');
+        
         $this->_addPassword('password', 'Password', 'Senha');
 
         $this->setAttributes(array(

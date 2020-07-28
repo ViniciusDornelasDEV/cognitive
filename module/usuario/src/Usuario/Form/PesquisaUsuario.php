@@ -24,8 +24,8 @@ use Application\Form\Base as BaseForm;
 
         //TIPO DE USUÁRIO 
         $serviceTipoUsuario = $this->serviceLocator->get('UsuarioTipo');
-        $tiposUsuario = $serviceTipoUsuario->fetchAll();
-        
+        $tiposUsuario = $serviceTipoUsuario->fetchAll()->toArray();
+        unset($tiposUsuario[2]);
         $tiposUsuario = $this->prepareForDropDown($tiposUsuario, array('id', 'perfil'));
 
         $this->_addDropdown('id_usuario_tipo', ' Tipo de usuário:', false, $tiposUsuario);

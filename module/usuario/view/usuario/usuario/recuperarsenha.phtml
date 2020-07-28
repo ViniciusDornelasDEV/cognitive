@@ -1,31 +1,19 @@
-	<section id="content">
-<div class="container">
+<div class="bloco-login">
+  <div class="logo"></div>
 
-<div class="row">
-    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-		<form role="form" name="formLogin" action="#" method="POST" class="register-form">
-			<hr class="colorgraph">
+  <form role="form" name="formLogin" action="#" method="POST" class="register-form">
+      <p>
+          <i class="fas fa-user"></i>
+          <input type="text" name="login" id="login" class="form-control input-lg" placeholder="Email" tabindex="4">     
+      </p> 
 
-			<div class="form-group">
-				<input type="email" name="login" id="login" class="form-control input-lg" placeholder="Email" tabindex="4">
-			</div>
+      <p>
+          <input type="submit" value="Recuperar senha">
+      </p>
 
-			<div class="row">
-				<div class="col-xs-4 col-sm-3 col-md-3">
-					<span class="button-checkbox">
-						<a href="<?= $this->url('login') ?>"> Logar-se</a>
-						
-					</span>
-				</div>
-			</div>
-			
-			<hr class="colorgraph">
-			<div class="row">
-				<div class="col-xs-12 col-md-6"><input type="submit" value="Recuperar senha" class="btn btn-theme btn-block btn-lg" tabindex="7"></div>
-			</div>
-		</form>
-	</div>
+      <p class="ac">
+         <a href="<?= $this->url('login'); ?>">Logar-se</a>
+      </p>        
+      
+  </form>   
 </div>
-
-</div>
-	</section>

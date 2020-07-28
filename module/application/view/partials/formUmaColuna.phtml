@@ -1,32 +1,14 @@
-<?php if(!$this->params)$this->params = array();?>
 <?php $form->prepare(); ?>
-
-<?php if($this->route || $this->route):?>
-    <?php $form->setAttribute('action', $this->url($this->route, $this->params)); ?>
-<?php else: ?>
-	<?php $form->setAttribute('action', "#"); ?>
-<?php endif;?>
-
-<?= $this->form()->openTag($form); ?>
-<?php $row = 0; ?>
+<form role="form" name="formLogin" action="#" method="POST" class="register-form"><?php $row = 0; ?>
 <?php foreach ($form->getElements() as $element): ?>
-		    <div class='col-sm-8'>
-                <div class="form-group" id="group-<?= $element->getName(); ?>">
-	        
-	        <label for="<?=$element->getName()?>" style="width:139px;"><?=$element->getLabel()?></label>	
-	        	<?= $this->formElement($element); ?>
-	        	<?= $this->formElementErrors($element, array('class' => 'alert alert-danger')); ?>
-	     		</div>
-            </div>
-        
-<?php endforeach; ?>
+	<p>
+      <i class="fas fa-user"></i>
+      <?= $this->formElement($element); ?>
+      <?= $this->formElementErrors($element, array('class' => 'alert alert-danger')); ?>      
+  </p>   
+  <?php endforeach; ?>
+  <p>
+      <input type="submit" value="<?= $this->nomeBotao ?>">
+  </p>
 
-<div class='col-sm-12'>
-	<button type="submit" class="btn btn-success" style="float: right;margin-right: 10px;">
-		<img src="<?php echo $this->basePath('img/salvar.png') ?>" alt="Salvar">
-		Salvar
-	</button>
-</div>
-
-<br>
-<?= $this->form()->closeTag($form); ?>
+</form>

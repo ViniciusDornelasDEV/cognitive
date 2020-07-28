@@ -292,14 +292,21 @@ class UsuarioController extends BaseController
 
   public function indexAction(){
       $formPesquisa = new pesquisaForm('frmPesquisa', $this->getServiceLocator());
-      $dados = false;
+      $params = false;
       if($this->getRequest()->isPost()){
-          $dados = $this->getRequest()->getPost();
-          $formPesquisa->setData($dados);
+        $dados = $this->getRequest()->getPost();
+        if(isset($dados['limpar'])){
+          return $this->redirect()->toRoute('usuario', array('page' => $this->params()->fromRoute('page')));
+        }
+
+        $formPesquisa->setData($dados);
+        if($formPesquisa->isValid()){
+          $params = $formPesquisa->getData();
+        }
       }
 
       $serviceUsuario = $this->getServiceLocator()->get('Usuario');
-      $usuarios = $serviceUsuario->getUsuariosByParams($dados);
+      $usuarios = $serviceUsuario->getUsuariosByParams($params);
 
       $Paginator = new Paginator(new ArrayAdapter($usuarios->toArray()));
       $Paginator->setCurrentPageNumber($this->params()->fromRoute('page'));

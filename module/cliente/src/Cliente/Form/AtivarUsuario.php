@@ -17,19 +17,19 @@ use Application\Form\Base as BaseForm;
     {
 
         parent::__construct($name);          
-        $this->genericTextInput('nome', '* Nome: ', true);
+        $this->genericTextInput('nome', '* Nome: ', true, 'Nome');
 
-        $this->genericTextInput('sobrenome', '* Sobrenome: ', true);
+        $this->genericTextInput('sobrenome', '* Sobrenome: ', true, 'Sobrenome');
 
         //$this->addEmailElement('login', '* Email corporativo', true);
 
-        $this->genericTextInput('cargo', '* Cargo: ', true);
+        $this->genericTextInput('cargo', '* Cargo: ', true, 'Cargo');
 
-        $this->genericTextInput('pais', '* País: ', true);
+        $this->genericTextInput('pais', '* País: ', true, 'País');
 
-        $this->genericTextInput('estado', '* Estado: ', true);
+        $this->genericTextInput('estado', '* Estado: ', true, 'Estado');
 
-        $this->genericTextInput('telefone', '* Telefone: ', true);
+        $this->genericTextInput('telefone', '* Telefone: ', true, 'Telefone');
 
         $this->_addPassword('senha', '* Senha: ', 'Senha');
         

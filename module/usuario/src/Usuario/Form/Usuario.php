@@ -33,7 +33,7 @@ use Usuario\Validator\Email;
             $tipos = array();
         }
         $tipos = $this->prepareForDropDown($tipos, array('id', 'perfil'));
-        unset($tipos[3]);
+        unset($tipos[2]);
         $this->_addDropdown('id_usuario_tipo', '* Tipo de usuário: ', true, $tipos, 'exibirCliente(this.value);');
 
         $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo', 'A' => 'Aguardando ativação'));

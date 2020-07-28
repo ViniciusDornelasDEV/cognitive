@@ -1,45 +1,39 @@
 <?php echo $this->doctype(); ?>
 
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <?php echo $this->headTitle('Cognitive - '. $this->translate('login'))->setSeparator(' - ')->setAutoEscape(false) ?>
+  <head>
+      <meta charset="utf-8">
+      <?php echo $this->headTitle('Cognitive - '. $this->translate('login'))->setSeparator(' - ')->setAutoEscape(false) ?>
 
-        <?php echo $this->headMeta()
-            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
-        ?>
+      <?php echo $this->headMeta()
+          ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+          ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+      ?>
 
-        <!-- Le styles -->
-        <?php 
-        echo $this->headLink(array(
-                        'rel' => 'shortcut icon', 
-                        'type' => 'image/vnd.microsoft.icon', 
-                        'href' => $this->basePath() . '/img/favicon.ico'
-                        )
-                    )
-                    ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css');
-        ?>
+      <!-- Le styles -->
+      <?php 
+      echo $this->headLink(array(
+                      'rel' => 'shortcut icon', 
+                      'type' => 'image/vnd.microsoft.icon', 
+                      'href' => $this->basePath() . '/img/favicon.ico'
+                      )
+                  )
+                  ->prependStylesheet($this->basePath() . '/css/style.css');
+      ?>
 
-        <!-- Scripts -->
-        <?php echo $this->headScript()
-            ->prependFile($this->basePath() . '/js/funcoes.js')
-            ->prependFile($this->basePath() . '/js/jquery.maskedinput.min.js')
-            ->prependFile($this->basePath() . '/js/bootstrap.min.js')
-            ->prependFile($this->basePath() . '/js/jquery.min.js'); ?>
-            
-        <script src='https://www.google.com/recaptcha/api.js'></script>
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
-    </head>
+      <!-- Scripts -->
+      <?php echo $this->headScript()
+          ->prependFile($this->basePath() . '/js/jquery.maskedinput.min.js')
+          ->prependFile($this->basePath() . '/js/jquery.min.js'); ?>
+          
+      <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  </head>
   <body>
-    <div class="container theme-showcase" role="main" style="">
-        <?= $this->flashMessenger()->render('error', array('alert', 'alert-danger')) ?>   
-
-        <?= $this->flashMessenger()->render('warning', array('alert',  'alert-warning')) ?>
-        <?= $this->flashMessenger()->render('success', array('alert',  'alert-success')) ?>
-        <?php echo $this->content; ?>
-
+    <div id="conteiner" class="login">
+      <?= $this->flashMessenger()->render('error', array('alert', 'alert-danger')) ?>   
+      <?= $this->flashMessenger()->render('warning', array('alert',  'alert-warning')) ?>
+      <?= $this->flashMessenger()->render('success', array('alert',  'alert-success')) ?>
+      <?php echo $this->content; ?> 
     </div>
-    
   </body>
 </html>
