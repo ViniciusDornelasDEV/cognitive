@@ -4,7 +4,7 @@
  
 use Application\Form\Base as BaseForm; 
 
- class Cliente extends BaseForm {
+ class MeusDados extends BaseForm {
      
     /**
      * Sets up generic form.
@@ -17,17 +17,9 @@ use Application\Form\Base as BaseForm;
     {
 
         parent::__construct($name);          
-        $this->genericTextInput('nome', '* Nome: ', true);
+        $this->genericTextInput('nome', 'Nome: ', false);
 
         $this->addImageFileInput('logo', 'Logo: ', false, false, false, false, false, 'image/png, image/jpeg');
-
-        $this->genericTextInput('id_azure', 'App id na azure: ', false);
-
-        $this->genericTextInput('usuario_azure', 'Usuário na azure: ', false);
-
-        $this->genericTextInput('senha_azure', 'Senha na azure: ', false);
-        
-        $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'));
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

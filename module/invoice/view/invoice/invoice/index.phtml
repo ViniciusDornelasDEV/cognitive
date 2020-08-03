@@ -8,9 +8,10 @@
 
       <div class="bloco-padrao">
         <h2>Invoices do cliente <?= $cliente['nome'] ?></h2>
-
-        <a href="<?= $this->url('novoInvoice'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
-        <br>
+        <?php if($usuario['id_usuario_tipo'] != 3): ?>
+          <a href="<?= $this->url('novoInvoice'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
+          <br>
+        <?php endif; ?>
         <?php if($invoices->count() > 0): ?>
         <table class="table">
           <tbody>
@@ -29,23 +30,26 @@
                   <td style="text-align: center"><?= $invoice['pago'] == 'S' ? 'Pago' : 'Em aberto' ?></td>
 
                     <td style="text-align: center;">
+                      <?php if($usuario['id_usuario_tipo'] == 3): ?>
+                        <a href="<?= $this->url('downloadInvoice', array('id' => $invoice['id'])) ?>" class="bt-download"><i class="fas fa-download"></i></a>
+                      <?php else: ?>
                         <a href="<?= $this->url('alterarInvoice', array('id' => $invoice['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
 
                         <a href="<?= $this->url('downloadInvoice', array('id' => $invoice['id'])) ?>" class="bt-download"><i class="fas fa-download"></i></a>
                         
-                        <?php if($invoice['pago'] == 'S'): ?>
-                          <a href="#" class="bt-pago"><i class="fas fa-credit-card"></i></a>
-                        <?php else: ?>
-                          <a onclick="alerta('<?= $this->url('pagarInvoice', array('id' => $invoice['id'])); ?>', 'Tem certeza que deseja marcar o invoice como pago?');" class="bt-pagar"><i class="fas credit-card-alt"></i></a>
+                        <?php if($invoice['pago'] == 'N'): ?>
+                          <a onclick="alerta('<?= $this->url('pagarInvoice', array('id' => $invoice['id'])); ?>', 'Tem certeza que deseja marcar o invoice como pago?');" class="bt-pagar"><i class="fas fa-credit-card"></i></a>
                         <?php endif; ?>
                         
                         <a onclick="alerta('<?= $this->url('deletarInvoice', array('id' => $invoice['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o invoice?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+                      <?php endif; ?>
                     </td>
                 </tr>
               <?php endforeach; ?>
           </tbody>
         </table>
         <?php else: ?>
+          <br>
           <div class="alert alert-info">Nenhum invoice encontrado!</div>
         <?php endif; ?>
 
@@ -60,3 +64,10 @@
       
 
     </div>
+
+        <script type="text/javascript">
+      $(document).ready(function() {
+        $("#data_inicio").mask("99/99/9999");
+        $("#data_fim").mask("99/99/9999");
+      });
+    </script>

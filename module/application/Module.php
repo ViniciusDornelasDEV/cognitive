@@ -97,7 +97,7 @@ class Module
         if($session->read()){
           $viewModel->usuario = $session->read();
         }
-
+        
     }
 
     public function getConfig()
@@ -171,13 +171,26 @@ class Module
                         
                         return new Session($session);
                     }
+                },
+                'Pais' => function($sm) {
+                    $tableGateway = new TableGateway('tb_pais', $sm->get('db_adapter_main'));
+                    $updates = new BaseTable($tableGateway);
+                    $updates->setServiceLocator($sm);
+                    return $updates;
                 },           
+                'Estado' => function($sm) {
+                    $tableGateway = new TableGateway('tb_estado', $sm->get('db_adapter_main'));
+                    $updates = new BaseTable($tableGateway);
+                    $updates->setServiceLocator($sm);
+                    return $updates;
+                },
             ),
         );
     }
 
     public function verificaAcesso($session, $usuario, $rota = 'home') { 
-        $rotasPublicas = array('logout', 'login', 'recuperarSenha', 'ativarUsuarioCliente', 'ativarUsuario', 'tokenRecuperar');
+        $rotasPublicas = array('logout', 'login', 'recuperarSenha', 'ativarUsuarioCliente', 'ativarUsuario', 'tokenRecuperar',
+          'loginGoogle');
          if(in_array($rota, $rotasPublicas)) {
             return true;
         }

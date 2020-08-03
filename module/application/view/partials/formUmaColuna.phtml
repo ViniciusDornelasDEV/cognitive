@@ -1,7 +1,7 @@
 <?php $form->prepare(); ?>
 <form role="form" name="formLogin" action="#" method="POST" class="register-form"><?php $row = 0; ?>
 <?php foreach ($form->getElements() as $element): ?>
-	<p>
+	<p id="p-form-<?=$element->getName()?>">
       <i class="fas fa-user"></i>
       <?= $this->formElement($element); ?>
       <?= $this->formElementErrors($element, array('class' => 'alert alert-danger')); ?>      

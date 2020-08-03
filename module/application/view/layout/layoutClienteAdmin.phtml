@@ -70,19 +70,10 @@
                           <div class="dd-handle dd3-handle">
                             <img src="<?= $this->basePath('img/ico-home.png'); ?>" alt="">
                           </div>
-                          <div class="dd3-content" onclick="location.href='<?= $this->url('indexCliente'); ?>'">Clientes</div>
-                      </li>
-                      <li class="dd-item dd3-item" data-id="conf-2">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexCategoria'); ?>'">Categorias de dashboard</div>
-                      </li>
-                      <li class="dd-item dd3-item" data-id="conf-3">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexDashboard'); ?>'">Dashboards</div>
+                          <div class="dd3-content" onclick="location.href='<?= $this->url('alterarClienteByCliente'); ?>'">Meus dados</div>
                       </li>
                       <li class="dd-item dd3-item" data-id="conf-4">
                           <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexInvoice'); ?>'">Invoices</div>
-                      </li>
-                      <li class="dd-item dd3-item" data-id="conf-5">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('usuario'); ?>'">Usuários</div>
                       </li>
                   </ol>
               </li>
@@ -90,7 +81,6 @@
                   <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('logout'); ?>'">Logout</div>
               </li>
             </ol>
-            <a onclick="salvarOrdemMenu();" class="botao" name="Salvar"><i class="fas fa-save"></i> Salvar</a>
         </div> 
     </div>
     
@@ -134,57 +124,7 @@
             }
         }).trigger('change');
     });
-
-    $(document).ready(function(){
-      $('#nestable3').nestable({
-         maxDepth: 2,
-        callback: function(l,e){
-          // l is the main container
-          //console.log(l);
-          //console.log(e);
-          // e is the element that was moved
-        }
-      });
-    });
-
-    function salvarOrdemMenu(){
-        var data = {ordem: window.JSON.stringify($('.dd').nestable('serialize'))};
-        $.ajax({
-              type: "POST",
-              url: "/cliente/ordenar/menu",
-              data: data,
-              success: function(html) {
-                if(html == 1){
-                  location.reload();
-                }else{
-                  $.alert({
-                      title: 'Erro',
-                      boxWidth: '500px',
-                      useBootstrap: false,
-                      content: 'Ocorreu algum erro ao ordenar o menu, verifique se você não atribuiu uma dashboard como item pai no menu ou contate o administrador!',
-                      buttons: {
-                        Ok: {
-                          action: function () {
-                            
-                          },
-                          btnClass: 'btnConfirmar'
-                        },
-                    }
-                  });
-                }
-                  //desabilitar botões?
-                  //msg de sucesso?
-
-              }
-        });
-
-    }
 </script>
 
 
 </html>
-
-
-
-
-

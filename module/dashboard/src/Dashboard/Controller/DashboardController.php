@@ -17,6 +17,10 @@ class DashboardController extends BaseController
 {
 
     public function indexAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
     	//instancia e pega parametross de form de pesquisa
       $container = new Container();
       $formPesquisa = new formPesquisa('frmPesquisa', $this->getServiceLocator(), $container->cliente['id']);
@@ -48,14 +52,33 @@ class DashboardController extends BaseController
       ));
     }
 
+    private function linkPowerBi($dados){
+      $url = explode('/', $dados['link_power_bi']);
+      unset($dados['link_power_bi']);
+      foreach ($url as $key => $param) {
+        if($param == 'groups'){
+          $dados['workspace_id'] = $url[$key+1];
+        }
+
+        if($param == 'reports'){
+          $dados['report_id'] = $url[$key+1];
+        }        
+      }
+      return $dados;
+    }
+
     public function novoAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
       $container = new Container();
     	$formDashboard = new formDashboard('frmDashboard', $this->getServiceLocator(), $container->cliente['id']);
       
       if($this->getRequest()->isPost()){
         $formDashboard->setData($this->getRequest()->getPost());
         if($formDashboard->isValid()){
-          $dados = $formDashboard->getData();
+          $dados = $this->linkPowerBi($formDashboard->getData());
 
           //fazer upload de arquivo
           $file = $this->getRequest()->getfiles()->toArray();
@@ -63,6 +86,8 @@ class DashboardController extends BaseController
             //fazer upload do arquivo
             $id = $this->getServiceLocator()->get('Dashboard')->getNextInsertId('tb_dashboard');
             $dados['icone'] = $this->uploadImagem($file, $container->cliente['id'], $id->Auto_increment);
+          }else{
+            $dados['icone'] = 'public/img/semIcone.png';
           }
 
           //salvar cliente
@@ -84,6 +109,7 @@ class DashboardController extends BaseController
         }
       }
 
+      $formDashboard->setData(array('ativo' => 'N'));
       return new ViewModel(array(
         'formDashboard' => $formDashboard,
         'cliente'       => $container->cliente
@@ -91,6 +117,10 @@ class DashboardController extends BaseController
     }
 
     public function alterarAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
       //pesquisar e validar categoria
       $container = new Container();
       $idDashboard = $this->params()->fromRoute('id');
@@ -106,6 +136,11 @@ class DashboardController extends BaseController
         $formDashboard->setData($this->getRequest()->getPost());
         if($formDashboard->isValid()){
           $dados = $formDashboard->getData();
+          
+          if(!empty($dados['link_power_bi'])){
+            $dados = $this->linkPowerBi($dados);
+          }
+
           unset($dados['icone']);
           $file = $this->getRequest()->getfiles()->toArray();
           if(!empty($file['icone']['name'])){
@@ -119,6 +154,9 @@ class DashboardController extends BaseController
         }
       }
 
+      if(!empty($dashboard['workspace_id']) && !empty($dashboard['report_id'])){
+        $dashboard['link_power_bi'] = 'https://app.powerbi.com/groups/'.$dashboard['workspace_id'].'/reports/'.$dashboard['report_id'];
+      }
       $formDashboard->setData($dashboard);
       return new ViewModel(array(
         'cliente'         =>  $container->cliente,
@@ -133,10 +171,38 @@ class DashboardController extends BaseController
     }
 
     public function visualizardashboardAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
       $dashboard = $this->getServiceLocator()->get('Dashboard')->getRecord($this->params()->fromRoute('id'));
+      $container = new Container();
 
-      $powerBi = new powerBiApi();
-      $embed = $powerBi->getUrl($dashboard['workspace_id'], $dashboard['report_id']);
+      //verificar se dash é da empresa selecionada
+      if(!$dashboard || $container->cliente['id'] != $dashboard['cliente']){
+        $this->flashMessenger()->addWarningMessage('A dashboard não pertence a eempresa selecionada ou não existe!');  
+        return $this->redirect()->toRoute('indexDashboard');
+      }
+      
+      //verificar se é cliente
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 3){
+        $this->layout('layout/cliente/admin');
+      }
+
+      if($usuario['id_usuario_tipo'] == 4){
+        $this->layout('layout/cliente');
+      }
+
+      $embed = false;
+      if(!empty($dashboard['workspace_id']) && !empty($dashboard['report_id'])){
+        if(empty($container->cliente['id_azure']) || empty($container->cliente['usuario_azure']) || empty($container->cliente['senha_azure'])){
+          $this->flashMessenger()->addWarningMessage('Credenciais do powerBI não cadastradas, favor inserir as credenciais e selecionar o cliente novamente!');
+          return $this->redirect()->toRoute('indexCliente');
+        }
+        $powerBi = new powerBiApi($container->cliente);
+        $embed = $powerBi->getUrl($dashboard['workspace_id'], $dashboard['report_id']);
+      }
 
       return new ViewModel(array(
         'dashboard' => $dashboard,

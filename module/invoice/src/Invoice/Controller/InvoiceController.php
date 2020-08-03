@@ -16,6 +16,16 @@ use Invoice\Form\Pesquisa as formPesquisa;
 class InvoiceController extends BaseController
 {
     public function indexAction(){
+      //verificar se é cliente
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 3){
+        $this->layout('layout/cliente/admin');
+      }
+
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
+
       //instancia e pega parametross de form de pesquisa
     	$formPesquisa = new formPesquisa('frmPesquisa');
       $params = array();
@@ -44,11 +54,16 @@ class InvoiceController extends BaseController
       return new ViewModel(array(
           'invoices'      => $paginator,
           'formPesquisa'  => $formPesquisa,
-          'cliente'       => $container->cliente       
+          'cliente'       => $container->cliente,
+          'usuario'       => $usuario   
       ));
     }
 
     public function novoAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
     	$formInvoice = new formInvoice('frmInvoice');
       $container = new Container();
       
@@ -80,6 +95,10 @@ class InvoiceController extends BaseController
     }
 
     public function alterarAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
       //pesquisar e validar invoice
       $container = new Container();
       $idInvoice = $this->params()->fromRoute('id');
@@ -115,6 +134,20 @@ class InvoiceController extends BaseController
         'cliente'     =>  $container->cliente,
         'invoice'     =>  $invoice
       ));
+    }
+
+    public function enviaremailAction(){
+      $container = new Container();
+      if(empty($container->cliente['usuario_azure'])){
+        $this->flashMessenger()->addWarningMessage('Favor inserir um email para o cliente!');
+        return $this->redirect()->toRoute('alterarInvoice', array('id' => $this->params()->fromRoute('id')));
+      }
+      //enviar invoice por email
+      $mailer = $this->getServiceLocator()->get('mailer');
+      $mailer->mailUser($container->cliente['usuario_azure'], 'Cognitive, invoice', 'Existe um novo invoice vinculado a sua empresa, clique no link para realizar download.<br> '.$this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().'/invoice/download/'.$this->params()->fromRoute('id'));
+      $this->flashMessenger()->addSuccessMessage('Email enviado com sucesso!');
+      return $this->redirect()->toRoute('alterarInvoice', array('id' => $this->params()->fromRoute('id')));
+
     }
 
     public function pagarinvoiceAction(){

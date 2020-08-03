@@ -55,7 +55,6 @@ class UsuarioController extends BaseController
               $data = $form->getData();
 
               // Configure the instance with constructor parameters...
-
               $authAdapter = new AuthAdapter($this->getServiceLocator()
                                   ->get('db_adapter_main'), 'tb_usuario', 'login', 'senha', 
                                   function($dbCredential, $requestCredential) {
@@ -86,21 +85,33 @@ class UsuarioController extends BaseController
                       $defaultNamespace->rememberMe();
                   }            
                   
-                  $user = (array)$authAdapter->getResultRowObject();    
+                  $user = (array)$authAdapter->getResultRowObject();
                   $session->write($user);                                       
                   
                   //Create acl config
                   $sessao = new Container();
                   $sessao->acl = $this->criarAutorizacao();
-                  if($user['id_usuario_tipo'] == 3){
+                  if($user['id_usuario_tipo'] == 3 || $user['id_usuario_tipo'] == 4){
                     //verificar se cliente está ativo
-                    $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($user['cliente']);
+                    $cliente = $this->getServiceLocator()->get('Cliente')->getRecordFromArray(array(
+                      'id'    => $user['cliente'],
+                      'ativo' => 'S'
+                    ));
                 
                     //se cliente ativo, redir para visualizar dashboards
-                    if($cliente && $cliente['ativo'] == 'S'){
-                      //selecionar cliente
+                    if($cliente){
                       $sessao->cliente = $cliente;
-                      die('Cliente, redir para interface de visualizar!');
+                      //pesquisar uma dash do cliente
+                      $dashboard = $this->getServiceLocator()->get('Dashboard')->getRecordFromArray(array(
+                        'cliente' => $user['cliente'],
+                        'ativo'   => 'S'
+                      ));
+
+                      if($dashboard){
+                        return $this->redirect()->toRoute('visualizarDashboard', array('id' => $dashboard->id));
+                      }else{
+                        return $this->redirect()->toRoute('indexInvoice');
+                      }
                     }else{
                       $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
                       return $this->redirect()->toRoute('logout');
@@ -111,9 +122,6 @@ class UsuarioController extends BaseController
                       ->getRecordsFromArray(array('ativo' => 'S'))
                       ->current();
 
-                    if($user['id_usuario_tipo'] == 2){
-                      die('Edição!');
-                    }
                     return $this->redirect()->toRoute('indexCliente');
                   } 
               } else {
@@ -129,7 +137,63 @@ class UsuarioController extends BaseController
 
   }
 
+  public function logingoogleAction(){
+    $dados = $this->getRequest()->getPost();
+    
+    //pesquisar email na base de dados
+    $usuario = $this->getServiceLocator()->get('Usuario')->getRecord($dados['userEmail'], 'login');
+    $retorno = 'erro';
+    if($usuario){
+      $session = $this->getServiceLocator()->get('session'); 
+      $usuario['google'] = true;
+      $session->write($usuario);
+      $sessao = new Container();
+      $sessao->acl = $this->criarAutorizacao();
+    
+      if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
+        //verificar se cliente está ativo
+        $cliente = $this->getServiceLocator()->get('Cliente')->getRecordFromArray(array(
+          'id'    => $usuario['cliente'],
+          'ativo' => 'S'
+        ));
+    
+        //se cliente ativo, redir para visualizar dashboards
+        if($cliente){
+          $sessao->cliente = $cliente;
+          //pesquisar uma dash do cliente
+          $dashboard = $this->getServiceLocator()->get('Dashboard')->getRecordFromArray(array(
+            'cliente' => $usuario['cliente'],
+            'ativo'   => 'S'
+          ));
+
+          if($dashboard){
+            $retorno = $this->url()->fromRoute('visualizarDashboard', array('id' => $dashboard->id));
+          }else{
+            $retorno = $this->url()->fromRoute('indexInvoice');
+          }
+        }else{
+          $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
+          $retorno = 'false';
+        }
+      }else{
+        $sessao->cliente = $this->getServiceLocator()
+          ->get('Cliente')
+          ->getRecordsFromArray(array('ativo' => 'S'))
+          ->current();
+        $retorno = $this->url()->fromRoute('indexCliente');
+      } 
+    }
+
+
+    
+    $view = new ViewModel();
+    $view->setTerminal(true);
+    $view->setVariables(array('retorno' =>  $retorno));
+    return $view;
+  }
+
   public function logoutAction() {
+    $this->layout('layout/login');
       $sessao = new Container();
       $sessao->getManager()->getStorage()->clear();
       
@@ -138,6 +202,7 @@ class UsuarioController extends BaseController
       $defaultNamespace->destroy();
       $session->clear();
 
+      return new ViewModel();
       return $this->redirect()->toRoute('login');
   }
 

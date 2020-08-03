@@ -1,5 +1,19 @@
-INSERT INTO `bd_cognitive`.`tb_recurso` (`id`, `nome`, `descricao`) VALUES 
-	(NULL, 'indexCliente', 'Listar clientes cadastrados no sistema'), 
-	(NULL, 'novoCliente', 'Inserir um novo cliente no sistema'), 
-	(NULL, 'alterarCliente', 'Alterar um cliente cadastrado no sistema'), 
-	(NULL, 'indexMenu', 'Listar categorias de dashboards')
+INSERT INTO `tb_usuario_recurso` (`usuario_tipo`, `recurso`) VALUES
+(2, 19),
+(2, 20),
+(2, 21),
+(2, 33),
+(2, 16),
+(2, 17),
+(2, 18),
+(2, 32),
+(2, 23),
+(2, 24),
+(2, 25),
+(2, 35),
+(2, 29),
+(2, 30),
+(2, 31),
+(2, 13),
+(2, 28),
+(2, 34);

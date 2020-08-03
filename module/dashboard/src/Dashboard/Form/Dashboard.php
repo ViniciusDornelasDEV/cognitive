@@ -24,17 +24,13 @@ use Application\Form\Base as BaseForm;
         $categorias = $this->prepareForDropDown($categorias, array('id', 'nome'));
         $this->_addDropdown('categoria', 'Categoria:', false, $categorias);
 
-        $this->addImageFileInput('icone', 'Ícone: ');
-
+        $this->addImageFileInput('icone', 'Ícone: ', false, false, false, false, false, 'image/png, image/jpeg');
+        
         $this->genericTextInput('nome', '* Nome: ', true);
 
         $this->genericTextInput('descricao', '* Descrição: ', true);
 
-        //workspace_id
-        $this->genericTextInput('workspace_id', 'Workspace ID: ', false);
-
-        //report_id
-        $this->genericTextInput('report_id', 'Dashboard ID: ', false);
+        $this->genericTextInput('link_power_bi', 'Link power BI: ', false);
 
         $this->genericTextInput('link_google', 'Link google: ', false);
 

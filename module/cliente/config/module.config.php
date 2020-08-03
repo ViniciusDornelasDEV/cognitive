@@ -36,6 +36,20 @@ return array(
                     ),
                 ),
             ),
+            'alterarClienteByCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/cliente/alterar/meusdados[/:usuario]',
+                    'constraints' => array(
+                        'usuario'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Cliente\Controller\Cliente',
+                        'action'     => 'alterarcliente',
+                    ),
+                ),
+            ),
+            
             'ativarUsuarioCliente' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
@@ -85,6 +99,16 @@ return array(
                     'defaults' => array(
                         'controller' => 'Cliente\Controller\Cliente',
                         'action'     => 'selecionarcliente',
+                    ),
+                ),
+            ),
+            'ordenarMenu' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/cliente/ordenar/menu',
+                    'defaults' => array(
+                        'controller' => 'Cliente\Controller\Cliente',
+                        'action'     => 'ordenarmenu',
                     ),
                 ),
             ),

@@ -581,7 +581,15 @@ abstract class Base extends Form {
     }
     
 
-    public function addImageFileInput($name, $label, $required = false, $minWidth = false, $maxWidth = false, $minHeight = false, $maxHeight = false) {
+    public function addImageFileInput($name, $label, $required = false, $minWidth = false, $maxWidth = false, $minHeight = false, $maxHeight = false, $accept = false) {
+
+          $attrs = array(
+              'id' => $name,
+              'class' => 'filestyle'
+          );
+          if($accept){
+            $attrs['accept'] = $accept;
+          }
           $this->add(array(
             'required'=> $required,
             'name' => $name,
@@ -589,10 +597,7 @@ abstract class Base extends Form {
             'options' => array(
                 'label' => $label,
             ),
-            'attributes' => array(
-                    'id' => $name,
-                    'class' => 'filestyle'
-                )
+            'attributes' => $attrs
         )); 
           
         $imageSize = array();

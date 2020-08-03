@@ -16,6 +16,10 @@ class CategoriaController extends BaseController
 {
 
      public function indexAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
       //seta cliente e realiza pesqusa
       $container = new Container();
       $categorias = $this->getServiceLocator()->get('CategoriaDashboard')->getRecordsFromArray(array('cliente' => $container->cliente['id']), 'ordem')->toArray();
@@ -32,6 +36,10 @@ class CategoriaController extends BaseController
     }
 
     public function novoAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
       $formCategoria = new formCategoria('frmCategoria');
       $container = new Container();
       
@@ -46,6 +54,8 @@ class CategoriaController extends BaseController
             //fazer upload do arquivo
             $id = $this->getServiceLocator()->get('CategoriaDashboard')->getNextInsertId('tb_dashboard_categoria');
             $dados['icone'] = $this->uploadImagem($file, $container->cliente['id'], $id->Auto_increment);
+          }else{
+            $dados['icone'] = 'public/img/semIcone.png';
           }
 
           //salvar categoria
@@ -68,6 +78,10 @@ class CategoriaController extends BaseController
     }
 
     public function alterarAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
+      }
       //pesquisar e validar categoria
       $container = new Container();
       $idCategoria = $this->params()->fromRoute('id');

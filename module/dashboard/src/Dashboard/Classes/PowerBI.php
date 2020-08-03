@@ -12,11 +12,14 @@
     private $password = 'painel@2020'; //senha conta azure AD
     private $token = '';
     private $error = '';
-    function __construct()
+    function __construct($cliente)
     {
-       $curlPostToken = curl_init();
-      
+      $this->clientId = $cliente['id_azure'];
+      $this->userName = $cliente['usuario_azure'];
+      $this->password = $cliente['senha_azure'];
+
       //RETIRAR EM PRODUÇÃO
+      $curlPostToken = curl_init();
       curl_setopt($curlPostToken, CURLOPT_SSL_VERIFYHOST, 0);
       curl_setopt($curlPostToken, CURLOPT_SSL_VERIFYPEER, 0);
 
@@ -54,7 +57,8 @@
       //RETIRAR EM PRODUÇÃO
       curl_setopt($curlGetUrl, CURLOPT_SSL_VERIFYHOST, 0);
       curl_setopt($curlGetUrl, CURLOPT_SSL_VERIFYPEER, 0);
-
+      
+      
       curl_setopt_array($curlGetUrl, array(
         CURLOPT_URL => 'https://api.powerbi.com/v1.0/myorg/groups/'.$workspaceId.'/reports/'.$reportId,
         CURLOPT_RETURNTRANSFER => true,

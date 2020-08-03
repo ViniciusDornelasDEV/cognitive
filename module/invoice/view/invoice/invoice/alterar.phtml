@@ -4,10 +4,22 @@
       <a href="<?= $this->url('downloadInvoice', array('id' => $invoice['id'])) ?>" class="botao" style="float: right;margin-right: 10px;"><i class="fas fa-download"></i> Download arquivo</a>
       <?php if($invoice['pago'] == 'N'): ?>
       <a onclick="alerta('<?= $this->url('pagarInvoice', array('id' => $invoice['id'])); ?>', 'Tem certeza que deseja marcar o invoice como pago?');" class="botao" style="float: right;margin-right: 10px;"><i class="fas fa-credit-card"></i> Pagar</a>
+      
+      <a onclick="alerta('<?= $this->url('enviarEmailInvoice', array('id' => $invoice['id'])); ?>', 'Tem certeza que deseja enviar um email para o cliente?');" class="botao" style="float: right;margin-right: 10px;"><i class="fas fa-envelope"></i> Enviar</a>
+      
       <?php endif; ?>
+
+      
       <br>
       <h2>Alterar invoice do cliente <?= $cliente['nome'] ?></h2>
 
       <?php echo $this->partial('form/generic', array('form'=> $formInvoice, 'route'=> ''))  ?>
 
     </div>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#valor").maskMoney({symbol:'R$ ', showSymbol:true, thousands:'.', decimal:',', symbolStay: true, allowZero: true});
+        $("#data_vencimento").mask("99/99/9999");
+      });
+    </script>

@@ -35,6 +35,20 @@ return array(
                     ),
                 ),
             ),
+            
+            'enviarEmailInvoice' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/invoice/enviar/email[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Invoice\Controller\Invoice',
+                        'action'     => 'enviaremail',
+                    ),
+                ),
+            ),
             'pagarInvoice' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(

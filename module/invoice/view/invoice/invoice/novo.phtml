@@ -5,3 +5,12 @@
       <?php echo $this->partial('form/generic', array('form'=> $formInvoice, 'route'=> ''))  ?>
 
     </div>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#valor").maskMoney({symbol:'R$ ', showSymbol:true, thousands:'.', decimal:',', symbolStay: true, allowZero: true});
+        $("#data_vencimento").mask("99/99/9999");
+      });
+    </script>
+
+    

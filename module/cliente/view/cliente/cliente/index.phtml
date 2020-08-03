@@ -8,9 +8,10 @@
 
       <div class="bloco-padrao">
         <h2>Clientes</h2>
-
-        <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
-        <br>
+        <?php if($usuario['id_usuario_tipo'] != 2): ?>
+          <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
+          <br>
+        <?php endif; ?>
         <?php if($clientes->count() > 0): ?>
         <table class="table">
           <tbody>
@@ -24,15 +25,21 @@
                     <td style="text-align: center"><?= $cliente['nome']; ?></td>
                     <td style="text-align: center"><?= $this->ativo($cliente['ativo']); ?></td>
                     <td style="text-align: center;">
+                      <?php if($usuario['id_usuario_tipo'] == 2): ?>
+                        <a onclick="alerta('<?= $this->url('selecionarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja selecionar o cliente <?= $cliente['nome'] ?>?');" class="bt-selecionar"><i class="fas fa-check-circle"></i></a>
+                      <?php else: ?>
                         <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
                         <a onclick="alerta('<?= $this->url('selecionarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja selecionar o cliente <?= $cliente['nome'] ?>?');" class="bt-selecionar"><i class="fas fa-check-circle"></i></a>
                         <a onclick="alerta('<?= $this->url('inativarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja inativar o cliente <?= $cliente['nome'] ?>?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+
+                      <?php endif; ?>
                     </td>
                 </tr>
               <?php endforeach; ?>
           </tbody>
         </table>
         <?php else: ?>
+          <br>
           <div class="alert alert-info">Nenhum cliente encontrado!</div>
         <?php endif; ?>
 

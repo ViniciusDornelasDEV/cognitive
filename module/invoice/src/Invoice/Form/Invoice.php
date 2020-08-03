@@ -24,7 +24,7 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('data_vencimento', '* Data de vencimento: ', true);
 
-        $this->addImageFileInput('arquivo', 'Arquivo: ');
+        $this->addImageFileInput('arquivo', 'Arquivo: ', false, false, false, false, false, 'application/pdf');
         
         $this->_addDropdown('pago', '* Status:', true, array('N' => 'Em aberto', 'S' => 'Pago'));
 
