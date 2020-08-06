@@ -183,13 +183,120 @@ class UsuarioController extends BaseController
         $retorno = $this->url()->fromRoute('indexCliente');
       } 
     }
-
-
     
     $view = new ViewModel();
     $view->setTerminal(true);
     $view->setVariables(array('retorno' =>  $retorno));
     return $view;
+  }
+
+  public function loginmicrosoftAction(){
+    $acao = $this->params()->fromRoute('acao');
+    $client_id = "70ff2ef4-e265-4822-a326-b4d3570765f5";
+    $redirect_uri = 'https://' . $this->getRequest()->getUri()->getHost().
+                '/login/microsoft';
+      $scopes = "wl.basic,wl.offline_access,wl.signin,wl.emails";
+    if($acao && $acao == 'S'){
+      header("Location: " . "https://login.live.com/oauth20_authorize.srf?client_id=" . $client_id . "&scope=bingads.manage&response_type=code&redirect_uri=" . $redirect_uri);
+      die();
+    }else{
+      if($acao == 'N'){
+        $dados = $this->getRequest()->getPost();
+        print_r($dados['token']);
+        $token = strstr($dados['token'], 'access_token=');
+        $token = str_replace('access_token=', '', $token);
+        $token = strstr($token, '&', true);
+        if(isset($token)){
+          //user granted permission
+          //get access token using the authorization code
+          $url = "https://login.live.com/oauth20_token.srf";
+          $fields = array("client_id" => $client_id, "redirect_uri" => $redirect_uri, "client_secret" => 'wpF3MyPI470F_i0~Yxt--b_AZPA2amhIUf', "code" => $token, "grant_type" => "authorization_code");
+
+
+          $fields_string = '';
+          foreach($fields as $key=>$value) { $fields_string .= $key."=".$value."&"; }
+          rtrim($fields_string, "&");
+          $ch = curl_init();
+         
+          //retirar em produção
+          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+          
+          curl_setopt($ch,CURLOPT_URL, $url);
+          curl_setopt($ch,CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
+          curl_setopt($ch,CURLOPT_POST, count($fields));
+          curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+          curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+          /*curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization: '."Bearer ".$token,
+          ));*/
+
+          $result = curl_exec($ch);
+          $result = json_decode($result);
+
+          var_dump(curl_error($ch));
+          curl_close($ch);
+          var_dump($result);
+          die();
+          //this is the refresh token used to access Microsoft Live REST APIs
+          $access_token = $result->access_token;
+          $refresh_token = $result->refresh_token;
+        
+          echo file_get_contents("https://apis.live.net/v5.0/me?access_token=". $access_token);
+
+        }else{
+          echo "An error occured";
+        }
+
+      }else{
+        $this->layout('layout/login');
+        return new ViewModel();  
+      }
+      /*var_dump($this->serverUrl(true));
+    die();
+      $token = 'EwAoA61DBAAUzl/nWKUlBg14ZGcybuC4/OHFdfEAAYJrX5Ly5KtaLi20jEZP%2bUfqG28O1242UXqOM40HNXTysSPMwTqBZrStnlv/a75e28Y1FClc8kP19dLuTU9a/EBt/Ml/ngZ4isKImYxvbDwCgmvj/I/deKngzqZ4KSQIlIJK2Ai73q7ifkuYfzdDSAJoFqHGny2R6od9CtIrJG5tNE67tBLTgUqZcDMy/QcZOk13FtGUhQ2qFv2yV8o0vGZc0L8kOtq2ABWcVctsB720kpJrMv7OldFq4mnxITm0UvBcEOSa8b5t87zBkT79q0V%2bshygZJqeZOIRLNEofpkYu2dUz/7H4P/EQJyDosKJlJSszu2gvtXYKJjNAE57uS8DZgAACN%2bqCUqvLctk%2bAFebLSuk8eGgshlQGfkl72i87sThaHVYbFmGJ9OkPARb8GemGAApBHQdy4jBCHxijS9C2TQNL2PUwV4XXDRowXupL22tr8yn/NS4IbBN/l%2b9fOB5ZJVuCEmHpGIcmAsMN9lMSAO9So7uiCfktuB5Tn6UzEW0S%2bduVM66iNMQrcobPLwetFSUXBhGTXqOP8MQRCj1iMMpliwF1jKdzoNGg%2bhjmnlSsK/7FD4wI8FPxJxCc7aFmFgL2QTW414wy27ggyVBaWkusto/aZhymo5tUSChhQAlXs%2bT77%2b7OfqPnoIEu%2bUz%2bca7LW/%2bD6XqK/T0x5wZROi2hRAjjIZVL6KfugruHIFvsZNFL0zaGizkceFHpNMGRzDZRkMhSLqQ0kBePg/ijz2FFhn4eYwZt5yik1fKZoHcH0FO/dRwjGyrnOtAefvbrMIEmIjv3c4%2blPTdduFV9gLrKrBrE/r4P9zIVI6w8g2u02efYG1uaGoLQci3Bw/XRHJxffVoGUZtXiZGrM8qQm2AzYBw1IvfuYLmXMMqcCU2Xwp9ozrHrwXM/dyf%2bcg5wYt9R9Rsil4ZfDqrrNkuvctDoCj3Z4/kXbl9ddRWTWGExj4CN%2bIVqWekGifzzVY2s1KQQOdPuWDmdMvhLAXQVFxT4%2bGZ666suLgJw3bUPETEE1FLcU5Ag%3d%3d';
+      if(isset($token)){
+        //user granted permission
+        //get access token using the authorization code
+        $url = "https://login.live.com/oauth20_token.srf";
+        $fields = array("client_id" => $client_id, "redirect_uri" => $redirect_uri, "client_secret" => 'painel@2020', "code" => $token, "grant_type" => "authorization_code");
+        $fields_string = '';
+        foreach($fields as $key=>$value) { $fields_string .= $key."=".$value."&"; }
+        rtrim($fields_string, "&");
+        $ch = curl_init();
+        
+        //retirar em produção
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
+        curl_setopt($ch,CURLOPT_POST, count($fields));
+        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+
+        $result = curl_exec($ch);
+        $result = json_decode($result);
+
+        var_dump(curl_error($ch));
+        curl_close($ch);
+        var_dump($result);
+        die();
+        //this is the refresh token used to access Microsoft Live REST APIs
+        $access_token = $result->access_token;
+        $refresh_token = $result->refresh_token;
+      
+        echo file_get_contents("https://apis.live.net/v5.0/me?access_token=". $access_token);
+
+      }else{
+        echo "An error occured";
+      }
+      $view = new ViewModel();
+      $view->setTerminal(true);
+      $view->setVariables(array());
+      return $view;*/
+    }
+
   }
 
   public function logoutAction() {
@@ -202,7 +309,6 @@ class UsuarioController extends BaseController
       $defaultNamespace->destroy();
       $session->clear();
 
-      return new ViewModel();
       return $this->redirect()->toRoute('login');
   }
 

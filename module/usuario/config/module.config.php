@@ -23,6 +23,16 @@ return array(
                     ),
                 ),
             ),
+            'loginMicrosoft' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/login/microsoft[/:acao]',
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'loginmicrosoft',
+                    ),
+                ),
+            ),
             'logout' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(

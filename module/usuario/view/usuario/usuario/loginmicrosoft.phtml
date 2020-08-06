@@ -1,0 +1,9 @@
+<form method="POST" id="form" action="<?= $this->url("loginMicrosoft", array('acao' => 'N')); ?>">
+  <input type="hidden" id="token" name="token" value="">
+</form>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#token").val(document.URL);
+    //$('#form').submit();
+  });
+</script>

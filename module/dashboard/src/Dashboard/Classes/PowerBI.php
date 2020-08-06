@@ -7,9 +7,9 @@
 
   class PowerBI
   {
-    private $clientId = '07ccfcae-1c3a-4565-a6e4-cf3fb73d6b9b'; //ID do aplicativo (cliente) azure AD
-    private $userName = 'businessintelligence@cognitive.com.br'; //login conta azure AD
-    private $password = 'painel@2020'; //senha conta azure AD
+    private $clientId; //ID do aplicativo (cliente) azure AD
+    private $userName; //login conta azure AD
+    private $password; //senha conta azure AD
     private $token = '';
     private $error = '';
     function __construct($cliente)

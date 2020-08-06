@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="google-signin-client_id" content="119263952091-gdpfe1a4arv7dj1g2f4uia1pf517tk44.apps.googleusercontent.com">
      <?php echo $this->headTitle($this->loja['nome_restaurante'])->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php echo $this->headMeta()
@@ -26,6 +27,7 @@
             ->prependFile($this->basePath() . '/js/jquery.autocomplete.js')
             ->prependFile($this->basePath() . '/js/PowerBI/dist/powerbi.js')
             ->prependFile($this->basePath() . '/js/jquery.min.js'); ?>
+            <script src="https://apis.google.com/js/platform.js"></script>
 
   </head>
 <body>
@@ -64,7 +66,7 @@
                 <?php endif; ?>
               <?php endforeach; ?>
               <li class="dd-item dd3-item" data-id="conf-6">
-                  <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('logout'); ?>'">Logout</div>
+                  <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="signOut();">Logout</div>
               </li>
             </ol>
         </div> 
@@ -110,6 +112,25 @@
             }
         }).trigger('change');
     });
+
+    $(document).ready(function(){
+      //logout google
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    });
+
+    function signOut() {
+      <?php if(isset($usuario['google']) && $usuario['google'] == true): ?>
+        gapi.auth2.init();
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          location.href = "<?= $this->url('logout'); ?>";
+        });
+      <?php else: ?>
+        location.href = "<?= $this->url('logout'); ?>";
+      <?php endif; ?>
+    }
 </script>
 
 

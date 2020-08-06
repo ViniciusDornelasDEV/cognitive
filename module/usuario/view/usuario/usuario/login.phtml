@@ -23,6 +23,12 @@
             <p>
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
+                <br>
+
+                <a href="<?= $this->url('loginMicrosoft', array('acao' => 'S')); ?>">
+                  <button type="button" class="btnConfirmar"><img src="<?= $this->basePath('img/microsoft.png'); ?>"> Login</button>
+                </a>
+
             </p>            
         </form>   
     </div>
@@ -31,10 +37,6 @@
     <script type="text/javascript">
       function onSignIn(googleUser) {
         var profile = googleUser.getBasicProfile();
-        /*console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        var email = profile.getEmail();*/
         if(profile.getEmail() == ''){
           //Login não realizado!
           alert('Permissão negada ao acessar o google!');
@@ -45,7 +47,6 @@
             userEmail:profile.getEmail()
           };
           $.post('<?= $this->url("loginGoogle"); ?>', dados, function(retorna){
-            console.log(retorna);
             if(retorna == "erro"){
               alert('Usuário não encontrado com esse e-mail!');
             }else{

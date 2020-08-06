@@ -37,7 +37,7 @@ class Module
             header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             exit();
         }*/
-
+        header('Access-Control-Allow-Origin: *');
         ini_set('date.timezone', "America/Sao_Paulo");
         //ini_set('date.timezone', "America/Belem");
         //Config app e service manager
@@ -47,7 +47,6 @@ class Module
         $router = $this->serviceManager->get('router');
         $request = $this->serviceManager->get('request');
         $routeMatch = $router->match($request);
-
 
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
@@ -190,7 +189,7 @@ class Module
 
     public function verificaAcesso($session, $usuario, $rota = 'home') { 
         $rotasPublicas = array('logout', 'login', 'recuperarSenha', 'ativarUsuarioCliente', 'ativarUsuario', 'tokenRecuperar',
-          'loginGoogle');
+          'loginGoogle', 'loginMicrosoft');
          if(in_array($rota, $rotasPublicas)) {
             return true;
         }
