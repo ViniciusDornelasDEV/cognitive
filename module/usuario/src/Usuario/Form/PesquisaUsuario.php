@@ -20,15 +20,15 @@ use Application\Form\Base as BaseForm;
            $this->setServiceLocator($serviceLocator);
 
         parent::__construct($name);
-        $this->genericTextInput('nome', 'Nome do usuário:', false, 'Nome do usuário');
+        $this->genericTextInput('nome', false, false, 'Nome do usuário');
 
         //TIPO DE USUÁRIO 
         $serviceTipoUsuario = $this->serviceLocator->get('UsuarioTipo');
         $tiposUsuario = $serviceTipoUsuario->fetchAll()->toArray();
         unset($tiposUsuario[2]);
-        $tiposUsuario = $this->prepareForDropDown($tiposUsuario, array('id', 'perfil'));
+        $tiposUsuario = $this->prepareForDropDown($tiposUsuario, array('id', 'perfil'), array('' => 'Tipo de usuário'));
 
-        $this->_addDropdown('id_usuario_tipo', ' Tipo de usuário:', false, $tiposUsuario);
+        $this->_addDropdown('id_usuario_tipo', '', false, $tiposUsuario, '', ' Tipo de usuário');
 
         
         $this->setAttributes(array(

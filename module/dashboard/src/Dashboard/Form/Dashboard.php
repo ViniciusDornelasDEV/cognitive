@@ -28,8 +28,6 @@ use Application\Form\Base as BaseForm;
         
         $this->genericTextInput('nome', '* Nome: ', true);
 
-        $this->genericTextInput('descricao', '* Descrição: ', true);
-
         $this->genericTextInput('link_power_bi', 'Link power BI: ', false);
 
         $this->genericTextInput('link_google', 'Link google: ', false);

@@ -418,7 +418,7 @@ abstract class Base extends Form {
      * @param array $valueOptions (default: array())
      * @return void
      */
-    public function _addDropdown($name, $label, $required = true, array $valueOptions = array(), $function = '') {
+    public function _addDropdown($name, $label, $required = true, array $valueOptions = array(), $function = '', $placeholder = false) {
                 
         $options = array(
             'label' => $label,
@@ -433,6 +433,7 @@ abstract class Base extends Form {
                 'required' => $required,
                 'id' => $name,
                 'class'=> 'form-control',
+                'placeholder' => $placeholder,
                 'onChange' => $function,
                 'style' => 'max-width: 216px;'
             ),

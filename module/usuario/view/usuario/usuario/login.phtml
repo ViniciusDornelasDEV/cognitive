@@ -1,59 +1,72 @@
-<div class="bloco-login">
-        <div class="logo"></div>
-        <form role="form" name="formLogin" action="#" method="POST" class="register-form">
-            <p>
-                <i class="fas fa-user"></i>
-                <?= $this->formElement($form->get('login')); ?>        
-            </p> 
+<form role="form" name="formLogin" action="#" method="POST" class="register-form">
+        <p>
+            <i class="fas fa-user"></i>
+           <?= $this->formElement($form->get('login')); ?>     
+        </p> 
 
-            <p>
-                <i class="fas fa-key"></i>
-                <?= $this->formElement($form->get('password')); ?>     
-            </p>
+        <p>
+            <i class="fas fa-key"></i>
+            <?= $this->formElement($form->get('password')); ?>  
+        </p>
 
-            <p>
-                <input type="submit" value="Logar-se">
-            </p>
+        <p>
+            <input type="submit" value="Logar-se">
+        </p>
 
-            <p class="ac">
-                Esqueceu sua Senha? <a href="<?= $this->url('recuperarSenha'); ?>">Recupere aqui</a>
-            </p>        
+        <p class="ac">
+            Esqueceu sua Senha? <a href="<?= $this->url('recuperarSenha'); ?>">Recupere aqui</a>
+        </p>     
+
+        <div class="logar-redes">
+            <strong>Fazer Login Usando: </strong>
+            <div id="my-signin2"></div>
             
-            <hr>
-            <p>
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
-                <br>
+           <img src="images/ms-symbollockup_signin_light.svg" alt="Downloadable &quot;Sign in with Microsoft&quot; button light theme SVG" data-linktype="relative-path">
 
-                <a href="<?= $this->url('loginMicrosoft', array('acao' => 'S')); ?>">
-                  <button type="button" class="btnConfirmar"><img src="<?= $this->basePath('img/microsoft.png'); ?>"> Login</button>
-                </a>
+        </div>
 
-            </p>            
-        </form>   
-    </div>
-
-
-    <script type="text/javascript">
-      function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        if(profile.getEmail() == ''){
-          //Login não realizado!
-          alert('Permissão negada ao acessar o google!');
-        }else{
-          var dados = {
-            userID:profile.getId(),
-            userName:profile.getName(),
-            userEmail:profile.getEmail()
-          };
-          $.post('<?= $this->url("loginGoogle"); ?>', dados, function(retorna){
-            if(retorna == "erro"){
-              alert('Usuário não encontrado com esse e-mail!');
-            }else{
-              window.location.href = retorna;
-            }
-            
-          });
-        }
+        <h3>Não tem uma conta SigmaFlow?</h3>
+        <a href="#" class="nova-conta">
+            Criar Conta
+        </a>
+    </form> 
+    
+    <script>
+    function onSuccess(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      if(profile.getEmail() == ''){
+        //Login não realizado!
+        alert('Permissão negada ao acessar o google!');
+      }else{
+        var dados = {
+          userID:profile.getId(),
+          userName:profile.getName(),
+          userEmail:profile.getEmail()
+        };
+ 
+        $.post('<?= $this->url("loginGoogle"); ?>', dados, function(retorna){
+          if(retorna == "erro"){
+            alert('Usuário não encontrado com esse e-mail!');
+          }else{
+            window.location.href = retorna;
+          }
+          
+        });
       }
-    </script>
+    }
+    function onFailure(error) {
+        console.log(error);
+    }
+    function renderButton() {
+        gapi.signin2.render('my-signin2', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'light',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+        });
+    }
+</script>

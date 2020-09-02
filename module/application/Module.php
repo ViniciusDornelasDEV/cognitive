@@ -85,15 +85,16 @@ class Module
 
         //passar cliente para o layout
         $container = new Container();
+
+        $viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
         if(isset($container->cliente)){
-          $viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
           $viewModel->clienteSelecionado = $container->cliente;
 
           //passar menu para o layout
           $viewModel->menuDashboards = $this->serviceManager->get('Dashboard')->getMenu($container->cliente['id']);
         }
-        
         if($session->read()){
+        
           $viewModel->usuario = $session->read();
         }
         

@@ -13,6 +13,7 @@ use Zend\Crypt\Password\Bcrypt;
 
 use Cliente\Form\Cliente as formCliente;
 use Cliente\Form\Usuario as formUsuario;
+use Cliente\Form\VincularCliente as formVincularCliente;
 use Cliente\Form\Pesquisa as formPesquisa;
 use Cliente\Form\AtivarUsuario as formAtivarUsuario;
 use Cliente\Form\MeusDados as formMeusDados;
@@ -84,7 +85,7 @@ class ClienteController extends BaseController
           }
 
       }
-
+      
     	return new ViewModel(array('formCliente' => $formCliente));
     }
 
@@ -96,6 +97,7 @@ class ClienteController extends BaseController
       //instanciar forms
       $formCliente = new formCliente('frmCliente');
       $formUsuario = new formUsuario('frmUsuario', $this->getServiceLocator());
+      $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $idUsuario);
 
       //alimentar form de cliente
       $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($idCliente);
@@ -104,7 +106,7 @@ class ClienteController extends BaseController
       //alimentar form de usuário e pesquisar usuários vinculados
       $usuario = false;
       if($idUsuario){
-        $usuario = $this->getServiceLocator()->get('Usuario')->getRecordFromArray(array('id' => $idUsuario, 'cliente' => $idCliente));
+        $usuario = $this->getServiceLocator()->get('Usuario')->getUsuariosByCliente(array('usuario' => $idUsuario, 'cliente' => $idCliente))->current();
         $usuario['estado_br'] = $usuario['estado'];
         $formUsuario->setData($usuario);
       }
@@ -112,6 +114,19 @@ class ClienteController extends BaseController
       //se veio post!
       if($this->getRequest()->isPost()){
         $dados = $this->getRequest()->getPost();
+        //vincular clientee ao usuário
+        if(isset($dados['cliente'])){
+          $formVincular->setData($dados);
+          if($formVincular->isValid()){
+            $dados = $formVincular->getData();
+            $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+              'usuario'   =>  $idUsuario,
+              'cliente'   =>  $dados['cliente']
+            ));
+            $this->flashMessenger()->addSuccessMessage('Cliente vinculado ao usuário com sucesso!');
+            return $this->redirect()->toRoute('alterarCliente', array('id' => $idCliente, 'usuario' => $idUsuario));
+          }
+        }
         if(isset($dados['cargo'])){
           $formUsuario->setData($dados);
           if($formUsuario->isValid()){
@@ -140,11 +155,17 @@ class ClienteController extends BaseController
               //salvar usuário na base de dados
               $idUsuario = $this->getServiceLocator()->get('Usuario')->insert($dados);
 
+              //vincular usuário ap cliente
+              $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+                'usuario'   =>  $idUsuario,
+                'cliente'   =>  $idCliente
+              ));
               //enviar link de ativação por email
               $mailer = $this->getServiceLocator()->get('mailer');
-              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', 'Seja bem vindo ao sistema cognitive, para ativar sua conta favor acessar o link abaixo.<br> '.
-                $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
-                '/cliente/ativar/'.$dados['token_ativacao']);
+              $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
+                '/cliente/ativar/'.$dados['token_ativacao'];
+              $html = $mailer->emailAtivacao($link);
+              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
 
               //gerar mensagem de sucesso e redirecionar
               $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
@@ -172,42 +193,61 @@ class ClienteController extends BaseController
         }
       }
 
-      $usuarios = $this->getServiceLocator()->get('Usuario')->getRecordsFromArray(array('cliente' => $idCliente), 'nome, ativo DESC');
+      $usuarios = $this->getServiceLocator()->get('Usuario')->getUsuariosByCliente(array('cliente' => $idCliente));
+
+      $clientesUsuario = false;
+      if($idUsuario){
+        $clientesUsuario = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(array('usuario' => $idUsuario));
+      }
+
       return new ViewModel(array(
-        'formCliente' => $formCliente,
-        'formUsuario' => $formUsuario,
-        'usuarios'    => $usuarios,
-        'cliente'     => $cliente,
-        'usuario'     => $usuario
+        'formCliente'   => $formCliente,
+        'formUsuario'   => $formUsuario,
+        'formVincular'  => $formVincular,
+        'usuarios'      => $usuarios,
+        'cliente'       => $cliente,
+        'usuario'       => $usuario,
+        'idUsuario'     => $idUsuario,
+        'clientesUsuario' => $clientesUsuario
       ));
     }
 
-    public function alterarclienteAction(){
-      $this->layout('layout/cliente/admin');
-      //pegar parametros da url
-      $container = new Container();
-      $idCliente = $container->cliente['id'];
+    public function alterarusuarioAction(){
       $idUsuario = $this->params()->fromRoute('usuario');
-
-      //instanciar forms
-      $formCliente = new formMeusDados('frmCliente');
+      $idCliente = $this->params()->fromRoute('id');
       $formUsuario = new formUsuario('frmUsuario', $this->getServiceLocator());
-
-      //alimentar form de cliente
+      $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $idUsuario);
       $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($idCliente);
-      $formCliente->setData($cliente);
 
       //alimentar form de usuário e pesquisar usuários vinculados
       $usuario = false;
       if($idUsuario){
-        $usuario = $this->getServiceLocator()->get('Usuario')->getRecordFromArray(array('id' => $idUsuario, 'cliente' => $idCliente));
+        $usuario = $this->getServiceLocator()->get('Usuario')->getUsuariosByCliente(array('usuario' => $idUsuario, 'cliente' => $idCliente))->current();
+        if(!$usuario){
+          $this->flashMessenger()->addSuccessMessage('Usuário não encontrado!');
+          return $this->redirect()->toRoute('alterarCliente', array('id' => $idCliente));
+        }
         $usuario['estado_br'] = $usuario['estado'];
         $formUsuario->setData($usuario);
+
       }
 
-      //se veio post!
+
       if($this->getRequest()->isPost()){
         $dados = $this->getRequest()->getPost();
+        //vincular clientee ao usuário
+        if(isset($dados['cliente'])){
+          $formVincular->setData($dados);
+          if($formVincular->isValid()){
+            $dados = $formVincular->getData();
+            $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+              'usuario'   =>  $idUsuario,
+              'cliente'   =>  $dados['cliente']
+            ));
+            $this->flashMessenger()->addSuccessMessage('Cliente vinculado ao usuário com sucesso!');
+            return $this->redirect()->toRoute('alterarUsuarioCliente', array('id' => $idCliente, 'usuario' => $idUsuario));
+          }
+        }
         if(isset($dados['cargo'])){
           $formUsuario->setData($dados);
           if($formUsuario->isValid()){
@@ -225,7 +265,7 @@ class ClienteController extends BaseController
               //alterar usuário
               $this->getServiceLocator()->get('Usuario')->update($dados, array('id' => $idUsuario));
               $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
-              return $this->redirect()->toRoute('alterarClienteByCliente', array('usuario' => $idUsuario));
+              return $this->redirect()->toRoute('alterarCliente', array('id' => $idCliente, 'usuario' => $idUsuario));
             }else{
               //inserir usuário - Gerar token de ativação
               $idUsuario = $this->getServiceLocator()->get('Usuario')->getNextInsertId('tb_usuario');
@@ -236,45 +276,218 @@ class ClienteController extends BaseController
               //salvar usuário na base de dados
               $idUsuario = $this->getServiceLocator()->get('Usuario')->insert($dados);
 
+              //vincular usuário ap cliente
+              $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+                'usuario'   =>  $idUsuario,
+                'cliente'   =>  $idCliente
+              ));
               //enviar link de ativação por email
+
               $mailer = $this->getServiceLocator()->get('mailer');
-              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', 'Seja bem vindo ao sistema cognitive, para ativar sua conta favor acessar o link abaixo.<br> '.
-                $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
-                '/cliente/ativar/'.$dados['token_ativacao']);
+              $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
+                '/cliente/ativar/'.$dados['token_ativacao'];
+              $html = $mailer->emailAtivacao($link);
+              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
 
               //gerar mensagem de sucesso e redirecionar
               $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
-              return $this->redirect()->toRoute('alterarClienteByCliente', array('usuario' => $idUsuario));  
+              return $this->redirect()->toRoute('alterarCliente', array('id' => $idCliente, 'usuario' => $idUsuario));  
             }
 
-          }
-        }else{
-          //alterar cliente
-          $formCliente->setData($dados);
-          if($formCliente->isValid()){
-            //$dados = $formCliente->getData();
-            $file = $this->getRequest()->getfiles()->toArray();
-            if(!empty($file['logo']['name'])){
-              //fazer upload da imagem
-              $logo = $this->uploadImagem($file, $idCliente);
-            }
-
-            //alterar cliente
-            $this->getServiceLocator()->get('Cliente')->update(array('logo' => $logo), array('id' => $idCliente));
-            $this->flashMessenger()->addSuccessMessage('Dados alterados com sucesso!');
-            return $this->redirect()->toRoute('alterarClienteByCliente');
           }
         }
       }
 
-      $usuarios = $this->getServiceLocator()->get('Usuario')->getRecordsFromArray(array('cliente' => $idCliente), 'nome, ativo DESC');
+      $clientesUsuario = false;
+      if($idUsuario){
+        $clientesUsuario = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(array('usuario' => $idUsuario));
+      }
+
+      return new ViewModel(array(
+        'formUsuario'   => $formUsuario,
+        'formVincular'  => $formVincular,
+        'usuario'       => $usuario,
+        'idUsuario'     => $idUsuario,
+        'clientesUsuario' => $clientesUsuario,
+        'idCliente'     => $idCliente,
+        'cliente'       =>  $cliente
+      ));
+
+    }
+
+    public function deletarclienteusuarioAction(){
+      $idUsuario = $this->params()->fromRoute('usuario');
+      $idCliente = $this->params()->fromRoute('cliente');
+
+      $this->getServiceLocator()->get('UsuarioCliente')->delete(array('usuario' => $idUsuario, 'cliente' => $idCliente));
+      $this->flashMessenger()->addSuccessMessage('Cliente desvinculado com sucesso!');
+
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 3){
+        return $this->redirect()->toRoute('alterarClienteByCliente');
+      }
+
+      return $this->redirect()->toRoute('alterarUsuarioCliente', array('id' => $this->params()->fromRoute('idAlterar'), 'usuario' => $idUsuario));
+    }
+
+    public function alterarclienteAction(){
+      $this->layout('layout/cliente/admin');
+      //pegar parametros da url
+      $container = new Container();
+      $idCliente = $container->cliente['id'];
+      $idUsuario = $this->params()->fromRoute('usuario');
+
+      //instanciar forms
+      $formCliente = new formMeusDados('frmCliente');
+      
+      //alimentar form de cliente
+      $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($idCliente);
+      $formCliente->setData($cliente);
+      
+      //se veio post!
+      if($this->getRequest()->isPost()){
+        $dados = $this->getRequest()->getPost();
+        //alterar cliente
+        $formCliente->setData($dados);
+        if($formCliente->isValid()){
+          //$dados = $formCliente->getData();
+          $file = $this->getRequest()->getfiles()->toArray();
+          if(!empty($file['logo']['name'])){
+            //fazer upload da imagem
+            $logo = $this->uploadImagem($file, $idCliente);
+          }
+
+          //alterar cliente
+          $this->getServiceLocator()->get('Cliente')->update(array('logo' => $logo), array('id' => $idCliente));
+          $this->flashMessenger()->addSuccessMessage('Dados alterados com sucesso!');
+          return $this->redirect()->toRoute('alterarClienteByCliente');
+        }
+      }
+
+      $usuarios = $this->getServiceLocator()->get('Usuario')->getUsuariosByCliente(array('cliente' => $idCliente));
       return new ViewModel(array(
         'formCliente' => $formCliente,
-        'formUsuario' => $formUsuario,
         'usuarios'    => $usuarios,
-        'cliente'     => $cliente,
-        'usuario'     => $usuario
+        'cliente'     => $cliente
       ));
+    }
+
+    public function alterarusuarioclienteclienteAction(){
+      $usuario = $this->getServiceLocator()->get('session')->read();
+
+      $idUsuario = $this->params()->fromRoute('usuario');
+      $idCliente = $this->params()->fromRoute('id');
+      $formUsuario = new formUsuario('frmUsuario', $this->getServiceLocator());
+      $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $idUsuario, $usuario);
+      $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($idCliente);
+
+      //alimentar form de usuário e pesquisar usuários vinculados
+      $usuario = false;
+      if($idUsuario){
+        $usuario = $this->getServiceLocator()->get('Usuario')->getUsuariosByCliente(array('usuario' => $idUsuario, 'cliente' => $idCliente))->current();
+        if(!$usuario){
+          $this->flashMessenger()->addSuccessMessage('Usuário não encontrado!');
+          return $this->redirect()->toRoute('alterarClienteByCliente', array('id' => $idCliente));
+        }
+        $usuario['estado_br'] = $usuario['estado'];
+        $formUsuario->setData($usuario);
+
+      }
+
+
+      if($this->getRequest()->isPost()){
+        $dados = $this->getRequest()->getPost();
+        //vincular clientee ao usuário
+        if(isset($dados['cliente'])){
+          $formVincular->setData($dados);
+          if($formVincular->isValid()){
+            $dados = $formVincular->getData();
+            $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+              'usuario'   =>  $idUsuario,
+              'cliente'   =>  $dados['cliente']
+            ));
+            $this->flashMessenger()->addSuccessMessage('Cliente vinculado ao usuário com sucesso!');
+            return $this->redirect()->toRoute('alterarUsuarioClienteCliente', array('id' => $idCliente, 'usuario' => $idUsuario));
+          }
+        }
+        if(isset($dados['cargo'])){
+          $formUsuario->setData($dados);
+          if($formUsuario->isValid()){
+            $dados = $formUsuario->getData();
+            if($dados['pais'] == 'Brasil'){
+              $dados['estado'] = $dados['estado_br'];
+            }
+            
+            //validar tipos de usuário
+            if($dados['id_usuario_tipo'] != 3 && $dados['id_usuario_tipo'] != 4){
+              $this->flashMessenger()->addWarningMessage('Tipo de usuário inválido!');
+              return $this->redirect()->toRoute('alterarClienteByCliente', array('id' => $idCliente));  
+            }
+            if($usuario){
+              //alterar usuário
+              $this->getServiceLocator()->get('Usuario')->update($dados, array('id' => $idUsuario));
+              $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
+              return $this->redirect()->toRoute('alterarUsuarioClienteCliente', array('id' => $idCliente, 'usuario' => $idUsuario));
+            }else{
+              //inserir usuário - Gerar token de ativação
+              $idUsuario = $this->getServiceLocator()->get('Usuario')->getNextInsertId('tb_usuario');
+              $dados['token_ativacao'] = strtolower(base64_encode(mt_rand().crypt(time().$idUsuario->Auto_increment.uniqid(mt_rand(), true))));
+              $dados['ativo'] = 'A';
+              $dados['cliente'] = $idCliente;
+
+              //salvar usuário na base de dados
+              $idUsuario = $this->getServiceLocator()->get('Usuario')->insert($dados);
+
+              //vincular usuário ap cliente
+              $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+                'usuario'   =>  $idUsuario,
+                'cliente'   =>  $idCliente
+              ));
+              //enviar link de ativação por email
+              $mailer = $this->getServiceLocator()->get('mailer');
+              $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
+                '/cliente/ativar/'.$dados['token_ativacao'];
+              $html = $mailer->emailAtivacao($link);
+              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
+
+              //gerar mensagem de sucesso e redirecionar
+              $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
+              return $this->redirect()->toRoute('alterarUsuarioClienteCliente', array('id' => $idCliente, 'usuario' => $idUsuario));  
+            }
+
+          }
+        }
+      }
+
+      $clientesUsuario = false;
+      if($idUsuario){
+        $clientesUsuario = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(array('usuario' => $idUsuario))->toArray();
+        //retirar os clientes que não são do cliente admin logado
+        $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuario['id'], 'usuario', array('cliente'));
+        $clientesAdmin2 = array();
+        foreach ($clientesAdmin as $clienteAdmin) {
+          $clientesAdmin2[$clienteAdmin['cliente']] = $clienteAdmin['cliente'];
+        }
+
+        //limpar o array
+        foreach ($clientesUsuario as $key => $clienteUsuario) {
+          if(!in_array($clienteUsuario['id_cliente'], $clientesAdmin2)){
+            unset($clientesUsuario[$key]);
+          }
+        }
+
+      }
+
+      return new ViewModel(array(
+        'formUsuario'   => $formUsuario,
+        'formVincular'  => $formVincular,
+        'usuario'       => $usuario,
+        'idUsuario'     => $idUsuario,
+        'clientesUsuario' => $clientesUsuario,
+        'idCliente'     => $idCliente,
+        'cliente'       =>  $cliente
+      ));
+
     }
 
     public function ativarusuarioclienteAction(){
@@ -326,25 +539,10 @@ class ClienteController extends BaseController
       //pegar parametros
       $idCliente = $this->params()->fromRoute('id');
       $idUsuario = $this->params()->fromRoute('usuario');
-      
       $usuario = $this->getServiceLocator()->get('session')->read();
-      if($usuario['id_usuario_tipo'] == 3){
-        $idCliente = $usuario['cliente']; 
-      }
-
-      //verificar se o usuário é deste cliente
-      $usuarioBase = $this->getServiceLocator()->get('Usuario')->getRecord($idUsuario);
-      $container = new Container();
-      if(!$usuarioBase || $usuarioBase['cliente'] != $container->cliente['id']){
-        $this->flashMessenger()->addWarningMessage('Usuário não encontado!');
-        if($usuario['id_usuario_tipo'] == 3){
-          return $this->redirect()->toRoute('alterarClienteByCliente');
-        }
-        return $this->redirect()->toRoute('alterarCliente', array('id' => $idCliente));
-      }
 
       //deletar usuário
-      $this->getServiceLocator()->get('Usuario')->delete(array('id' => $idUsuario));
+      $this->getServiceLocator()->get('Usuario')->deletar(array('id' => $idUsuario));
       $this->flashMessenger()->addSuccessMessage('Usuário excluído com sucesso!');
       if($usuario['id_usuario_tipo'] == 3){
         return $this->redirect()->toRoute('alterarClienteByCliente');
@@ -360,33 +558,89 @@ class ClienteController extends BaseController
     }
 
     public function selecionarclienteAction(){
-      $container = new Container();
-      $cliente = $this->getServiceLocator()->get('Cliente')->getRecordFromArray(array(
-        'id'    => $this->params()->fromRoute('id'),
-        'ativo' => 'S'
-      ));
-
-      if($cliente){
-        $container->cliente = $cliente;
-      }else{
-        $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 2){
+        $this->layout('layout/edicao');
       }
 
-      return $this->redirect()->toRoute('indexCliente');
+      if($usuario['id_usuario_tipo'] == 3){
+        $this->layout('layout/cliente/admin');
+      }
+
+      if($usuario['id_usuario_tipo'] == 4){
+        $this->layout('layout/cliente');
+      }
+      
+      //pesquisar clientes do usuário logado
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
+        $clientes = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario($usuario['id']);
+      }else{
+        $clientes = $this->getServiceLocator()->get('Cliente')->getRecords('S', 'ativo', array('id_cliente' => 'id', 'nome_cliente' => 'nome', 'logo'), 'nome');
+      }
+
+      $idCliente = $this->params()->fromRoute('id');
+      if($idCliente){
+        $container = new Container();
+
+        if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
+          $cliente = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario($usuario['id'], $idCliente)->current();
+          $cliente = array(
+            'id'            =>  $cliente['id_cliente'],
+            'nome'          =>  $cliente['nome_cliente'],
+            'logo'          =>  $cliente['logo'],
+            'id_azure'      =>  $cliente['id_azure'],
+            'usuario_azure' =>  $cliente['usuario_azure'],
+            'senha_azure'   =>  $cliente['senha_azure'],
+            'ativo'         =>  $cliente['cliente_ativo']
+          );
+        }else{
+          $cliente = $this->getServiceLocator()->get('Cliente')->getRecordFromArray(array(
+            'id'    => $this->params()->fromRoute('id'),
+            'ativo' => 'S'
+          ));
+        }
+
+        if($cliente){
+          $container->cliente = $cliente;
+          
+          return $this->redirect()->toRoute('selecionarCliente');
+        }else{
+          $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
+          return $this->redirect()->toRoute('selecionarCliente');
+        }
+      }
+      
+      return new ViewModel(array(
+        'clientes'  =>  $clientes
+      ));
     }
 
     public function ordenarmenuAction(){
-      $dados = $this->getRequest()->getPost();
-      $ordem = json_decode($dados['ordem'], true);
+
+      if($this->getRequest()->isPost()){
+        $dados = $this->getRequest()->getPost();
+        $ordem = json_decode($dados['ordem'], true);
+        
+        //salvar nova ordem do menu
+        $status = $this->getServiceLocator()->get('Dashboard')->salvarMenu($ordem);
+        if($status == true){
+          $this->flashMessenger()->addSuccessMessage('Menu ordenado com sucesso!');
+        }else{
+          $this->flashMessenger()->addErrorMessage('Ocorreu algum erro ao ordenar menu, por favor tente novamente!');
+        }
+        return $this->redirect()->toRoute('ordenarMenu');
+      }
+
+      $container = new Container();
+      $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($this->params()->fromRoute('id'));
+      $menuDashboards = $this->getServiceLocator()->get('Dashboard')->getMenu($cliente['id']);
       
 
-      //salvar nova ordem do menu
-      $status = $this->getServiceLocator()->get('Dashboard')->salvarMenu($ordem);
-
-      $view = new ViewModel();
-      $view->setTerminal(true);
-      $view->setVariables(array('status' => $status));
-      return $view;
+      return new ViewModel(array(
+        'menuDashboards' =>  $menuDashboards,
+        'cliente'        =>  $cliente
+      ));
     }
 
     private function uploadImagem($arquivo, $idCliente){

@@ -1,17 +1,16 @@
-
-    <h1><a href="<?= $this->url('indexCliente'); ?>">Clientes</a> / alterar </h1>
+    <h1><i class="fas fa-bars"></i><a href="<?= $this->url('indexCliente'); ?>">Clientes</a> / alterar </h1>
+    <h2>Alterar cliente</h2>
     <div class="conteudo-sistema">
-      <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
+      <a href="https://dev.powerbi.com/apps" target="_blank" class="botao" style="float: right;margin-bottom: 10px;margin-left: 10px;"><i class="fas fa-key"></i> Criar credenciais</a>
+      
+      <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;margin-bottom: 10px"><i class="far fa-plus-square"></i> Novo</a>
       <br>
-      <h2>Alterar cliente</h2>
       <?php echo $this->partial('form/generic', array('form'=> $formCliente, 'route'=> ''))  ?>
 
 
       <!-- SUBFORM -->
         <div class="bloco-padrao">
-          <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo usuário</a>
-          <h2>Adicionar ou alterar usuários do cliente <?= $cliente['nome'] ?></h2>
-           <?php echo $this->partial('form/generic', array('form'=> $formUsuario, 'route'=> '')) ?>
+          <a id="link-usuario" href="<?= $this->url('alterarUsuarioCliente', array('id' => $cliente['id'])); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo usuário</a>
         </div>
 
         <div class="bloco-padrao">
@@ -33,7 +32,7 @@
                         <td style="text-align: center"><?= $usuario['login']; ?></td>
                         <td style="text-align: center"><?= $this->ativo($usuario['ativo']); ?></td>
                         <td style="text-align: center;">
-                            <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'], 'usuario' => $usuario['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
+                            <a href="<?= $this->url('alterarUsuarioCliente', array('id' => $cliente['id'], 'usuario' => $usuario['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
                             <a  onclick="alerta('<?= $this->url('deletarUsuarioCliente', array('id' => $cliente['id'], 'usuario' => $usuario['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o usuário?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
                         </td>
                     </tr>
@@ -67,6 +66,8 @@
       $('#telefone').mask(maskBehavior, options);
       
       $(document).ready(function() {
+        $("#link-usuario").colorbox();
+
         <?php if($usuario != false): ?>
           <?php if($usuario['pais'] == 'Brasil'): ?>
             $("#p-form-estado_br").css("display", "block");

@@ -1,7 +1,7 @@
-    <h1>Categorias de dashboard</h1>
-    <div class="conteudo-sistema">
+    <h1><i class="fas fa-bars"></i>Categorias de dashboard</h1>
+    <h2>Categorias de dashboard do cliente <?= $cliente['nome'] ?></h2>
+
       <div class="bloco-padrao">
-        <h2>Categorias de dashboard do cliente <?= $cliente['nome'] ?></h2>
 
         <a href="<?= $this->url('novoCategoria'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
         <br>
@@ -38,6 +38,3 @@
                                       'view/paginator', array('route' => 'indexCategoria')); 
         ?>
       </div>
-      
-
-    </div>

@@ -1,13 +1,11 @@
-    <h1>Clientes </h1>
-    <div class="conteudo-sistema">
-      <h2>Pesquisar cliente</h2>
+      <h1><i class="fas fa-bars"></i>Clientes</h1>
+      <h2>Lista de clientes</h2>
       <?php echo $this->partial('form/pesquisa', array('form'=> $formPesquisa, 'route'=> '')) ?>
 
 
 
 
       <div class="bloco-padrao">
-        <h2>Clientes</h2>
         <?php if($usuario['id_usuario_tipo'] != 2): ?>
           <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
           <br>
@@ -26,13 +24,14 @@
                     <td style="text-align: center"><?= $this->ativo($cliente['ativo']); ?></td>
                     <td style="text-align: center;">
                       <?php if($usuario['id_usuario_tipo'] == 2): ?>
-                        <a onclick="alerta('<?= $this->url('selecionarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja selecionar o cliente <?= $cliente['nome'] ?>?');" class="bt-selecionar"><i class="fas fa-check-circle"></i></a>
+                        <a href="<?= $this->url('ordenarMenu', array('id' => $cliente['id'])); ?>"><i class="fas fa-list"></i></a>
                       <?php else: ?>
                         <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
-                        <a onclick="alerta('<?= $this->url('selecionarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja selecionar o cliente <?= $cliente['nome'] ?>?');" class="bt-selecionar"><i class="fas fa-check-circle"></i></a>
+                        <a href="<?= $this->url('ordenarMenu', array('id' => $cliente['id'])); ?>"><i class="fas fa-list"></i></a>
                         <a onclick="alerta('<?= $this->url('inativarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja inativar o cliente <?= $cliente['nome'] ?>?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
 
                       <?php endif; ?>
+
                     </td>
                 </tr>
               <?php endforeach; ?>
@@ -53,7 +52,6 @@
       </div>
       
 
-    </div>
 <script type="text/javascript">
     //AUTOCOMPLETE CLIENTES
       var clientes = [];

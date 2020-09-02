@@ -1,0 +1,92 @@
+    <h1><i class="fas fa-bars"></i>
+      <a href="<?= $this->url('indexCliente'); ?>">Clientes</a> / <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>"><?= $cliente['nome'] ?></a> / Usuário </h1>
+    <h2>Alterar ou cadastrar usuário</h2>
+    <div class="conteudo-sistema">
+      <!-- SUBFORM -->
+        <div class="bloco-padrao">
+          <h2>Adicionar ou alterar usuários do cliente <?= $cliente['nome'] ?></h2>
+           <?php echo $this->partial('form/generic', array('form'=> $formUsuario, 'route'=> '')) ?>
+        </div>
+
+        <!-- Clientes vinculados ao usuário -->
+        <?php if($idUsuario): ?>
+          <div class="bloco-padrao">
+            <h2>Vincular cliente ao usuário</h2>
+             <?php echo $this->partial('form/generic', array('form'=> $formVincular, 'route'=> '')) ?>
+          </div>
+
+          <?php if($clientesUsuario): ?>
+              <div class="bloco-padrao">
+              <h2>Clientes vinculados ao usuário <?= $usuario['nome'] ?></h2>
+               
+              <?php if($clientesUsuario->count() > 0): ?>
+                <table class="table">
+                  <tbody>
+                      <tr class="topo-tabela">
+                        <th style="text-align: center">Cliente</th>
+                        <th style="text-align: center">Ações</th>
+                  </tr>
+                      </tr>
+                      <?php foreach($clientesUsuario as $clienteVinculado): ?>
+                        <tr>
+                            <td style="text-align: center"><?= $clienteVinculado['nome_cliente']; ?></td>
+                            <td style="text-align: center;">
+                                <a  onclick="alerta('<?= $this->url('deletarClienteUsuario', array('cliente' => $clienteVinculado['id_cliente'], 'usuario' => $usuario['id'], 'idAlterar' => $cliente['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja desvincular o cliente?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+                            </td>
+                        </tr>
+                      <?php endforeach; ?>
+                  </tbody>
+                </table>
+                <?php else: ?>
+                  <br>
+                  <div class="alert alert-info">Nenhum usuário encontrado!</div>
+                <?php endif; ?>
+
+
+            </div>
+          <?php endif; ?>
+        <?php endif; ?>
+
+        
+    </div>
+
+
+
+
+
+
+
+    <script type="text/javascript">
+      var maskBehavior = function (val) {
+       return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+      },
+      options = {onKeyPress: function(val, e, field, options) {
+       field.mask(maskBehavior.apply({}, arguments), options);
+       }
+      };
+       
+      $('#telefone').mask(maskBehavior, options);
+      
+      $(document).ready(function() {
+        <?php if($usuario != false): ?>
+          <?php if($usuario['pais'] == 'Brasil'): ?>
+            $("#p-form-estado_br").css("display", "block");
+            $("#p-form-estado").css("display", "none"); 
+          <?php else: ?>
+            $("#p-form-estado_br").css("display", "none");
+            $("#p-form-estado").css("display", "block");
+          <?php endif; ?>
+        <?php else: ?>
+          $("#p-form-estado_br").css("display", "none");
+        <?php endif; ?>
+        $("#pais").change(function() {
+          if(this.value == 'Brasil'){
+            $("#p-form-estado_br").css("display", "block");
+            $("#p-form-estado").css("display", "none");    
+          }else{
+            $("#p-form-estado_br").css("display", "none");
+            $("#p-form-estado").css("display", "block");
+          }
+        });
+      });
+    </script>

@@ -56,6 +56,12 @@ class Module
                     $updates->setServiceLocator($sm);
                     return $updates;
                 },
+                'UsuarioCliente' => function($sm) {
+                    $tableGateway = new TableGateway('tb_usuario_cliente', $sm->get('db_adapter_main'));
+                    $updates = new BaseTable($tableGateway);
+                    $updates->setServiceLocator($sm);
+                    return $updates;
+                },
             ),
             'invokables' => array(
                 'ImageService' => 'Imagine\Gd\Imagine',

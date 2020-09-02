@@ -21,10 +21,10 @@ use Application\Form\Base as BaseForm;
 
         $categorias = $this->serviceLocator->get('CategoriaDashboard')->getRecordsFromArray(array('cliente' => $idCliente), 'nome')->toArray();
         
-        $categorias = $this->prepareForDropDown($categorias, array('id', 'nome'));
-        $this->_addDropdown('categoria', 'Categoria:', false, $categorias);
+        $categorias = $this->prepareForDropDown($categorias, array('id', 'nome'), array('' => 'Categoria'));
+        $this->_addDropdown('categoria', '', false, $categorias, '', 'Categoria');
 
-        $this->genericTextInput('nome', 'Nome: ', false);
+        $this->genericTextInput('nome', false, false, 'Nome');
 
         $this->setAttributes(array(
             'class'  => 'form-inline'

@@ -1,8 +1,11 @@
-    <h1><a href="<?= $this->url('indexCliente'); ?>">Clientes</a> / novo </h1>
+    <h1><i class="fas fa-bars"></i><a href="<?= $this->url('indexCliente'); ?>">Clientes</a> / novo </h1>
+    <h2>Cadastrar um novo cliente</h2>
     <div class="conteudo-sistema">
-      <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
-      <br>
-      <h2>Inserir cliente</h2>
+      <a href="https://dev.powerbi.com/apps" target="_blank" class="botao" style="float: right;margin-bottom: 10px;margin-left: 10px;"><i class="fas fa-key"></i> Criar credenciais</a>
+
+      <a href="<?= $this->url('novoCliente'); ?>" class="botao" style="float: right;margin-bottom: 10px"><i class="far fa-plus-square"></i> Novo</a>
+
+      
 
       <?php echo $this->partial('form/generic', array('form'=> $formCliente, 'route'=> ''))  ?>
 

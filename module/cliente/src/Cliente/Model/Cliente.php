@@ -17,10 +17,25 @@ class Cliente Extends BaseTable {
         return $this->getTableGateway()->select(function($select) use ($params) {
           if(isset($params['nome']) && !empty($params['nome'])){
               $select->where->like('nome', '%'.$params['nome'].'%');
-          }    
+          } 
 
           $select->order('nome');
         }); 
+    }
+
+    //PEGAR CLIENTES QUE NÃO ESTÃO VINCULADOS AO USUÁRIO
+    public function getClientesNotUsuario($idUsuario){
+      return $this->getTableGateway()->select(function($select) use ($idUsuario) {
+        $select->join(
+            array('uc' => 'tb_usuario_cliente'),
+             new Expression('uc.cliente = tb_cliente.id AND uc.usuario = ?', $idUsuario),
+            array(),
+            'LEFT'
+        );
+
+        $select->where->isNull('uc.usuario');
+        $select->order('nome');
+      }); 
     }
 
 }

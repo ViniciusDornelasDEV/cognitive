@@ -93,42 +93,22 @@ class UsuarioController extends BaseController
                   $sessao->acl = $this->criarAutorizacao();
                   if($user['id_usuario_tipo'] == 3 || $user['id_usuario_tipo'] == 4){
                     //verificar se cliente está ativo
-                    $cliente = $this->getServiceLocator()->get('Cliente')->getRecordFromArray(array(
-                      'id'    => $user['cliente'],
-                      'ativo' => 'S'
-                    ));
-                
-                    //se cliente ativo, redir para visualizar dashboards
+                    $cliente = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario($user['id'])->current();
+                    
                     if($cliente){
-                      $sessao->cliente = $cliente;
-                      //pesquisar uma dash do cliente
-                      $dashboard = $this->getServiceLocator()->get('Dashboard')->getRecordFromArray(array(
-                        'cliente' => $user['cliente'],
-                        'ativo'   => 'S'
-                      ));
-
-                      if($dashboard){
-                        return $this->redirect()->toRoute('visualizarDashboard', array('id' => $dashboard->id));
-                      }else{
-                        return $this->redirect()->toRoute('indexInvoice');
-                      }
-                    }else{
-                      $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
-                      return $this->redirect()->toRoute('logout');
+                      $sessao->cliente = $this->getServiceLocator()->get('Cliente')->getRecord($cliente['id_cliente']);
                     }
+                    return $this->redirect()->toRoute('selecionarCliente');
                   }else{
-                    $sessao->cliente = $this->getServiceLocator()
-                      ->get('Cliente')
-                      ->getRecordsFromArray(array('ativo' => 'S'))
-                      ->current();
-
-                    return $this->redirect()->toRoute('indexCliente');
+                    $cliente = $this->getServiceLocator()->get('Cliente')->getRecords('S', 'ativo');
+                    $sessao->cliente = $cliente->current();
+                    return $this->redirect()->toRoute('selecionarCliente');
                   } 
               } else {
                 //form invalido
-                  $session->clear();
-                  $this->flashMessenger()->addWarningMessage('Login ou senha inválidos!');
-                  return $this->redirect()->toRoute('login');
+                $session->clear();
+                $this->flashMessenger()->addWarningMessage('Login ou senha inválidos!');
+                return $this->redirect()->toRoute('login');
               }
           }
       }        
@@ -139,7 +119,6 @@ class UsuarioController extends BaseController
 
   public function logingoogleAction(){
     $dados = $this->getRequest()->getPost();
-    
     //pesquisar email na base de dados
     $usuario = $this->getServiceLocator()->get('Usuario')->getRecord($dados['userEmail'], 'login');
     $retorno = 'erro';
@@ -152,25 +131,11 @@ class UsuarioController extends BaseController
     
       if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
         //verificar se cliente está ativo
-        $cliente = $this->getServiceLocator()->get('Cliente')->getRecordFromArray(array(
-          'id'    => $usuario['cliente'],
-          'ativo' => 'S'
-        ));
-    
-        //se cliente ativo, redir para visualizar dashboards
+        $cliente = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario($usuario['id'])->current();
+                    
         if($cliente){
-          $sessao->cliente = $cliente;
-          //pesquisar uma dash do cliente
-          $dashboard = $this->getServiceLocator()->get('Dashboard')->getRecordFromArray(array(
-            'cliente' => $usuario['cliente'],
-            'ativo'   => 'S'
-          ));
-
-          if($dashboard){
-            $retorno = $this->url()->fromRoute('visualizarDashboard', array('id' => $dashboard->id));
-          }else{
-            $retorno = $this->url()->fromRoute('indexInvoice');
-          }
+          $sessao->cliente = $this->getServiceLocator()->get('Cliente')->getRecord($cliente['id_cliente']);
+          $retorno = $this->url()->fromRoute('selecionarCliente');
         }else{
           $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
           $retorno = 'false';
@@ -180,7 +145,7 @@ class UsuarioController extends BaseController
           ->get('Cliente')
           ->getRecordsFromArray(array('ativo' => 'S'))
           ->current();
-        $retorno = $this->url()->fromRoute('indexCliente');
+        $retorno = $this->url()->fromRoute('selecionarCliente');
       } 
     }
     
@@ -371,8 +336,8 @@ class UsuarioController extends BaseController
                 if($serviceUsuario->update(array('token_recuperar' => $token, 'token_expira' => date('Y-m-d H:i',strtotime('+1 hour',strtotime(date('Y-m-d H:i'))))), array('id' => $usuario->id))){
                     $this->flashMessenger()->addSuccessMessage('Enviamos um link de recuperação para seu email!');  
                     $mailer = $this->getServiceLocator()->get('mailer');
-                    $mailer->mailUser($usuario->login, 'Cognitive, recuperar senha', 'Acesse o link paa recuperar a senha: <br>'.$base.'
-                        <br>O link tem validade de uma hora!');
+                    $html = $mailer->emailRecuperarSenha($base);
+                    $mailer->mailUser($usuario->login, 'Cognitive, recuperar senha', $html);
                     return $this->redirect()->toRoute('login');
                 }else{
                     $this->flashMessenger()->addErrorMessage('Falha ao recuperar senha!');
@@ -507,9 +472,10 @@ class UsuarioController extends BaseController
 
         //enviar link de ativação por email
         $mailer = $this->getServiceLocator()->get('mailer');
-        $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', 'Seja bem vindo ao sistema cognitive, para ativar sua conta favor acessar o link abaixo.<br> '.
-          $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
-          '/usuario/ativar/'.$dados['token_ativacao']);
+        $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
+          '/usuario/ativar/'.$dados['token_ativacao'];
+        $html = $mailer->emailAtivacao($link);
+        $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
 
         //gerar mensagem de sucesso e redirecionar
         $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');

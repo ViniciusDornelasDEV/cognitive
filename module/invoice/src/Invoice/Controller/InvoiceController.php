@@ -144,7 +144,10 @@ class InvoiceController extends BaseController
       }
       //enviar invoice por email
       $mailer = $this->getServiceLocator()->get('mailer');
-      $mailer->mailUser($container->cliente['usuario_azure'], 'Cognitive, invoice', 'Existe um novo invoice vinculado a sua empresa, clique no link para realizar download.<br> '.$this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().'/invoice/download/'.$this->params()->fromRoute('id'));
+      $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().'/invoice/download/'.$this->params()->fromRoute('id');
+      $html = $mailer->emailInvoice($link);
+      
+      $mailer->mailUser($container->cliente['usuario_azure'], 'Cognitive, invoice', $html);
       $this->flashMessenger()->addSuccessMessage('Email enviado com sucesso!');
       return $this->redirect()->toRoute('alterarInvoice', array('id' => $this->params()->fromRoute('id')));
 

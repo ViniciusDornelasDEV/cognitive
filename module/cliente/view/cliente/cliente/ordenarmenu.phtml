@@ -1,1 +1,88 @@
-<?= $status ?>
+<div class="text-align: center;">
+  <h1><i class="fas fa-bars"></i>Ordenar menu do cliente <?= $cliente['nome'] ?></h1>
+  <div class="bloco-padrao">
+    <form action="#" method="POST" id="frmOrdenar">
+      <input type="hidden" name="ordem" id="ordem" value="">
+        <div class="dd" id="nestable2">
+          <ol class="dd-list">
+            <?php foreach ($menuDashboards as $menu): ?>
+              <?php if($menu['dashboards'] == false): ?>
+                <li class="dd-item" data-id="<?= $menu['id'] ?>">
+                    <div class="dd-handle">
+                      <?= $menu['nome'] ?>
+                    </div>
+                </li>
+              <?php else: ?>
+                <li class="dd-item" data-id="cat-<?= $menu['id_categoria'] ?>">
+                    <div class="dd-handle">
+                      <?= $menu['nome_categoria'] ?>
+                    </div>
+                    <ol class="dd-list">
+                      <?php foreach ($menu['dashboards'] as $dashboard): ?>
+                          <li class="dd-item" data-id="<?= $dashboard['id'] ?>">
+                              <div class="dd-handle">
+                                <?= $dashboard['nome'] ?>
+                              </div>
+                          </li>
+                      <?php endforeach; ?>
+                    </ol>
+                </li>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          </ol>
+          <p>
+            <a onclick="salvarOrdemMenu();" class="botao" style="float: right;margin-right: 10px;margin-bottom: 10px;"><i class="fas fa-save"></i> Salvar</a>
+
+          </p>
+        </div>
+    </form>
+  </div>
+  
+</div>
+
+
+<script type="text/javascript">
+    function salvarOrdemMenu(){
+      //var data = {ordem: window.JSON.stringify($('.dd').nestable('serialize'))};
+      $('#ordem').val(window.JSON.stringify($('.dd').nestable('serialize')));
+      $( "#frmOrdenar" ).submit();
+      /*$.ajax({
+            type: "POST",
+            url: "/cliente/ordenar/menu",
+            data: data,
+            success: function(html) {
+              location.reload();
+            }
+      });*/
+
+    }
+
+
+
+    $(document).ready(function()
+    {
+
+        var updateOutput = function(e)
+        {
+            var list   = e.length ? e : $(e.target),
+                output = list.data('output');
+            if (window.JSON) {
+                output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
+            } else {
+                output.val('JSON browser support required for this demo.');
+            }
+        };
+
+        // activate Nestable for list 2
+        $('#nestable2').nestable({
+            group: 1,
+            maxDepth: 2
+        })
+        .on('change', updateOutput);
+
+        // output initial serialised data
+        updateOutput($('#nestable2').data('output', $('#nestable2-output')));
+
+
+    });
+</script>

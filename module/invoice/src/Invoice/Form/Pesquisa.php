@@ -18,9 +18,9 @@ use Application\Form\Base as BaseForm;
 
         parent::__construct($name);          
 
-        $this->genericTextInput('data_inicio', 'De: ', false);
+        $this->genericTextInput('data_inicio', false, false, 'Data de início');
 
-        $this->genericTextInput('data_fim', 'até: ', false);
+        $this->genericTextInput('data_fim', false, false, 'Data final');
 
         $this->setAttributes(array(
             'class'  => 'form-inline'

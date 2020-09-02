@@ -39,7 +39,7 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('telefone', 'Telefone: ', false);
 
-        $this->_addDropdown('id_usuario_tipo', '* Tipo de cliente:', true, array(3 => 'Admin', 4 => 'Visualizar'));
+        $this->_addDropdown('id_usuario_tipo', '* Tipo de cliente:', true, array(3 => 'Cliente admin', 4 => 'Visualizar'));
 
         $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'));
         

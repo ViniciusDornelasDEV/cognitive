@@ -1,5 +1,4 @@
 <div class="bloco-login">
-    <div class="logo"></div>
     <?php if($usuario): ?>
       <?php echo $this->partial('form/umacoluna', array('form'=> $formUsuario, 'route'=> '', 'nomeBotao' => 'Ativar conta')) ?>  
     <?php else: ?>
@@ -34,7 +33,7 @@
           $("#p-form-estado_br").css("display", "none");
         <?php endif; ?>
         $("#pais").change(function() {
-          if(this.value == 'Brasil'){
+          if(this.value == ' Brasil'){
             $("#p-form-estado_br").css("display", "block");
             $("#p-form-estado").css("display", "none");    
           }else{

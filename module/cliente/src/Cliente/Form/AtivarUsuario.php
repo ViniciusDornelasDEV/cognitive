@@ -22,8 +22,6 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('sobrenome', '* Sobrenome: ', true, 'Sobrenome');
 
-        //$this->addEmailElement('login', '* Email corporativo', true);
-
         $this->genericTextInput('cargo', '* Cargo: ', true, 'Cargo');
 
         $paises = $this->serviceLocator->get('Pais')->getRecordsFromArray(array(), 'nome')->toArray();

@@ -1,0 +1,33 @@
+      <h1><i class="fas fa-bars"></i>Clientes</h1>
+      <h2>Selecione o cliente desejado</h2>
+
+
+
+      <div class="todos-clientes">
+        <?php if($clientes->count() > 0): ?>
+          <div class="grid">
+            <?php foreach($clientes as $cliente): ?>
+              <article class="efeito">
+                  <figure><img src="<?= $this->basePath($cliente['logo']); ?>" data-image-id="7" data-image-hash="b71d9060adbbf99ce7394ad39a78e71d" width="700" height="394" alt="servico-1.jpg" title="Serviço 1" class="image-thumb"></figure>
+                  <div class="servico-info">
+
+                      <h4><?= $cliente['nome_cliente'] ?></h4>
+                      <p>Clique para mais Detalhes</p>
+                      <a href="<?= $this->url('selecionarCliente', array('id' => $cliente['id_cliente'])); ?>" class="link">Saiba Mais</a>
+                  </div>
+              </article>
+
+            <?php endforeach; ?>
+
+
+             
+          </div>
+
+        <?php else: ?>
+          <br>
+          <div class="alert alert-info">Nenhum cliente encontrado!</div>
+        <?php endif; ?>
+
+    </div>
+
+

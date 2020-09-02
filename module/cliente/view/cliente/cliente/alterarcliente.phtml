@@ -1,15 +1,11 @@
 
-    <h1><a href="<?= $this->url('indexCliente'); ?>">Clientes</a> / alterar </h1>
+    <h1><a href="<?= $this->url('alterarClienteByCliente'); ?>"><?= $cliente['nome'] ?></a> / alterar </h1>
     <div class="conteudo-sistema">
       <h2>Alterar cliente</h2>
       <?php echo $this->partial('form/generic', array('form'=> $formCliente, 'route'=> ''))  ?>
 
-
-      <!-- SUBFORM -->
         <div class="bloco-padrao">
-          <a href="<?= $this->url('alterarClienteByCliente'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo usuário</a>
-          <h2>Adicionar ou alterar usuários do cliente <?= $cliente['nome'] ?></h2>
-           <?php echo $this->partial('form/generic', array('form'=> $formUsuario, 'route'=> '')) ?>
+          <a id="link-usuario" href="<?= $this->url('alterarUsuarioClienteCliente', array('id' => $cliente['id'])); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo usuário</a>
         </div>
 
         <div class="bloco-padrao">
@@ -31,7 +27,7 @@
                         <td style="text-align: center"><?= $usuario['login']; ?></td>
                         <td style="text-align: center"><?= $this->ativo($usuario['ativo']); ?></td>
                         <td style="text-align: center;">
-                            <a href="<?= $this->url('alterarClienteByCliente', array('usuario' => $usuario['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
+                            <a href="<?= $this->url('alterarUsuarioClienteCliente', array('id' => $cliente['id'], 'usuario' => $usuario['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
                             <a  onclick="alerta('<?= $this->url('deletarUsuarioCliente', array('id' => $cliente['id'], 'usuario' => $usuario['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o usuário?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
                         </td>
                     </tr>

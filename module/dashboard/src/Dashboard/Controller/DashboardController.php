@@ -177,7 +177,7 @@ class DashboardController extends BaseController
       }
       $dashboard = $this->getServiceLocator()->get('Dashboard')->getRecord($this->params()->fromRoute('id'));
       $container = new Container();
-
+      
       //verificar se dash é da empresa selecionada
       if(!$dashboard || $container->cliente['id'] != $dashboard['cliente']){
         $this->flashMessenger()->addWarningMessage('A dashboard não pertence a eempresa selecionada ou não existe!');  

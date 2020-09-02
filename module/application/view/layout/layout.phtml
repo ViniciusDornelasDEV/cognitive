@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
+<html>
+<head>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KX356LG');</script>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="google-signin-client_id" content="119263952091-gdpfe1a4arv7dj1g2f4uia1pf517tk44.apps.googleusercontent.com">
-     <?php echo $this->headTitle($this->loja['nome_restaurante'])->setSeparator(' - ')->setAutoEscape(false) ?>
+     <?php echo $this->headTitle('Cognitive')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -12,9 +16,10 @@
 
         <!-- styles -->
         <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-                        ->prependStylesheet($this->basePath() . '/css/style.css')
+                        ->prependStylesheet($this->basePath() . '/css/sistema.css')
                         ->prependStylesheet($this->basePath() . '/css/autocomplete.css')
                         ->prependStylesheet($this->basePath() . '/css/jquery-confirm.css')
+                        //->prependStylesheet($this->basePath() . '/css/sistema/colorbox.css')
                         ; ?>
         <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
@@ -26,106 +31,102 @@
             ->prependFile($this->basePath() . '/js/jquery.nestable.js')
             ->prependFile($this->basePath() . '/js/jquery.autocomplete.js')
             ->prependFile($this->basePath() . '/js/PowerBI/dist/powerbi.js')
-            ->prependFile($this->basePath() . '/js/jquery.min.js'); ?>
+            //->prependFile($this->basePath() . '/js/jquery.colorbox-min.js')
+            ->prependFile($this->basePath() . '/js/jquery_sistema_002.js')
+            ->prependFile($this->basePath() . '/js/jquery_sistema.js'); ?>
             <script src="https://apis.google.com/js/platform.js"></script>
 
   </head>
 <body>
-<div id="conteiner" class="escuro" style="width: 100% !important;">
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KX356LG"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<div id="conteiner" class="escuro">
         <nav class="menu nav menu-sistema">
+    <div class="fechar-menu">
+        <span>
+            <svg viewBox="0 0 800 600">
+            <path d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200" id="top"></path>
+            <path d="M300,320 L540,320" id="middle"></path>
+            <path d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190" id="bottom" transform="translate(480, 320) scale(1, -1) translate(-480, -318) "></path>
+            </svg>
+        </span>
+    </div>
+
     <div class="logo">
-        <a href="<?= $this->url('indexCliente'); ?>">
-          <span style="background-image: url(<?= $this->basePath($clienteSelecionado['logo']); ?>);"></span>
-          <h1><?= $usuario['nome'] ?></h1>
-        </a>
+        <span></span>
     </div>
 
-    <div class="cf nestable-lists">
-        <div class="dd" id="nestable3">
-            <ol class="dd-list">
-              <?php foreach ($menuDashboards as $menu): ?>
-                <?php if($menu['dashboards'] == false): ?>
-                  <li class="dd-item dd3-item" data-id="<?= $menu['id'] ?>">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath($menu['icone']); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('visualizarDashboard', array('id' => $menu['id'])); ?>'"><?= $menu['nome'] ?></div>
-                      </li>
-                <?php else: ?>
+    <nav>
+      <ul class="pmenu" id="nestable3">
+        <?php foreach ($menuDashboards as $menu): ?>
+          <?php if($menu['dashboards'] == false): ?>
+            <li data-id="<?= $menu['id'] ?>">
+              <a href="<?= $this->url('visualizarDashboard', array('id' => $menu['id'])); ?>">
+                <b class="icon-comment"></b> 
+                <span><?= $menu['nome'] ?></span>
+              </a>
+            </li>
+          <?php else: ?>
+            <li data-id="cat-<?= $menu['id_categoria'] ?>">
+                <a href="#"><b class="icon-comment"></b> <span><?= $menu['nome_categoria'] ?></span></a>
+                <ul class="psubmenu">
+                  <?php foreach ($menu['dashboards'] as $dashboard): ?>
+                    <li data-id="<?= $dashboard['id'] ?>">
+                      <a href="<?= $this->url('visualizarDashboard', array('id' => $dashboard['id'])); ?>">
+                        <b class="icon-comment"></b> 
+                        <span><?= $dashboard['nome'] ?></span>
+                      </a>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+            </li>
+          <?php endif; ?>
+        <?php endforeach; ?>
+        <li>
+            <a href="#"><b class="icon-comment"></b> <span>Configurações</span></a>
+            <ul class="psubmenu">
+                <li>
+                  <a href="<?= $this->url('indexCliente'); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Clientes</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?= $this->url('indexCategoria'); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Categorias de dash.</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?= $this->url('indexDashboard'); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Dashboards</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?= $this->url('indexInvoice'); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Invoices</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?= $this->url('usuario'); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Usuários</span>
+                  </a>
+                </li>
+            </ul>
+        </li>
+      </ul>
+    </nav>
 
-                  <li class="dd-item dd3-item" data-id="cat-<?= $menu['id_categoria'] ?>">
-                      <div class="dd-handle dd3-handle"><img src="<?= $this->basePath($menu['icone_categoria']) ?>" alt=""></div><div class="dd3-content"><?= $menu['nome_categoria'] ?></div>
-                      <ol class="dd-list">
-                        <?php foreach ($menu['dashboards'] as $dashboard): ?>
-                            <li class="dd-item dd3-item" data-id="<?= $dashboard['id'] ?>">
-                                <div class="dd-handle dd3-handle">
-                                  <img src="<?= $this->basePath($dashboard['icone']); ?>" alt="">
-                                </div>
-                                <div class="dd3-content" onclick="location.href='<?= $this->url('visualizarDashboard', array('id' => $dashboard['id'])); ?>'"><?= $dashboard['nome'] ?></div>
-                            </li>
-                        <?php endforeach; ?>
-                      </ol>
-                  </li>
-                <?php endif; ?>
-              <?php endforeach; ?>
-              <li class="dd-item dd3-item" data-id="conf">
-                  <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content">Configuraçõs</div>
-                  <ol class="dd-list">
-                      <li class="dd-item dd3-item" data-id="conf-1">
-                          <div class="dd-handle dd3-handle">
-                            <img src="<?= $this->basePath('img/ico-home.png'); ?>" alt="">
-                          </div>
-                          <div class="dd3-content" onclick="location.href='<?= $this->url('indexCliente'); ?>'">Clientes</div>
-                      </li>
-                      <li class="dd-item dd3-item" data-id="conf-2">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexCategoria'); ?>'">Categorias de dashboard</div>
-                      </li>
-                      <li class="dd-item dd3-item" data-id="conf-3">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexDashboard'); ?>'">Dashboards</div>
-                      </li>
-                      <li class="dd-item dd3-item" data-id="conf-4">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('indexInvoice'); ?>'">Invoices</div>
-                      </li>
-                      <li class="dd-item dd3-item" data-id="conf-5">
-                          <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="location.href='<?= $this->url('usuario'); ?>'">Usuários</div>
-                      </li>
-                  </ol>
-              </li>
-              <li class="dd-item dd3-item" data-id="conf-6">
-                  <div class="dd-handle dd3-handle"><img src="<?= $this->basePath('img/ico-home.png'); ?>" alt=""></div><div class="dd3-content" onclick="signOut();">Logout</div>
-              </li>
-            </ol>
-            <a onclick="salvarOrdemMenu();" class="botao" name="Salvar"><i class="fas fa-save"></i> Salvar</a>
-        </div> 
+    <div class="botoes-bottom">
+        <a class="botao-sair" onclick="signOut();"><b class="icon-logout"></b><span>Sair</span></a>
     </div>
-    
-    
+
 </nav> 
 
-<section class="wrapper-slide">
-    <!-- .slideThree -->
-    <div class="slideThree">  
-        <input class="luz" type="checkbox" value="None" id="slideThree" name="check" checked="checked">
-        <label for="slideThree"></label>
-    </div>
-    <!-- end .slideThree -->
-</section>
-<div class="cont-admin">
-  
-  <div class="content-sistema">
-    
-  <?= $this->flashMessenger()->render('error', array('alert', 'alert-danger')) ?>   
 
-  <?= $this->flashMessenger()->render('warning', array('alert',  'alert-warning')) ?>
-
-  <?= $this->flashMessenger()->render('success', array('alert',  'alert-success')) ?>
-
-<?php echo $this->content; ?>
-
-  </div>
-</div>
-
-</div>
-
-
-</body>
 <script>
     $(function () {
         $('input.luz').on('change', function () {
@@ -135,26 +136,90 @@
                 $('#conteiner').addClass('claro').removeClass('escuro');
             }
         }).trigger('change');
+
     });
 
-    $(document).ready(function(){
-      $('#nestable3').nestable({
-         maxDepth: 2,
-        callback: function(l,e){
-          // l is the main container
-          //console.log(l);
-          //console.log(e);
-          // e is the element that was moved
-        }
-      });
 
-      //logout google
-      gapi.load('auth2', function() {
-        gapi.auth2.init();
-      });
+    $().ready(function () {
+        $('.ligar-luz').click(function () {
+            if ($('#conteiner').hasClass("claro")) {
+                $('#conteiner').addClass('escuro').removeClass('claro');
+            } else {
+                $('#conteiner').addClass('claro').removeClass('escuro');
+            }
+
+        });
     });
 
-    function signOut() {
+
+</script>
+
+
+
+ <div class="cont-admin"><div class="content-sistema"><div class="controle-topo">
+    <div class="icones-controle">
+        <a href="#"><b class="icon-bell"></b><span>1</span></a>
+        <a href="#"><b class="icon-comment"></b></a>
+        <a href="#" class="ativar-busca"><b class="icon-search"></b></a>
+        <a href="#" class="ligar-luz"><b class="icon-idea-1"></b></a>
+        <a onclick="signOut();"><b class="icon-logout"></b></a>
+    </div> 
+
+    <div class="nome-logado">
+        <h3>
+            <?= $usuario['nome'] ?>
+            <span><?= $usuario['cargo'] ?></span>
+        </h3>
+        <div onclick="location.href='<?= $this->url('selecionarCliente'); ?>'">
+          <figure>
+              <img src="<?= $this->basePath($clienteSelecionado['logo']); ?>">
+          </figure>
+          
+        </div>
+    </div>
+</div>
+
+<!-- <div class="busca">
+    <form action="busca.html" method="post">
+        <label>
+            <input type="text" name="search_input_field" placeholder="Buscar"> <i class="fas fa-times"></i>
+        </label>
+    </form>
+</div> -->
+
+<div class="conteudo-sistema">
+  <?= $this->flashMessenger()->render('error', array('alert', 'alert-danger')) ?>   
+  <?= $this->flashMessenger()->render('warning', array('alert',  'alert-warning')) ?>
+  <?= $this->flashMessenger()->render('success', array('alert',  'alert-success')) ?>
+  <?php echo $this->content; ?>
+</div>
+
+
+
+<script>
+
+
+    $().ready(function () {
+        $('.icones-controle .ativar-busca').click(function () {
+            $('.busca form').toggleClass('open');
+            $('body').toggleClass('travar');
+        });
+
+        $('.busca i').click(function () {
+            $('.busca form').toggleClass('open');
+            $('body').toggleClass('travar');
+        });
+
+        //logout google
+        gapi.load('auth2', function() {
+          gapi.auth2.init();
+        });
+    });
+
+</script>
+
+<script>
+function signOut() {
       <?php if(isset($usuario['google']) && $usuario['google'] == true): ?>
         gapi.auth2.init();
         var auth2 = gapi.auth2.getAuthInstance();
@@ -165,45 +230,11 @@
         location.href = "<?= $this->url('logout'); ?>";
       <?php endif; ?>
     }
+</script> 
 
-    function salvarOrdemMenu(){
-        var data = {ordem: window.JSON.stringify($('.dd').nestable('serialize'))};
-        $.ajax({
-              type: "POST",
-              url: "/cliente/ordenar/menu",
-              data: data,
-              success: function(html) {
-                if(html == 1){
-                  location.reload();
-                }else{
-                  $.alert({
-                      title: 'Erro',
-                      boxWidth: '500px',
-                      useBootstrap: false,
-                      content: 'Ocorreu algum erro ao ordenar o menu, verifique se você não atribuiu uma dashboard como item pai no menu ou contate o administrador!',
-                      buttons: {
-                        Ok: {
-                          action: function () {
-                            
-                          },
-                          btnClass: 'btnConfirmar'
-                        },
-                    }
-                  });
-                }
-                  //desabilitar botões?
-                  //msg de sucesso?
-
-              }
-        });
-
-    }
-</script>
+       </div>
+    </div>
+</div>
 
 
-</html>
-
-
-
-
-
+</body></html>

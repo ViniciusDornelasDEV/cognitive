@@ -129,5 +129,68 @@ class Usuario Extends BaseTable {
         })->current(); 
     }
 
+    public function getUsuariosByCliente($params){
+      return $this->getTableGateway()->select(function($select) use ($params) {
+        $select->join(
+                array('uc' => 'tb_usuario_cliente'),
+                'uc.usuario = tb_usuario.id',
+                array()
+            );
+
+        if($params){
+            if(!empty($params['cliente'])){
+                $select->where(array('cliente' => $params['cliente'])); 
+            }
+
+            if(isset($params['usuario']) && !empty($params['usuario'])){
+                $select->where(array('uc.usuario' => $params['usuario'])); 
+            }
+        }
+
+        $select->order('nome, ativo DESC');
+        }); 
+    }
+
+
+    public function getClientesByUsuario($idUsuario, $idCliente = false){
+      return $this->getTableGateway()->select(function($select) use ($idUsuario, $idCliente) {
+        $select->join(
+                array('uc' => 'tb_usuario_cliente'),
+                'uc.usuario = tb_usuario.id',
+                array()
+            );
+
+        $select->join(
+                array('c' => 'tb_cliente'),
+                'c.id = uc.cliente',
+                array('nome_cliente' => 'nome', 'id_cliente' => 'id', 'logo', 'id_azure', 'usuario_azure', 'senha_azure', 'cliente_ativo' => 'ativo')
+            );
+
+        if($idCliente){
+          $select->where(array('uc.cliente' => $idCliente));  
+        }
+        $select->where(array('uc.usuario' => $idUsuario, 'c.ativo' => 'S')); 
+
+        $select->order('nome, ativo DESC');
+        }); 
+    }
+
+    public function deletar($idUsuario){
+      $adapter = $this->getTableGateway()->getAdapter();
+      $connection = $adapter->getDriver()->getConnection();
+      $connection->beginTransaction();
+
+      try {
+        $tbClientes = new TableGateway('tb_usuario_cliente', $adapter);
+        $tbClientes->delete(array('usuario' => $idUsuario));
+        parent::delete(array('id' => $idUsuario));
+        $connection->commit();
+        return true;
+      } catch (Exception $e) {
+        $connection->rollback();
+        return false;
+      }
+      return false;
+    }
 
 }
