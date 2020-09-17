@@ -1,0 +1,60 @@
+<form class="formulario campos-info" role="form" method="POST" enctype='multipart/form-data' action="#">
+
+  <p class="b3" id="p-form-<?= $form->get('nome')->getName()?>">
+    <label for="<?= $form->get('nome')->getName()?>"><?=$form->get('nome')->getLabel()?></label>
+    <?= $this->formElement($form->get('nome')); ?>
+    <?= $this->formElementErrors($form->get('nome'), array('class' => 'alert alert-danger')); ?>
+  </p>
+
+  <p class="b3" id="p-form-<?= $form->get('logo')->getName()?>">
+    <label for="<?= $form->get('logo')->getName()?>"><?=$form->get('logo')->getLabel()?></label>
+    <?= $this->formElement($form->get('logo')); ?>
+    <?= $this->formElementErrors($form->get('logo'), array('class' => 'alert alert-danger')); ?>
+  </p>
+
+  <p class="b3" id="p-form-<?= $form->get('ativo')->getName()?>">
+    <label for="<?= $form->get('ativo')->getName()?>"><?=$form->get('ativo')->getLabel()?></label>
+    <?= $this->formElement($form->get('ativo')); ?>
+    <?= $this->formElementErrors($form->get('ativo'), array('class' => 'alert alert-danger')); ?>
+  </p>
+
+
+  <p class="b9">
+    <h1>Credenciais Azure</h1>
+    <a href="https://app.powerbi.com/embedsetup/appownsdata" target="_blank" class="botao" style="float: right;margin-bottom: 10px;margin-left: 10px;height: 20px;"><i class="fas fa-key"></i> Criar credenciais</a>
+  </p>
+  <p class="b3" id="p-form-<?= $form->get('id_azure')->getName()?>">
+    <label for="<?= $form->get('id_azure')->getName()?>"><?=$form->get('id_azure')->getLabel()?></label>
+    <?= $this->formElement($form->get('id_azure')); ?>
+    <?= $this->formElementErrors($form->get('id_azure'), array('class' => 'alert alert-danger')); ?>
+  </p>
+
+  <p class="b3" id="p-form-<?= $form->get('usuario_azure')->getName()?>">
+    <label for="<?= $form->get('usuario_azure')->getName()?>"><?=$form->get('usuario_azure')->getLabel()?></label>
+    <?= $this->formElement($form->get('usuario_azure')); ?>
+    <?= $this->formElementErrors($form->get('usuario_azure'), array('class' => 'alert alert-danger')); ?>
+  </p>
+
+  <p class="b3" id="p-form-<?= $form->get('senha_azure')->getName()?>">
+    <label for="<?= $form->get('senha_azure')->getName()?>"><?=$form->get('senha_azure')->getLabel()?></label>
+    <?= $this->formElement($form->get('senha_azure')); ?>
+    <?= $this->formElementErrors($form->get('senha_azure'), array('class' => 'alert alert-danger')); ?>
+    <button type="button" style="float: right;" onclick="verSenha('senha_azure');">
+      <i class="fas fa-eye"></i> Ver senha
+    </button>
+    
+  </p>
+
+<p>
+  <button type="submit" name="Salvar" style="float: right;" value="Salvar">
+    <i class="fas fa-save"></i> Salvar
+  </button>
+</p>
+</form>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var x = document.getElementById("senha_azure");
+        x.type = "password";
+      });
+    </script>

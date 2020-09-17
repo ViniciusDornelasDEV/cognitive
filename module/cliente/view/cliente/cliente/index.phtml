@@ -24,11 +24,11 @@
                     <td style="text-align: center"><?= $this->ativo($cliente['ativo']); ?></td>
                     <td style="text-align: center;">
                       <?php if($usuario['id_usuario_tipo'] == 2): ?>
-                        <a href="<?= $this->url('ordenarMenu', array('id' => $cliente['id'])); ?>"><i class="fas fa-list"></i></a>
+                        <a href="<?= $this->url('ordenarMenu', array('id' => $cliente['id'])); ?>" title="Ordenar menu"><i class="fas fa-list"></i></a>
                       <?php else: ?>
-                        <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
-                        <a href="<?= $this->url('ordenarMenu', array('id' => $cliente['id'])); ?>"><i class="fas fa-list"></i></a>
-                        <a onclick="alerta('<?= $this->url('inativarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja inativar o cliente <?= $cliente['nome'] ?>?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+                        <a href="<?= $this->url('alterarCliente', array('id' => $cliente['id'])); ?>" class="bt-editar" title="Alterar cliente"><i class="fas fa-edit"></i></a>
+                        <a href="<?= $this->url('ordenarMenu', array('id' => $cliente['id'])); ?>" title="Ordenar menu"><i class="fas fa-list"></i></a>
+                        <a onclick="alerta('<?= $this->url('inativarCliente', array('id' => $cliente['id'])); ?>', 'Tem certeza que deseja inativar o cliente <?= $cliente['nome'] ?>?');" class="bt-deletar" title="Inativar cliente"><i class="fas fa-minus-circle"></i></a>
 
                       <?php endif; ?>
 

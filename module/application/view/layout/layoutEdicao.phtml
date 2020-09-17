@@ -5,6 +5,7 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-KX356LG');</script>
+    <meta http-equiv="Content-Language" content="pt-br">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="google-signin-client_id" content="119263952091-gdpfe1a4arv7dj1g2f4uia1pf517tk44.apps.googleusercontent.com">
      <?php echo $this->headTitle('Cognitive')->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -101,6 +102,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <a href="<?= $this->url('indexDashboard'); ?>">
                     <b class="icon-comment"></b> 
                     <span>Dashboards</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?= $this->url('ordenarMenu', array('id' => $clienteSelecionado['id'])); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Ordenar menu</span>
                   </a>
                 </li>
                 <li>

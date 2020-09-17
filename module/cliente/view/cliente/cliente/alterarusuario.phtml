@@ -31,7 +31,7 @@
                         <tr>
                             <td style="text-align: center"><?= $clienteVinculado['nome_cliente']; ?></td>
                             <td style="text-align: center;">
-                                <a  onclick="alerta('<?= $this->url('deletarClienteUsuario', array('cliente' => $clienteVinculado['id_cliente'], 'usuario' => $usuario['id'], 'idAlterar' => $cliente['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja desvincular o cliente?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+                                <a title="Desvincular cliente" onclick="alerta('<?= $this->url('deletarClienteUsuario', array('cliente' => $clienteVinculado['id_cliente'], 'usuario' => $usuario['id'], 'idAlterar' => $cliente['id'])); ?>', 'Esta operação é irreversível. Tem certeza que deseja desvincular o cliente?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
                             </td>
                         </tr>
                       <?php endforeach; ?>

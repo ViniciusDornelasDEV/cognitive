@@ -109,12 +109,12 @@ class Usuario Extends BaseTable {
                 }
             }
             
-            $select->where
+            /*$select->where
                 ->nest
                     ->notEqualTo('id_usuario_tipo', 3)
                     ->and
                     ->notEqualTo('id_usuario_tipo', 4)
-                ->unnest;
+                ->unnest;*/
 
             $select->order('nome');
         }); 

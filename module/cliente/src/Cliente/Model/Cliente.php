@@ -17,7 +17,11 @@ class Cliente Extends BaseTable {
         return $this->getTableGateway()->select(function($select) use ($params) {
           if(isset($params['nome']) && !empty($params['nome'])){
               $select->where->like('nome', '%'.$params['nome'].'%');
-          } 
+          }
+
+          if(isset($params['ativo']) && !empty($params['ativo'])){
+              $select->where(array('ativo' => $params['ativo']));
+          }
 
           $select->order('nome');
         }); 

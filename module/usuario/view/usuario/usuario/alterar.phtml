@@ -1,9 +1,43 @@
     <h1><i class="fas fa-bars"></i><a href="<?= $this->url('usuario'); ?>">Usuários</a> / alterar </h1>
     <h2>Alterar usuário</h2>
     <div class="conteudo-sistema">
-      <a href="<?= $this->url('usuarioNovo'); ?>" class="botao" style="float: right;"><i class="far fa-plus-square"></i> Novo</a>
-      <br>
-
       <?php echo $this->partial('form/generic', array('form'=> $formUsuario, 'route'=> '')) ?>
 
     </div>
+
+    <?php if($formVincular): ?>
+      <div class="bloco-padrao">
+        <h2>Vincular cliente ao usuário</h2>
+         <?php echo $this->partial('form/generic', array('form'=> $formVincular, 'route'=> '')) ?>
+      </div>
+
+      <?php if($clientesUsuario): ?>
+          <div class="bloco-padrao">
+          <h2>Clientes vinculados ao usuário <?= $usuario['nome'] ?></h2>
+           
+          <?php if($clientesUsuario->count() > 0): ?>
+            <table class="table">
+              <tbody>
+                  <tr class="topo-tabela">
+                    <th style="text-align: center">Cliente</th>
+                    <th style="text-align: center">Ações</th>
+              </tr>
+                  </tr>
+                  <?php foreach($clientesUsuario as $clienteVinculado): ?>
+                    <tr>
+                        <td style="text-align: center"><?= $clienteVinculado['nome_cliente']; ?></td>
+                        <td style="text-align: center;">
+                            <a title="Desvincular cliente" onclick="alerta('<?= $this->url('deletarClienteUsuario', array('cliente' => $clienteVinculado['id_cliente'], 'usuario' => $usuario['id'], 'idAlterar' => 1, 'modulo' => 'usuario')); ?>', 'Esta operação é irreversível. Tem certeza que deseja desvincular o cliente?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+                        </td>
+                    </tr>
+                  <?php endforeach; ?>
+              </tbody>
+            </table>
+            <?php else: ?>
+              <br>
+              <div class="alert alert-info">Nenhum usuário encontrado!</div>
+            <?php endif; ?>
+          </div>
+      <?php endif; ?>
+
+    <?php endif; ?>

@@ -21,6 +21,7 @@
     $('#telefone').mask(maskBehavior, options);
 
     $(document).ready(function() {
+      $('#login').prop("disabled", true);
         <?php if($usuario != false): ?>
           <?php if($usuario['pais'] == 'Brasil'): ?>
             $("#p-form-estado_br").css("display", "block");

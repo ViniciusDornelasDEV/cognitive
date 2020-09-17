@@ -27,8 +27,8 @@
                     <td style="text-align: center"><?= $usuario['perfil']; ?></td>
                     <td style="text-align: center"><?= $this->ativo($usuario['ativo']); ?></td>
                     <td style="text-align: center;">
-                        <a href="<?= $this->url('usuarioAlterar', array('id' => $usuario['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
-                        <a onclick="alerta('<?= $this->url('usuarioDeletar', array('id' => $usuario['id'])) ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o usuário?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
+                        <a title="Alterar usuário" href="<?= $this->url('usuarioAlterar', array('id' => $usuario['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
+                        <a title="Deletar usuário" onclick="alerta('<?= $this->url('usuarioDeletar', array('id' => $usuario['id'])) ?>', 'Esta operação é irreversível. Tem certeza que deseja deletar o usuário?');" class="bt-deletar"><i class="fas fa-minus-circle"></i></a>
                     </td>
                 </tr>
 

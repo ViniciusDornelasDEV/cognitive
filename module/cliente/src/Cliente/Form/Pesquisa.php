@@ -18,6 +18,8 @@ use Application\Form\Base as BaseForm;
 
         parent::__construct($name);          
         $this->genericTextInput('nome', false, false, 'Nome');
+
+        $this->_addDropdown('ativo', 'Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'));
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

@@ -22,6 +22,7 @@ use Usuario\Form\AlterarSenha as alterarSenhaForm;
 use Usuario\Form\RecuperarSenha as novaSenhaForm;
 use Usuario\Form\AtivarUsuario as formAtivarUsuario;
 use Usuario\Form\AlterarToken as alterarToken;
+use Cliente\Form\VincularCliente as formVincularCliente;
 
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\ArrayAdapter;
@@ -91,6 +92,7 @@ class UsuarioController extends BaseController
                   //Create acl config
                   $sessao = new Container();
                   $sessao->acl = $this->criarAutorizacao();
+                  
                   if($user['id_usuario_tipo'] == 3 || $user['id_usuario_tipo'] == 4){
                     //verificar se cliente está ativo
                     $cliente = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario($user['id'])->current();
@@ -98,6 +100,7 @@ class UsuarioController extends BaseController
                     if($cliente){
                       $sessao->cliente = $this->getServiceLocator()->get('Cliente')->getRecord($cliente['id_cliente']);
                     }
+                    
                     return $this->redirect()->toRoute('selecionarCliente');
                   }else{
                     $cliente = $this->getServiceLocator()->get('Cliente')->getRecords('S', 'ativo');
@@ -531,26 +534,68 @@ class UsuarioController extends BaseController
   public function alterarAction(){
     $formUsuario = new usuarioForm('frmUsuario', $this->getServiceLocator());
     $usuario = $this->getServiceLocator()->get('Usuario')->getRecord($this->params()->fromRoute('id'));
-    if($this->getRequest()->isPost()){
-      $formUsuario->setData($this->getRequest()->getPost());
-      if($formUsuario->isValid()){
-        //salvar
-        $this->getServiceLocator()->get('Usuario')->update($formUsuario->getData(), array('id' => $usuario['id']));
+    
+    //vincular cliente
+    $formVincular = false;
+    $clientesUsuario = false;
+    if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
+      $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $usuario['id']);
+      $clientesUsuario = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(array('usuario' => $usuario['id']));
+    }
 
-        //gerar mensagem de sucesso e redirecionar
-        $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
-        return $this->redirect()->toRoute('usuario');  
+    if($this->getRequest()->isPost()){
+      $dados = $this->getRequest()->getPost();
+      if(isset($dados['cliente'])){
+        $formVincular->setData($dados);
+        if($formVincular->isValid()){
+          $dados = $formVincular->getData();
+          $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+            'usuario'   =>  $usuario['id'],
+            'cliente'   =>  $dados['cliente']
+          ));
+          $this->flashMessenger()->addSuccessMessage('Cliente vinculado ao usuário com sucesso!');
+          return $this->redirect()->toRoute('usuarioAlterar', array('id' => $usuario['id']));
+        }
+      }else{
+        $formUsuario->setData($this->getRequest()->getPost());
+        if($formUsuario->isValid()){
+          //salvar
+          $this->getServiceLocator()->get('Usuario')->update($formUsuario->getData(), array('id' => $usuario['id']));
+
+          //gerar mensagem de sucesso e redirecionar
+          $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
+          return $this->redirect()->toRoute('usuario');  
+        }
       }
     }
     $formUsuario->setData($usuario);
 
-    return new ViewModel(array('formUsuario' => $formUsuario));
+    return new ViewModel(array(
+      'formUsuario'     => $formUsuario,
+      'formVincular'    => $formVincular,
+      'clientesUsuario' => $clientesUsuario,
+      'usuario'         => $usuario
+    ));
   }
 
   public function deletarusuarioAction(){
     $this->getServiceLocator()->get('Usuario')->delete(array('id' => $this->params()->fromRoute('id')));
     $this->flashMessenger()->addSuccessMessage('Usuário excluído com sucesso!');
     return $this->redirect()->toRoute('usuario');
+  }
+
+  public function salvartemplateAction(){
+    $template = $this->getRequest()->getPost();
+    $usuario = $this->getServiceLocator()->get('session')->read();
+    $usuario['template'] = $template['nomeTemplate'];
+    $this->getServiceLocator()->get('session')->write($usuario);
+    $this->getServiceLocator()->get('Usuario')
+      ->update(array('template' => $template['nomeTemplate']), array('id' => $usuario['id']));
+
+    $view = new ViewModel();
+    $view->setTerminal(true);
+    $view->setVariables(array());
+    return $view;
   }
 
 

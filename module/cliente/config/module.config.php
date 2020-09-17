@@ -106,7 +106,7 @@ return array(
             'deletarClienteUsuario' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/usuario/cliente/deletar[/:cliente][/:usuario][/:idAlterar]',
+                    'route'    => '/usuario/cliente/deletar[/:cliente][/:usuario][/:idAlterar][/:modulo]',
                     'constraints' => array(
                         'id'     => '[0-9]+',
                         'idAlterar'     => '[0-9]+',
@@ -168,7 +168,7 @@ return array(
     ),
     'view_manager' => array(
         'template_map' => array(
-            
+            'form/cliente'              => __DIR__ . '/../view/partials/formCliente.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',

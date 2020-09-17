@@ -154,6 +154,7 @@ class Module
                 
                 'session' => function ($sm) {
                     $config = $sm->get('config');
+                    
                     if (isset($config['session'])) {
                         $session = $config['session']['config']['options']['name'];
                         

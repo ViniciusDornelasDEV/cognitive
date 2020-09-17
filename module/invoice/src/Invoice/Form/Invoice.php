@@ -38,4 +38,11 @@ use Application\Form\Base as BaseForm;
       parent::setData($data);
     }
 
+    public function getData($flag = 17){
+      $data = parent::getData();
+      $data['valor'] = parent::numberInsertMysql($data['valor']);
+
+      return $data;
+    }
+
  }

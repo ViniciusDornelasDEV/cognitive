@@ -226,7 +226,16 @@ return array(
                 ),
             ),
 
-
+            'salvarTemplate' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/template/salvar',
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'salvartemplate',
+                    ),
+                ),
+            ),
         ),
     ),
 	'controllers' => array(

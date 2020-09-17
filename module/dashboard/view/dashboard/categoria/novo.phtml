@@ -1,9 +1,6 @@
     <h1><i class="fas fa-bars"></i><a href="<?= $this->url('indexCategoria'); ?>">Categorias de dashboard</a> / novo </h1>
     <h2>Inserir categoria de dashboard do cliente <?= $cliente['nome'] ?></h2>
     <div class="conteudo-sistema">
-      <a href="<?= $this->url('novoCategoria'); ?>" class="botao" style="float: right;margin-bottom: 10px"><i class="far fa-plus-square"></i> Novo</a>
-      <br>
-
       <?php echo $this->partial('form/generic', array('form'=> $formCategoria, 'route'=> '')) ?>
 
     </div>

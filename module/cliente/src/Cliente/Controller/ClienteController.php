@@ -29,7 +29,7 @@ class ClienteController extends BaseController
 
     	$formPesquisa = new formPesquisa('frmPesquisa');
 
-      $params = array();
+      $params = array('ativo' => 'S');
       if($this->getRequest()->isPost()){
         $dados = $this->getRequest()->getPost();
         
@@ -327,6 +327,10 @@ class ClienteController extends BaseController
         return $this->redirect()->toRoute('alterarClienteByCliente');
       }
 
+      $modulo = $this->params()->fromRoute('modulo');
+      if($modulo == 'usuario'){
+        return $this->redirect()->toRoute('usuarioAlterar', array('id' => $idUsuario));  
+      }
       return $this->redirect()->toRoute('alterarUsuarioCliente', array('id' => $this->params()->fromRoute('idAlterar'), 'usuario' => $idUsuario));
     }
 
@@ -502,7 +506,15 @@ class ClienteController extends BaseController
           $formUsuario = new formAtivarUsuario('frmUsuario', $this->getServiceLocator());
           $usuario['estado_br'] = $usuario['estado'];
           //se não veio post, popular form
-          $formUsuario->setData($usuario);
+          $formUsuario->setData(array(
+            'sobrenome' =>  $usuario['sobrenome'],
+            'cargo'     =>  $usuario['cargo'],
+            'pais'      =>  $usuario['pais'],
+            'estado_br' =>  $usuario['estado'],
+            'estado'    =>  $usuario['estado'],
+            'telefone'  =>  $usuario['telefone'],
+            'login'     =>  $usuario['login'],
+          ));
 
           //se vier post salvar dados
           if($this->getRequest()->isPost()){
@@ -518,6 +530,10 @@ class ClienteController extends BaseController
               $dados['senha'] = $bcrypt->create($dados['senha']);
               $dados['ativo'] = 'S';
               $dados['token_ativacao'] = '';
+
+              if(isset($dados['login'])){
+                unset($dados['login']);
+              }
               
               //salvar alterações
               $this->getServiceLocator()->get('Usuario')->update($dados, array('token_ativacao' => $token));
@@ -570,7 +586,7 @@ class ClienteController extends BaseController
       if($usuario['id_usuario_tipo'] == 4){
         $this->layout('layout/cliente');
       }
-      
+
       //pesquisar clientes do usuário logado
       $usuario = $this->getServiceLocator()->get('session')->read();
       if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
@@ -603,8 +619,15 @@ class ClienteController extends BaseController
 
         if($cliente){
           $container->cliente = $cliente;
-          
-          return $this->redirect()->toRoute('selecionarCliente');
+          //redir para dash do cliente, se não existir, gerar msg de alerta
+          $dashBoards = $this->getServiceLocator()->get('Dashboard')->getDashboardsByParams(array('cliente' => $cliente['id']), true); 
+          if($dashBoards->count() > 0){
+            $dashBoard = $dashBoards->current();
+            return $this->redirect()->toRoute('visualizarDashboard', array('id' => $dashBoard['id']));
+          }else{
+            $this->flashMessenger()->addWarningMessage('Não existe nenhuma dashboard ativa para o cliente '.$cliente['nome']);
+            return $this->redirect()->toRoute('selecionarCliente');
+          }
         }else{
           $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
           return $this->redirect()->toRoute('selecionarCliente');

@@ -1,8 +1,6 @@
     <h1><i class="fas fa-bars"></i><a href="<?= $this->url('indexDashboard'); ?>">Dashboards</a> / novo </h1>
     <h2>Cadastro de dashboard para o cliente <?= $cliente['nome'] ?></h2>
     <div class="conteudo-sistema">
-      <a href="<?= $this->url('novoDashboard'); ?>" class="botao" style="float: right;margin-bottom: 10px"><i class="far fa-plus-square"></i> Novo</a>
-      <br>
 
       <?php echo $this->partial('form/generic', array('form'=> $formDashboard, 'route'=> ''))  ?>
 

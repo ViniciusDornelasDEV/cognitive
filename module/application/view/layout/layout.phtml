@@ -5,6 +5,7 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-KX356LG');</script>
+    <meta http-equiv="Content-Language" content="pt-br">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="google-signin-client_id" content="119263952091-gdpfe1a4arv7dj1g2f4uia1pf517tk44.apps.googleusercontent.com">
      <?php echo $this->headTitle('Cognitive')->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -40,7 +41,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <body>
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KX356LG"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<div id="conteiner" class="escuro">
+<div id="conteiner" class="<?= $usuario['template'] ?>">
         <nav class="menu nav menu-sistema">
     <div class="fechar-menu">
         <span>
@@ -104,6 +105,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   </a>
                 </li>
                 <li>
+                  <a href="<?= $this->url('ordenarMenu', array('id' => $clienteSelecionado['id'])); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Ordenar menu</span>
+                  </a>
+                </li>
+                <li>
                   <a href="<?= $this->url('indexInvoice'); ?>">
                     <b class="icon-comment"></b> 
                     <span>Invoices</span>
@@ -126,33 +133,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 </nav> 
 
-
-<script>
-    $(function () {
-        $('input.luz').on('change', function () {
-            if ($(this).is(":checked")) {
-                $('#conteiner').addClass('escuro').removeClass('claro');
-            } else {
-                $('#conteiner').addClass('claro').removeClass('escuro');
-            }
-        }).trigger('change');
-
-    });
-
-
-    $().ready(function () {
-        $('.ligar-luz').click(function () {
-            if ($('#conteiner').hasClass("claro")) {
-                $('#conteiner').addClass('escuro').removeClass('claro');
-            } else {
-                $('#conteiner').addClass('claro').removeClass('escuro');
-            }
-
-        });
-    });
-
-
-</script>
 
 
 
