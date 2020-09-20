@@ -597,6 +597,10 @@ class ClienteController extends BaseController
       $this->getServiceLocator()->get('Usuario')->deletar(array('id' => $idUsuario));
       $this->flashMessenger()->addSuccessMessage('Usuário excluído com sucesso!');
       if($usuario['id_usuario_tipo'] == 3){
+        $redir = $this->params()->fromRoute('redir');
+        if($redir == 'U'){
+          return $this->redirect()->toRoute('usuarioCliente');  
+        }
         return $this->redirect()->toRoute('alterarClienteByCliente');
       }
       return $this->redirect()->toRoute('alterarCliente', array('id' => $idCliente));

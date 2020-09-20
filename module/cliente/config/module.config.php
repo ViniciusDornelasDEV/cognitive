@@ -91,7 +91,7 @@ return array(
             'deletarUsuarioCliente' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/cliente/usuario/deletar[/:id][/:usuario]',
+                    'route'    => '/cliente/usuario/deletar[/:id][/:usuario][/:redir]',
                     'constraints' => array(
                         'id'     => '[0-9]+',
                         'usuario'     => '[0-9]+',
