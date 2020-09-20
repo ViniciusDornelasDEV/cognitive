@@ -62,9 +62,9 @@ class CategoriaController extends BaseController
           $dados['cliente'] = $container->cliente['id'];
 
           //colocar ultima na ordem
-          $categorias = $this->getServiceLocator()->get('CategoriaDashboard')->getRecordsFromArray(array('cliente' => $container->cliente['id']))->count();
-          $dados['ordem'] = $categorias+1;
-          
+          $dashboards = $this->getServiceLocator()->get('Dashboard')->getRecordsFromArray(array('cliente' => $container->cliente['id']))->count();
+          $dados['ordem'] = $dashboards+1;
+
           $this->getServiceLocator()->get('CategoriaDashboard')->insert($dados);
           $this->flashMessenger()->addSuccessMessage('Categoria inserida com sucesso!');
           return $this->redirect()->toRoute('indexCategoria');

@@ -75,7 +75,6 @@
       $embedResponse = curl_exec($curlGetUrl);
       $embedError = curl_error($curlGetUrl);
       curl_close($curlGetUrl);
-
       if($embedError) {
         $this->error = "cURL Error #:" . $embedError;
         return false;

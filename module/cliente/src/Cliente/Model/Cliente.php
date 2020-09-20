@@ -38,6 +38,7 @@ class Cliente Extends BaseTable {
         );
 
         $select->where->isNull('uc.usuario');
+        $select->where(array('ativo' => 'S'));
         $select->order('nome');
       }); 
     }

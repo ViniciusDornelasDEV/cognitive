@@ -95,11 +95,6 @@ class DashboardController extends BaseController
 
           //colocar ultima na ordem
           $paramsOrdem = array('cliente' => $container->cliente['id']);
-          if(empty($dados['categoria'])){
-            $paramsOrdem['categoria'] = '';
-          }else{
-            $paramsOrdem['categoria'] = $dados['categoria'];
-          }
           $dashboards = $this->getServiceLocator()->get('Dashboard')->getRecordsFromArray($paramsOrdem)->count();
           $dados['ordem'] = $dashboards+1;
           

@@ -97,6 +97,13 @@ class Module
         
           $viewModel->usuario = $session->read();
         }
+        $viewModel->rota = $rota;
+        $viewModel->rotasPesquisa = array(
+          'indexCliente',
+          'indexDashboard',
+          'indexInvoice',
+          'usuario'
+        );
         
     }
 

@@ -107,17 +107,75 @@ class Usuario Extends BaseTable {
                 if(!empty($params['id_usuario_tipo'])){
                     $select->where(array('id_usuario_tipo' => $params['id_usuario_tipo'])); 
                 }
+                if(isset($params['tipo'])){
+                  if($params['tipo'] == 'C'){
+                    //APENAS CLIENTES
+                    $select->where
+                        ->nest
+                            ->notEqualTo('id_usuario_tipo', 1)
+                            ->and
+                            ->notEqualTo('id_usuario_tipo', 2)
+                        ->unnest;
+                  }
+
+                  if($params['tipo'] == 'E'){
+                    //APENAS DA EMPRESA COGNITIVE
+                    $select->where
+                        ->nest
+                            ->notEqualTo('id_usuario_tipo', 3)
+                            ->and
+                            ->notEqualTo('id_usuario_tipo', 4)
+                        ->unnest;
+                  }
+                }
             }
             
-            /*$select->where
-                ->nest
-                    ->notEqualTo('id_usuario_tipo', 3)
-                    ->and
-                    ->notEqualTo('id_usuario_tipo', 4)
-                ->unnest;*/
 
             $select->order('nome');
-        }); 
+        });
+    }
+
+    public function getUsuariosCliente($params, $clientes, $idUsuario = false){
+      return $this->getTableGateway()->select(function($select) use ($params, $clientes, $idUsuario) {
+            $select->join(
+              array('ut' => 'tb_usuario_tipo'),
+              'ut.id = id_usuario_tipo',
+              array('perfil')
+            );
+
+            $select->join(
+              array('uc' => 'tb_usuario_cliente'),
+              'uc.usuario = tb_usuario.id',
+              array('cliente')
+            );
+
+            if($params){
+                if(!empty($params['nome'])){
+                    $select->where->like('nome', '%'.$params['nome'].'%');
+                }    
+
+                if(!empty($params['id_usuario_tipo'])){
+                    $select->where(array('id_usuario_tipo' => $params['id_usuario_tipo'])); 
+                }
+            }
+
+            if($idUsuario){
+              $select->where(array('tb_usuario.id' => $idUsuario));
+            }
+
+            $select->where
+              ->nest
+                  ->notEqualTo('id_usuario_tipo', 1)
+                  ->and
+                  ->notEqualTo('id_usuario_tipo', 2)
+              ->unnest;
+            
+            $select->where(array('uc.cliente' => $clientes));
+            $select->group('tb_usuario.id');
+            $select->order('nome');
+
+        });
+      
     }
 
     public function verificaEmail($idUsuario, $email){

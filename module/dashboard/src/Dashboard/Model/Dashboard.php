@@ -31,6 +31,10 @@ class Dashboard Extends BaseTable {
             $select->where(array('categoria' => $params['categoria']));
           }
 
+          if(isset($params['ativo']) && !empty($params['ativo'])){
+            $select->where(array('ativo' => $params['ativo']));
+          }
+
           if(isset($params['nome']) && !empty($params['nome'])){
             $select->where->like('tb_dashboard.nome', '%'.$params['nome'].'%');
           }
@@ -44,8 +48,7 @@ class Dashboard Extends BaseTable {
     }
 
     public function getMenu($cliente){
-      $dashboards = $this->getDashboardsByParams(array('cliente' => $cliente));
-
+      $dashboards = $this->getDashboardsByParams(array('cliente' => $cliente, 'ativo' => 'S'));
       $menu = array();
       $categoria = false;
       $cont = 0;
@@ -88,7 +91,6 @@ class Dashboard Extends BaseTable {
         $arrayOrdenado[$item['ordem']] = $item;
       }
       ksort($arrayOrdenado);
-
       return $arrayOrdenado;
     }
 

@@ -107,11 +107,6 @@ return array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
                     'route'    => '/usuario/cliente/deletar[/:cliente][/:usuario][/:idAlterar][/:modulo]',
-                    'constraints' => array(
-                        'id'     => '[0-9]+',
-                        'idAlterar'     => '[0-9]+',
-                        'usuario'     => '[0-9]+',
-                    ),
                     'defaults' => array(
                         'controller' => 'Cliente\Controller\Cliente',
                         'action'     => 'deletarclienteusuario',

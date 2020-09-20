@@ -90,7 +90,7 @@ class Mailer extends BaseMailer {
                                               </tr>
                                               <tr style="background-color:#32363b">
                                                   <td colspan="3" style="font-family:Helvetica,Arial,sans-serif; font-size:12px; color:#61696d; width:250px; padding:10px">
-                                                      <a href="#" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: rgb(89, 168, 214);">'.$link.'</a>
+                                                      <a href="'.$link.'" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: rgb(89, 168, 214);">'.$link.'</a>
                                                   </td>
                                               </tr>
 

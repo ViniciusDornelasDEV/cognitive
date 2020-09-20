@@ -176,6 +176,11 @@ class InvoiceController extends BaseController
         return $this->redirect()->toRoute('indexInvoice');
       }
 
+      if(empty($invoice['arquivo'])){
+        $this->flashMessenger()->addWarningMessage('Invoice sem arquivo!');
+        return $this->redirect()->toRoute('indexInvoice');
+      }
+
       $fileName = $invoice->arquivo;
 
       if(!is_file($fileName)) {

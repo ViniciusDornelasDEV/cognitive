@@ -23,7 +23,7 @@ use Usuario\Form\RecuperarSenha as novaSenhaForm;
 use Usuario\Form\AtivarUsuario as formAtivarUsuario;
 use Usuario\Form\AlterarToken as alterarToken;
 use Cliente\Form\VincularCliente as formVincularCliente;
-
+use Cliente\Form\Usuario as formUsuarioCliente;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Mail;
@@ -99,6 +99,9 @@ class UsuarioController extends BaseController
                     
                     if($cliente){
                       $sessao->cliente = $this->getServiceLocator()->get('Cliente')->getRecord($cliente['id_cliente']);
+                    }else{
+                      //não tem nenhum cliente vinculado!
+                      return $this->redirect()->toRoute('logout');
                     }
                     
                     return $this->redirect()->toRoute('selecionarCliente');
@@ -115,7 +118,8 @@ class UsuarioController extends BaseController
               }
           }
       }        
-
+      $cliente = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(37)->current();
+      
       return new ViewModel(array('form' => $form));
 
   }
@@ -131,7 +135,6 @@ class UsuarioController extends BaseController
       $session->write($usuario);
       $sessao = new Container();
       $sessao->acl = $this->criarAutorizacao();
-    
       if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
         //verificar se cliente está ativo
         $cliente = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario($usuario['id'])->current();
@@ -430,8 +433,19 @@ class UsuarioController extends BaseController
   }
 
   public function indexAction(){
+      $sessao = new Container();
+      $tipoPesquisa = $this->params()->fromRoute('tipo');
+
+      if($tipoPesquisa){
+        $sessao->tipoPesquisa = $tipoPesquisa;
+      }
+
+      if(!isset($sessao->tipoPesquisa)){
+        $sessao->tipoPesquisa = 'C';
+      }
+
       $formPesquisa = new pesquisaForm('frmPesquisa', $this->getServiceLocator());
-      $params = false;
+      $params = array('tipo' => $sessao->tipoPesquisa);
       if($this->getRequest()->isPost()){
         $dados = $this->getRequest()->getPost();
         if(isset($dados['limpar'])){
@@ -441,6 +455,7 @@ class UsuarioController extends BaseController
         $formPesquisa->setData($dados);
         if($formPesquisa->isValid()){
           $params = $formPesquisa->getData();
+          $params['tipo'] = $sessao->tipoPesquisa;
         }
       }
 
@@ -458,8 +473,50 @@ class UsuarioController extends BaseController
                           ));
   }
 
+  public function indexclienteAction(){
+    $this->layout('layout/cliente/admin');
+    $formPesquisa = new pesquisaForm('frmPesquisa', $this->getServiceLocator());
+    $params = false;
+    if($this->getRequest()->isPost()){
+      $dados = $this->getRequest()->getPost();
+      if(isset($dados['limpar'])){
+        return $this->redirect()->toRoute('usuario', array('page' => $this->params()->fromRoute('page')));
+      }
+
+      $formPesquisa->setData($dados);
+      if($formPesquisa->isValid()){
+        $params = $formPesquisa->getData();
+      }
+    }
+
+    $serviceUsuario = $this->getServiceLocator()->get('Usuario');
+    $usuarioLogado = $this->getServiceLocator()->get('session')->read();
+    $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuarioLogado['id'], 'usuario', array('cliente'));
+    $clientes = array();
+    foreach ($clientesAdmin as $cliente) {
+      $clientes[] = $cliente['cliente'];
+    }
+
+    $usuarios = $serviceUsuario->getUsuariosCliente($params, $clientes);
+
+    $Paginator = new Paginator(new ArrayAdapter($usuarios->toArray()));
+    $Paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
+    $Paginator->setItemCountPerPage(10);
+    $Paginator->setPageRange(5);
+    
+    return new ViewModel(array(
+                            'usuarios'      => $Paginator, 
+                            'formPesquisa'   => $formPesquisa,
+                        ));
+  }
+
   public function novoAction(){
-    $formUsuario = new usuarioForm('frmUsuario', $this->getServiceLocator());
+    $sessao = new Container();
+    if(isset($sessao->tipoPesquisa) && $sessao->tipoPesquisa == 'C'){
+      $formUsuario = new formUsuarioCliente('frmUsuario', $this->getServiceLocator());
+    }else{
+      $formUsuario = new usuarioForm('frmUsuario', $this->getServiceLocator());
+    }
 
     if($this->getRequest()->isPost()){
       $formUsuario->setData($this->getRequest()->getPost());
@@ -475,14 +532,59 @@ class UsuarioController extends BaseController
 
         //enviar link de ativação por email
         $mailer = $this->getServiceLocator()->get('mailer');
-        $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
+        if($dados['id_usuario_tipo'] == 3 || $dados['id_usuario_tipo'] == 4){
+          $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
+          '/cliente/ativar/'.$dados['token_ativacao'];
+        }else{
+          $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
           '/usuario/ativar/'.$dados['token_ativacao'];
+
+        }
         $html = $mailer->emailAtivacao($link);
         $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
 
         //gerar mensagem de sucesso e redirecionar
         $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
         return $this->redirect()->toRoute('usuario');  
+      }
+    }
+
+    return new ViewModel(array('formUsuario' => $formUsuario));
+  }
+
+  public function novoclienteAction(){
+    $this->layout('layout/cliente/admin');
+    $formUsuario = new formUsuarioCliente('frmUsuario', $this->getServiceLocator());
+
+    if($this->getRequest()->isPost()){
+      $formUsuario->setData($this->getRequest()->getPost());
+      if($formUsuario->isValid()){
+        //aplicar configurações e salvar
+        $dados = $formUsuario->getData();
+        $idUsuario = $this->getServiceLocator()->get('Usuario')->getNextInsertId('tb_usuario');
+              $dados['token_ativacao'] = strtolower(base64_encode(mt_rand().crypt(time().$idUsuario->Auto_increment.uniqid(mt_rand(), true))));
+        $dados['ativo'] = 'A';
+
+        //salvar
+        $idUsuario = $this->getServiceLocator()->get('Usuario')->insert($dados);
+        $serviceUsuario = $this->getServiceLocator()->get('Usuario');
+        $usuarioLogado = $this->getServiceLocator()->get('session')->read();
+        $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuarioLogado['id'], 'usuario', array('cliente'))->current();
+        $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+          'usuario'   =>  $idUsuario,
+          'cliente'   =>  $clientesAdmin['cliente']
+        ));
+
+        //enviar link de ativação por email
+        $mailer = $this->getServiceLocator()->get('mailer');
+        $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
+          '/cliente/ativar/'.$dados['token_ativacao'];
+        $html = $mailer->emailAtivacao($link);
+        $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
+
+        //gerar mensagem de sucesso e redirecionar
+        $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
+        return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $idUsuario));  
       }
     }
 
@@ -513,6 +615,7 @@ class UsuarioController extends BaseController
             $dados['senha'] = $bcrypt->create($dados['senha']);
             $dados['ativo'] = 'S';
             $dados['token_ativacao'] = '';
+            unset($dados['login']);
             
             //salvar alterações
             $this->getServiceLocator()->get('Usuario')->update($dados, array('token_ativacao' => $token));
@@ -532,7 +635,6 @@ class UsuarioController extends BaseController
 
 
   public function alterarAction(){
-    $formUsuario = new usuarioForm('frmUsuario', $this->getServiceLocator());
     $usuario = $this->getServiceLocator()->get('Usuario')->getRecord($this->params()->fromRoute('id'));
     
     //vincular cliente
@@ -541,6 +643,9 @@ class UsuarioController extends BaseController
     if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
       $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $usuario['id']);
       $clientesUsuario = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(array('usuario' => $usuario['id']));
+      $formUsuario = new formUsuarioCliente('frmUsuario', $this->getServiceLocator());
+    }else{
+      $formUsuario = new usuarioForm('frmUsuario', $this->getServiceLocator());
     }
 
     if($this->getRequest()->isPost()){
@@ -564,7 +669,77 @@ class UsuarioController extends BaseController
 
           //gerar mensagem de sucesso e redirecionar
           $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
-          return $this->redirect()->toRoute('usuario');  
+          return $this->redirect()->toRoute('usuarioAlterar');  
+        }
+      }
+    }
+    $formUsuario->setData($usuario);
+
+    return new ViewModel(array(
+      'formUsuario'     => $formUsuario,
+      'formVincular'    => $formVincular,
+      'clientesUsuario' => $clientesUsuario,
+      'usuario'         => $usuario
+    ));
+  }
+
+  public function alterarclienteAction(){
+    $this->layout('layout/cliente/admin');
+    $formUsuario = new usuarioForm('frmUsuario', $this->getServiceLocator());
+    $usuarioLogado = $this->getServiceLocator()->get('session')->read();
+    
+    //verificar se usuário é realmente do cliente logado
+    $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuarioLogado['id'], 'usuario', array('cliente'));
+    $clientes = array();
+    foreach ($clientesAdmin as $cliente) {
+      $clientes[] = $cliente['cliente'];
+    }
+
+    $usuario = $this->getServiceLocator()->get('Usuario')->getUsuariosCliente(
+      array(),
+      $clientes,
+      $this->params()->fromRoute('id')
+    )->current();
+    if(!$usuario){
+      $this->flashMessenger()->addWarningMessage('Usuário não encontrado!');
+      return $this->redirect()->toRoute('usuarioCliente');
+    }
+
+    //vincular cliente
+    $formVincular = false;
+    $clientesUsuario = false;
+    if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
+      $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $usuario['id'], $usuarioLogado);
+      $clientesUsuario = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(array('usuario' => $usuario['id']));
+    }
+
+    if($this->getRequest()->isPost()){
+      $dados = $this->getRequest()->getPost();
+      if(isset($dados['cliente'])){
+        $formVincular->setData($dados);
+        if($formVincular->isValid()){
+          $dados = $formVincular->getData();
+
+          if(!in_array($dados['cliente'], $clientes)){
+            $this->flashMessenger()->addWarningMessage('Cliente não encontrado!');
+            return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $usuario['id']));  
+          }
+          $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
+            'usuario'   =>  $usuario['id'],
+            'cliente'   =>  $dados['cliente']
+          ));
+          $this->flashMessenger()->addSuccessMessage('Cliente vinculado ao usuário com sucesso!');
+          return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $usuario['id']));
+        }
+      }else{
+        $formUsuario->setData($this->getRequest()->getPost());
+        if($formUsuario->isValid()){
+          //salvar
+          $this->getServiceLocator()->get('Usuario')->update($formUsuario->getData(), array('id' => $usuario['id']));
+
+          //gerar mensagem de sucesso e redirecionar
+          $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
+          return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $usuario['id']));  
         }
       }
     }
@@ -588,6 +763,7 @@ class UsuarioController extends BaseController
     $template = $this->getRequest()->getPost();
     $usuario = $this->getServiceLocator()->get('session')->read();
     $usuario['template'] = $template['nomeTemplate'];
+    
     $this->getServiceLocator()->get('session')->write($usuario);
     $this->getServiceLocator()->get('Usuario')
       ->update(array('template' => $template['nomeTemplate']), array('id' => $usuario['id']));

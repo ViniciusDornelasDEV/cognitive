@@ -43,14 +43,24 @@ return array(
                     ),
                 ),
             ),
-
+            //listar usuários
             'usuario' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/usuario[/:page]',
+                    'route'    => '/usuario[/:page][/:tipo]',
                     'defaults' => array(
                         'controller' => 'Usuario\Controller\Usuario',
                         'action'     => 'index',
+                    ),
+                ),
+            ),
+            'usuarioCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/usuario/cliente[/:page]',
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'indexcliente',
                     ),
                 ),
             ),
@@ -62,6 +72,16 @@ return array(
                     'defaults' => array(
                         'controller' => 'Usuario\Controller\Usuario',
                         'action'     => 'novo',
+                    ),
+                ),
+            ),
+            'usuarioNovoCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/usuario/novo/cliente',
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'novocliente',
                     ),
                 ),
             ),
@@ -89,6 +109,19 @@ return array(
                     ),
                 ),
             ),
+            'usuarioAlterarCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/usuario/alterar/cliente[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'alterarcliente',
+                    ),
+                ),
+            ),
             //Deletar usuario
             'usuarioDeletar' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
@@ -100,6 +133,19 @@ return array(
                     'defaults' => array(
                         'controller' => 'Usuario\Controller\Usuario',
                         'action'     => 'deletarusuario',
+                    ),
+                ),
+            ),
+            'usuarioDeletarCliente' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/usuario/deletarusuario/cliente[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'deletarusuariocliente',
                     ),
                 ),
             ),

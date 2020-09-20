@@ -1,3 +1,4 @@
+
 <form role="form" name="formLogin" action="#" method="POST" class="register-form">
         <p>
             <i class="fas fa-user"></i>
@@ -33,6 +34,7 @@
     </form> 
     
     <script>
+
     function onSuccess(googleUser) {
       var profile = googleUser.getBasicProfile();
       if(profile.getEmail() == ''){
@@ -44,9 +46,9 @@
           userName:profile.getName(),
           userEmail:profile.getEmail()
         };
- 
+
         $.post('<?= $this->url("loginGoogle"); ?>', dados, function(retorna){
-          if(retorna == "erro"){
+          if(retorna == "false"){
             alert('Usuário não encontrado com esse e-mail!');
           }else{
             window.location.href = retorna;

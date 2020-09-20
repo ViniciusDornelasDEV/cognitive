@@ -235,6 +235,7 @@ class ClienteController extends BaseController
 
       if($this->getRequest()->isPost()){
         $dados = $this->getRequest()->getPost();
+
         //vincular clientee ao usuário
         if(isset($dados['cliente'])){
           $formVincular->setData($dados);
@@ -248,13 +249,10 @@ class ClienteController extends BaseController
             return $this->redirect()->toRoute('alterarUsuarioCliente', array('id' => $idCliente, 'usuario' => $idUsuario));
           }
         }
-        if(isset($dados['cargo'])){
+        if(isset($dados['nome'])){
           $formUsuario->setData($dados);
           if($formUsuario->isValid()){
             $dados = $formUsuario->getData();
-            if($dados['pais'] == 'Brasil'){
-              $dados['estado'] = $dados['estado_br'];
-            }
             
             //validar tipos de usuário
             if($dados['id_usuario_tipo'] != 3 && $dados['id_usuario_tipo'] != 4){
@@ -318,16 +316,41 @@ class ClienteController extends BaseController
     public function deletarclienteusuarioAction(){
       $idUsuario = $this->params()->fromRoute('usuario');
       $idCliente = $this->params()->fromRoute('cliente');
+      $usuario = $this->getServiceLocator()->get('session')->read();
+      if($usuario['id_usuario_tipo'] == 3){
+        //verificar se usuário e cliente é do usuário logado
+        $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuario['id'], 'usuario', array('cliente'));
+        $clientes = array();
+        foreach ($clientesAdmin as $cliente) {
+          $clientes[] = $cliente['cliente'];
+        }
+        if(!in_array($idCliente, $clientes)){
+          $this->flashMessenger()->addWarningMessage('Cliente não encontrado!');
+          return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $idUsuario));  
+        }
+        $usuarioValid = $this->getServiceLocator()->get('Usuario')->getUsuariosCliente(
+          array(),
+          $clientes,
+          $this->params()->fromRoute('usuario')
+        )->current();
+
+        if(!$usuarioValid){
+          $this->flashMessenger()->addWarningMessage('Usuário ou cliente não encontrado!');
+          return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $idUsuario));  
+        }
+      }
 
       $this->getServiceLocator()->get('UsuarioCliente')->delete(array('usuario' => $idUsuario, 'cliente' => $idCliente));
       $this->flashMessenger()->addSuccessMessage('Cliente desvinculado com sucesso!');
 
-      $usuario = $this->getServiceLocator()->get('session')->read();
+      $modulo = $this->params()->fromRoute('modulo');
       if($usuario['id_usuario_tipo'] == 3){
+        if($modulo == 'usuario'){
+          return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $idUsuario));  
+        }
         return $this->redirect()->toRoute('alterarClienteByCliente');
       }
-
-      $modulo = $this->params()->fromRoute('modulo');
+      
       if($modulo == 'usuario'){
         return $this->redirect()->toRoute('usuarioAlterar', array('id' => $idUsuario));  
       }
@@ -356,15 +379,15 @@ class ClienteController extends BaseController
         if($formCliente->isValid()){
           //$dados = $formCliente->getData();
           $file = $this->getRequest()->getfiles()->toArray();
-          if(!empty($file['logo']['name'])){
+          if(isset($file['logo']['name']) && !empty($file['logo']['name'])){
             //fazer upload da imagem
             $logo = $this->uploadImagem($file, $idCliente);
+            //alterar cliente
+            $this->getServiceLocator()->get('Cliente')->update(array('logo' => $logo), array('id' => $idCliente));
+            $this->flashMessenger()->addSuccessMessage('Dados alterados com sucesso!');
           }
-
-          //alterar cliente
-          $this->getServiceLocator()->get('Cliente')->update(array('logo' => $logo), array('id' => $idCliente));
-          $this->flashMessenger()->addSuccessMessage('Dados alterados com sucesso!');
           return $this->redirect()->toRoute('alterarClienteByCliente');
+
         }
       }
 
@@ -377,12 +400,30 @@ class ClienteController extends BaseController
     }
 
     public function alterarusuarioclienteclienteAction(){
-      $usuario = $this->getServiceLocator()->get('session')->read();
+      $this->layout('layout/cliente/admin');
+      $usuarioLogado = $this->getServiceLocator()->get('session')->read();
+    
+      //verificar se usuário é realmente do cliente logado
+      $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuarioLogado['id'], 'usuario', array('cliente'));
+      $clientes = array();
+      foreach ($clientesAdmin as $cliente) {
+        $clientes[] = $cliente['cliente'];
+      }
+      
+      $usuario = $this->getServiceLocator()->get('Usuario')->getUsuariosCliente(
+        array(),
+        $clientes,
+        $this->params()->fromRoute('usuario')
+      )->current();
+      if(!$usuario){
+        $this->flashMessenger()->addWarningMessage('Usuário não encontrado!');
+        return $this->redirect()->toRoute('usuarioCliente');
+      }
 
       $idUsuario = $this->params()->fromRoute('usuario');
       $idCliente = $this->params()->fromRoute('id');
       $formUsuario = new formUsuario('frmUsuario', $this->getServiceLocator());
-      $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $idUsuario, $usuario);
+      $formVincular = new formVincularCliente('frmVincular', $this->getServiceLocator(), $idUsuario, $usuarioLogado);
       $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($idCliente);
 
       //alimentar form de usuário e pesquisar usuários vinculados
@@ -393,7 +434,6 @@ class ClienteController extends BaseController
           $this->flashMessenger()->addSuccessMessage('Usuário não encontrado!');
           return $this->redirect()->toRoute('alterarClienteByCliente', array('id' => $idCliente));
         }
-        $usuario['estado_br'] = $usuario['estado'];
         $formUsuario->setData($usuario);
 
       }
@@ -406,6 +446,11 @@ class ClienteController extends BaseController
           $formVincular->setData($dados);
           if($formVincular->isValid()){
             $dados = $formVincular->getData();
+            if(!in_array($dados['cliente'], $clientes)){
+              $this->flashMessenger()->addWarningMessage('Cliente não encontrado!');
+              return $this->redirect()->toRoute('usuarioAlterarCliente', array('id' => $usuario['id']));  
+            }
+            
             $this->getServiceLocator()->get('UsuarioCliente')->insert(array(
               'usuario'   =>  $idUsuario,
               'cliente'   =>  $dados['cliente']
@@ -414,13 +459,10 @@ class ClienteController extends BaseController
             return $this->redirect()->toRoute('alterarUsuarioClienteCliente', array('id' => $idCliente, 'usuario' => $idUsuario));
           }
         }
-        if(isset($dados['cargo'])){
+        if(isset($dados['nome'])){
           $formUsuario->setData($dados);
           if($formUsuario->isValid()){
             $dados = $formUsuario->getData();
-            if($dados['pais'] == 'Brasil'){
-              $dados['estado'] = $dados['estado_br'];
-            }
             
             //validar tipos de usuário
             if($dados['id_usuario_tipo'] != 3 && $dados['id_usuario_tipo'] != 4){
@@ -467,12 +509,12 @@ class ClienteController extends BaseController
       if($idUsuario){
         $clientesUsuario = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario(array('usuario' => $idUsuario))->toArray();
         //retirar os clientes que não são do cliente admin logado
-        $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuario['id'], 'usuario', array('cliente'));
+        $usuarioLogado = $this->getServiceLocator()->get('session')->read();
+        $clientesAdmin = $this->getServiceLocator()->get('UsuarioCliente')->getRecords($usuarioLogado['id'], 'usuario', array('cliente'));
         $clientesAdmin2 = array();
         foreach ($clientesAdmin as $clienteAdmin) {
           $clientesAdmin2[$clienteAdmin['cliente']] = $clienteAdmin['cliente'];
         }
-
         //limpar o array
         foreach ($clientesUsuario as $key => $clienteUsuario) {
           if(!in_array($clienteUsuario['id_cliente'], $clientesAdmin2)){
@@ -507,11 +549,10 @@ class ClienteController extends BaseController
           $usuario['estado_br'] = $usuario['estado'];
           //se não veio post, popular form
           $formUsuario->setData(array(
+            'nome'      =>  $usuario['nome'],
             'sobrenome' =>  $usuario['sobrenome'],
             'cargo'     =>  $usuario['cargo'],
-            'pais'      =>  $usuario['pais'],
-            'estado_br' =>  $usuario['estado'],
-            'estado'    =>  $usuario['estado'],
+            'estado' =>  $usuario['estado'],
             'telefone'  =>  $usuario['telefone'],
             'login'     =>  $usuario['login'],
           ));
@@ -522,18 +563,13 @@ class ClienteController extends BaseController
             $formUsuario->setData($dados);
             if($formUsuario->isValid()){
               $dados = $formUsuario->getData();
-              if($dados['pais'] == 'Brasil'){
-                $dados['estado'] = $dados['estado_br'];
-              }
+             
               //gerar senha e mudar parametros de config.
               $bcrypt = new bcrypt();
               $dados['senha'] = $bcrypt->create($dados['senha']);
               $dados['ativo'] = 'S';
               $dados['token_ativacao'] = '';
-
-              if(isset($dados['login'])){
-                unset($dados['login']);
-              }
+              unset($dados['login']);
               
               //salvar alterações
               $this->getServiceLocator()->get('Usuario')->update($dados, array('token_ativacao' => $token));
@@ -652,13 +688,12 @@ class ClienteController extends BaseController
         }else{
           $this->flashMessenger()->addErrorMessage('Ocorreu algum erro ao ordenar menu, por favor tente novamente!');
         }
-        return $this->redirect()->toRoute('ordenarMenu');
+        return $this->redirect()->toRoute('ordenarMenu', array('id' => $this->params()->fromRoute('id')));
       }
 
       $container = new Container();
       $cliente = $this->getServiceLocator()->get('Cliente')->getRecord($this->params()->fromRoute('id'));
       $menuDashboards = $this->getServiceLocator()->get('Dashboard')->getMenu($cliente['id']);
-      
 
       return new ViewModel(array(
         'menuDashboards' =>  $menuDashboards,

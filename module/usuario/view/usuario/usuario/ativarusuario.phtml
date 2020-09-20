@@ -1,5 +1,5 @@
 <div class="bloco-login">
-    <div class="logo"></div>
+    
     <?php if($usuario): ?>
       <?php echo $this->partial('form/umacoluna', array('form'=> $formAtivar, 'route'=> '', 'nomeBotao' => 'Ativar usuário')) ?>  
     <?php else: ?>
@@ -8,3 +8,10 @@
       </div>
     <?php endif; ?>
 </div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#login').prop("disabled", true);
+  });
+
+</script>

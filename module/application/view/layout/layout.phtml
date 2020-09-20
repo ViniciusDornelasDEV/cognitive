@@ -117,9 +117,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   </a>
                 </li>
                 <li>
-                  <a href="<?= $this->url('usuario'); ?>">
+                  <a href="<?= $this->url('usuario', array('page' => 1, 'tipo' => 'E')); ?>">
                     <b class="icon-comment"></b> 
-                    <span>Usuários</span>
+                    <span>Usuários admin.</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?= $this->url('usuario', array('page' => 1, 'tipo' => 'C')); ?>">
+                    <b class="icon-comment"></b> 
+                    <span>Usuários dos clientes</span>
                   </a>
                 </li>
             </ul>
@@ -127,28 +133,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </ul>
     </nav>
 
-    <div class="botoes-bottom">
-        <a class="botao-sair" onclick="signOut();"><b class="icon-logout"></b><span>Sair</span></a>
-    </div>
 
 </nav> 
-
-
 
 
  <div class="cont-admin"><div class="content-sistema"><div class="controle-topo">
     <div class="icones-controle">
         <a href="#"><b class="icon-bell"></b><span>1</span></a>
         <a href="#"><b class="icon-comment"></b></a>
-        <a href="#" class="ativar-busca"><b class="icon-search"></b></a>
-        <a href="#" class="ligar-luz"><b class="icon-idea-1"></b></a>
-        <a onclick="signOut();"><b class="icon-logout"></b></a>
+        <?php if(in_array($rota, $rotasPesquisa)): ?>
+          <a href="#" title="Pesquisar" class="ativar-busca"><b class="icon-search"></b></a>
+        <?php endif; ?>
+        <a href="#" title="Alterar estilo" class="ligar-luz"><b class="icon-idea-1"></b></a>
+        <a href="#" title="Sair" onclick="signOut();"><b class="icon-logout"></b></a>
     </div> 
 
     <div class="nome-logado">
         <h3>
             <?= $usuario['nome'] ?>
-            <span><?= $usuario['cargo'] ?></span>
         </h3>
         <div onclick="location.href='<?= $this->url('selecionarCliente'); ?>'">
           <figure>

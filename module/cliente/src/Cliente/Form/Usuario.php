@@ -24,17 +24,10 @@ use Application\Form\Base as BaseForm;
 
         $this->addEmailElement('login', '* Email corporativo', true);
 
-        $this->genericTextInput('cargo', 'Cargo: ', false);
-
-        $paises = $this->serviceLocator->get('Pais')->getRecordsFromArray(array(), 'nome')->toArray();
-        $paises = $this->prepareForDropDown($paises, array('nome', 'nome'));
-        $this->_addDropdown('pais', 'País:', false, $paises);
-
         
         $estados = $this->serviceLocator->get('Estado')->getRecordsFromArray(array(), 'nome')->toArray();
-        $estados = $this->prepareForDropDown($estados, array('nome', 'nome'));
-        $this->_addDropdown('estado_br', 'Estado:', false, $estados);
-        $this->genericTextInput('estado', 'Estado: ', false);
+        $estados = $this->prepareForDropDown($estados, array('nome', 'nome'), array('' => 'Selecionar estado'));
+        $this->_addDropdown('estado', 'Estado:', false, $estados);
 
 
         $this->genericTextInput('telefone', 'Telefone: ', false);

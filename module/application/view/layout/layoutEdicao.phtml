@@ -41,7 +41,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <body>
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KX356LG"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<div id="conteiner" class="escuro">
+<div id="conteiner" class="<?= $usuario['template'] ?>">
         <nav class="menu nav menu-sistema">
     <div class="fechar-menu">
         <span>
@@ -120,40 +120,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </li>
       </ul>
     </nav>
-
-    <div class="botoes-bottom">
-        <a class="botao-sair" onclick="signOut();"><b class="icon-logout"></b><span>Sair</span></a>
-    </div>
-
 </nav> 
 
-
-<script>
-    $(function () {
-        $('input.luz').on('change', function () {
-            if ($(this).is(":checked")) {
-                $('#conteiner').addClass('escuro').removeClass('claro');
-            } else {
-                $('#conteiner').addClass('claro').removeClass('escuro');
-            }
-        }).trigger('change');
-
-    });
-
-
-    $().ready(function () {
-        $('.ligar-luz').click(function () {
-            if ($('#conteiner').hasClass("claro")) {
-                $('#conteiner').addClass('escuro').removeClass('claro');
-            } else {
-                $('#conteiner').addClass('claro').removeClass('escuro');
-            }
-
-        });
-    });
-
-
-</script>
 
 
 
@@ -161,15 +129,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="icones-controle">
         <a href="#"><b class="icon-bell"></b><span>1</span></a>
         <a href="#"><b class="icon-comment"></b></a>
-        <a href="#" class="ativar-busca"><b class="icon-search"></b></a>
-        <a href="#" class="ligar-luz"><b class="icon-idea-1"></b></a>
-        <a onclick="signOut();"><b class="icon-logout"></b></a>
-    </div> 
+        <?php if(in_array($rota, $rotasPesquisa)): ?>
+          <a href="#" title="Pesquisar" class="ativar-busca"><b class="icon-search"></b></a>
+        <?php endif; ?>
+        <a href="#" title="Alterar estilo" class="ligar-luz"><b class="icon-idea-1"></b></a>
+        <a href="#" title="Sair" onclick="signOut();"><b class="icon-logout"></b></a>
+    </div>
+    
 
     <div class="nome-logado">
         <h3>
             <?= $usuario['nome'] ?>
-            <span><?= $usuario['cargo'] ?></span>
         </h3>
         <div onclick="location.href='<?= $this->url('selecionarCliente'); ?>'">
           <figure>
