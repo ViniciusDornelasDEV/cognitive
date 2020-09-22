@@ -26,13 +26,13 @@ use Application\Form\Base as BaseForm;
 
         $this->addImageFileInput('icone', 'Ícone: ', false, false, false, false, false, 'image/png, image/jpeg');
         
-        $this->genericTextInput('nome', '* Nome: ', true);
+        $this->genericTextInput('nome', '* Nome: ', true, 'Nome da dashboard', 'campo-obrigatorio');
 
         $this->genericTextInput('link_power_bi', 'Link power BI: ', false);
 
         $this->genericTextInput('link_google', 'Link google: ', false);
 
-        $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'));
+        $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'), '', 'campo-obrigatorio');
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

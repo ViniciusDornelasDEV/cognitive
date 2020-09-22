@@ -61,29 +61,5 @@
        
       $('#telefone').mask(maskBehavior, options);
       
-      $(document).ready(function() {
-        $("#link-usuario").colorbox();
-
-        <?php if($usuario != false): ?>
-          <?php if($usuario['pais'] == 'Brasil'): ?>
-            $("#p-form-estado_br").css("display", "block");
-            $("#p-form-estado").css("display", "none"); 
-          <?php else: ?>
-            $("#p-form-estado_br").css("display", "none");
-            $("#p-form-estado").css("display", "block");
-          <?php endif; ?>
-        <?php else: ?>
-          $("#p-form-estado_br").css("display", "none");
-        <?php endif; ?>
-        $("#pais").change(function() {
-          if(this.value == 'Brasil'){
-            $("#p-form-estado_br").css("display", "block");
-            $("#p-form-estado").css("display", "none");    
-          }else{
-            $("#p-form-estado_br").css("display", "none");
-            $("#p-form-estado").css("display", "block");
-          }
-        });
-      });
     </script>
     

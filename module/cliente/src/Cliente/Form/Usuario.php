@@ -18,11 +18,11 @@ use Application\Form\Base as BaseForm;
 
         parent::__construct($name); 
         $this->setServiceLocator($serviceLocator);         
-        $this->genericTextInput('nome', '* Nome: ', true);
+        $this->genericTextInput('nome', '* Nome: ', true, 'Digite seu nome', 'campo-obrigatorio');
 
         $this->genericTextInput('sobrenome', 'Sobrenome: ', false);
 
-        $this->addEmailElement('login', '* Email corporativo', true);
+        $this->addEmailElement('login', '* Email corporativo', true, 'Email de acesso', false, 'campo-obrigatorio');
 
         
         $estados = $this->serviceLocator->get('Estado')->getRecordsFromArray(array(), 'nome')->toArray();
@@ -32,9 +32,9 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('telefone', 'Telefone: ', false);
 
-        $this->_addDropdown('id_usuario_tipo', '* Tipo de cliente:', true, array(3 => 'Cliente admin', 4 => 'Visualizar'));
+        $this->_addDropdown('id_usuario_tipo', '* Tipo de cliente:', true, array(3 => 'Cliente admin', 4 => 'Visualizar'), '', 'campo-obrigatorio');
 
-        $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'));
+        $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'), '', 'campo-obrigatorio');
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

@@ -37,7 +37,7 @@ use Application\Form\Base as BaseForm;
         }
 
         $clientes = $this->prepareForDropDown($clientes, array('id', 'nome'));
-        $this->_addDropdown('cliente', '* Clientes:', true, $clientes);
+        $this->_addDropdown('cliente', '* Clientes:', true, $clientes, '', 'campo-obrigatorio');
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

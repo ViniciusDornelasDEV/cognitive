@@ -18,11 +18,11 @@
 
         parent::__construct($name);
         
-        $this->_addPassword('senha_atual', '* Senha atual: ', 'Senha');
+        $this->_addPassword('senha_atual', '* Senha atual: ', 'Senha', true, 'campo-obrigatorio');
 
-        $this->_addPassword('senha', '* Nova senha: ', 'Senha');
+        $this->_addPassword('senha', '* Nova senha: ', 'Senha', false, true, 'campo-obrigatorio');
         
-        $this->_addPassword('confirma_senha', '* Confirmar senha: ', 'Confirmar senha', 'senha');
+        $this->_addPassword('confirma_senha', '* Confirmar senha: ', 'Confirmar senha', 'senha', true, 'campo-obrigatorio');
  
         $this->setAttributes(array(
             'class'  => 'form-signin',

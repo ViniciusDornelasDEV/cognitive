@@ -40,10 +40,10 @@
         'password' => $this->password // Azure password for above user
         )
       ));
-
       $token = curl_exec($curlPostToken);
       curl_close($curlPostToken);
       $token = json_decode($token, true);
+      
       if(isset($token['error'])){
         $this->error = $token['error'];
       }

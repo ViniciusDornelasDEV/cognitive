@@ -17,7 +17,7 @@ use Application\Form\Base as BaseForm;
    public function __construct($name)
     {
         parent::__construct($name);
-       $this->addEmailElement('login', 'Email', false, 'Email');
+       $this->addEmailElement('login', 'Email', true, 'Email', 'campo-obrigatorio');
         $this->setAttributes(array(
             'class'  => 'form-signin',
             'role'   => 'form'

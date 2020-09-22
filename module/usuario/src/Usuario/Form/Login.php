@@ -19,9 +19,9 @@
     {
         parent::__construct($name);
         //$this->addEmailElement('login', 'Email', false, 'Email');
-        $this->genericTextInput('login', 'Email', false, 'Email');
+        $this->genericTextInput('login', 'Email', true, 'Email', 'campo-obrigatorio');
         
-        $this->_addPassword('password', 'Password', 'Senha');
+        $this->_addPassword('password', 'Password', 'Senha', false, true, 'campo-obrigatorio');
 
         $this->setAttributes(array(
             'class'  => 'form-signin',

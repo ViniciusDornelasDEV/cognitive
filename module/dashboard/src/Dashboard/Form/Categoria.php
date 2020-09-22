@@ -16,7 +16,7 @@ use Application\Form\Base as BaseForm;
    public function __construct($name)
     {
         parent::__construct($name);          
-        $this->genericTextInput('nome', '* Nome: ', true);
+        $this->genericTextInput('nome', '* Nome: ', true, 'Nome da categoria', 'campo-obrigatorio');
         
         $this->addImageFileInput('icone', 'Ícone: ');
 

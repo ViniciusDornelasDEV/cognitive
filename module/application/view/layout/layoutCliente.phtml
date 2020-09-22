@@ -22,7 +22,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         ->prependStylesheet($this->basePath() . '/css/jquery-confirm.css')
                         //->prependStylesheet($this->basePath() . '/css/sistema/colorbox.css')
                         ; ?>
-        <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+        <link href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" rel="stylesheet">
 
           <?php echo $this->headScript()
             ->prependFile($this->basePath() . '/js/maskMoney.js')
@@ -63,7 +63,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <?php if($menu['dashboards'] == false): ?>
             <li data-id="<?= $menu['id'] ?>">
               <a href="<?= $this->url('visualizarDashboard', array('id' => $menu['id'])); ?>">
-                <b class="icon-comment"></b> 
+                <b><img src="<?= $this->basePath($menu['icone']); ?>"></b> 
                 <span><?= $menu['nome'] ?></span>
               </a>
             </li>
@@ -74,11 +74,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <?php foreach ($menu['dashboards'] as $dashboard): ?>
                     <li data-id="<?= $dashboard['id'] ?>">
                       <a href="<?= $this->url('visualizarDashboard', array('id' => $dashboard['id'])); ?>">
-                        <b class="icon-comment"></b> 
+                         <b><img src="<?= $this->basePath($dashboard['icone']); ?>"></b> 
                         <span><?= $dashboard['nome'] ?></span>
                       </a>
                     </li>
                   <?php endforeach; ?>
+                   <li class="voltar-menu"><a href="#"><b class="fas fa-long-arrow-alt-left"></b> <span>Voltar</span></a></li>
                 </ul>
             </li>
           <?php endif; ?>
@@ -145,6 +146,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         $('.busca i').click(function () {
             $('.busca form').toggleClass('open');
             $('body').toggleClass('travar');
+        });
+
+        $('.pmenu li').click(function () {
+            $(this).toggleClass('abrir-submenu');
         });
 
         //logout google

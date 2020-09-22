@@ -22,7 +22,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         ->prependStylesheet($this->basePath() . '/css/jquery-confirm.css')
                         //->prependStylesheet($this->basePath() . '/css/sistema/colorbox.css')
                         ; ?>
-        <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+        <link href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" rel="stylesheet">
 
           <?php echo $this->headScript()
             ->prependFile($this->basePath() . '/js/maskMoney.js')
@@ -63,71 +63,73 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <?php if($menu['dashboards'] == false): ?>
             <li data-id="<?= $menu['id'] ?>">
               <a href="<?= $this->url('visualizarDashboard', array('id' => $menu['id'])); ?>">
-                <b class="icon-comment"></b> 
+                <b><img src="<?= $this->basePath($menu['icone']); ?>"></b> 
                 <span><?= $menu['nome'] ?></span>
               </a>
             </li>
           <?php else: ?>
             <li data-id="cat-<?= $menu['id_categoria'] ?>">
-                <a href="#"><b class="icon-comment"></b> <span><?= $menu['nome_categoria'] ?></span></a>
+                <a href="#"><b><img src="<?= $this->basePath($menu['icone_categoria']); ?>"></b> <span><?= $menu['nome_categoria'] ?></span></a>
                 <ul class="psubmenu">
                   <?php foreach ($menu['dashboards'] as $dashboard): ?>
                     <li data-id="<?= $dashboard['id'] ?>">
                       <a href="<?= $this->url('visualizarDashboard', array('id' => $dashboard['id'])); ?>">
-                        <b class="icon-comment"></b> 
+                        <b><img src="<?= $this->basePath($dashboard['icone']); ?>"></b> 
                         <span><?= $dashboard['nome'] ?></span>
                       </a>
                     </li>
                   <?php endforeach; ?>
+                  <li class="voltar-menu"><a href="#"><b class="fas fa-long-arrow-alt-left"></b> <span>Voltar</span></a></li>
                 </ul>
             </li>
           <?php endif; ?>
         <?php endforeach; ?>
         <li>
-            <a href="#"><b class="icon-comment"></b> <span>Configurações</span></a>
+            <a href="#"><b class="fas fa-cog"></b> <span>Configurações</span></a>
             <ul class="psubmenu">
                 <li>
                   <a href="<?= $this->url('indexCliente'); ?>">
-                    <b class="icon-comment"></b> 
+                    <b class="fas fa-users"></b> 
                     <span>Clientes</span>
                   </a>
                 </li>
                 <li>
                   <a href="<?= $this->url('indexCategoria'); ?>">
-                    <b class="icon-comment"></b> 
+                    <b class="fas fa-layer-group"></b> 
                     <span>Categorias de dash.</span>
                   </a>
                 </li>
                 <li>
                   <a href="<?= $this->url('indexDashboard'); ?>">
-                    <b class="icon-comment"></b> 
+                    <b class="fas fa-chart-line"></b> 
                     <span>Dashboards</span>
                   </a>
                 </li>
                 <li>
                   <a href="<?= $this->url('ordenarMenu', array('id' => $clienteSelecionado['id'])); ?>">
-                    <b class="icon-comment"></b> 
+                    <b class="fas fa-sort"></b> 
                     <span>Ordenar menu</span>
                   </a>
                 </li>
                 <li>
                   <a href="<?= $this->url('indexInvoice'); ?>">
-                    <b class="icon-comment"></b> 
+                    <b class="fas fa-file-invoice-dollar"></b> 
                     <span>Invoices</span>
                   </a>
                 </li>
                 <li>
                   <a href="<?= $this->url('usuario', array('page' => 1, 'tipo' => 'E')); ?>">
-                    <b class="icon-comment"></b> 
+                    <b class="fas fa-user-shield"></b> 
                     <span>Usuários admin.</span>
                   </a>
                 </li>
                 <li>
                   <a href="<?= $this->url('usuario', array('page' => 1, 'tipo' => 'C')); ?>">
-                    <b class="icon-comment"></b> 
+                    <b class="fas fa-user"></b> 
                     <span>Usuários dos clientes</span>
                   </a>
                 </li>
+                <li class="voltar-menu"><a href="#"><b class="fas fa-long-arrow-alt-left"></b> <span>Voltar</span></a></li>
             </ul>
         </li>
       </ul>
@@ -190,6 +192,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         $('.busca i').click(function () {
             $('.busca form').toggleClass('open');
             $('body').toggleClass('travar');
+        });
+
+        $('.pmenu li').click(function () {
+            $(this).toggleClass('abrir-submenu');
         });
 
         //logout google

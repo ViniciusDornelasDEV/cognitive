@@ -7,9 +7,9 @@ defined('SITE_URL')
 return array(
     
     /*'db'   => array(
-        'dsn' => 'mysql:dbname=u331072745_cognitive;host=localhost',
-        'username'      => 'u331072745_cognitive',
-        'password'      => '=p6LKr4XBX'
+        'dsn' => 'mysql:dbname=sigmaflow;host=sigmaflow.mysql.dbaas.com.br',
+        'username'      => 'sigmaflow',
+        'password'      => 'vAyj3hSwYGxe8'
     ),*/
     'db'   => array(
         'dsn' => 'mysql:dbname=bd_cognitive;host=localhost',

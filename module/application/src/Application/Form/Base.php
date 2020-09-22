@@ -77,14 +77,14 @@ abstract class Base extends Form {
      * @param int $maxLength (default: 100)
      * @return void
      */
-    protected function addEmailElement($name, $label = false, $required = true, $placeholder = false, $identical = false) {
+    protected function addEmailElement($name, $label = false, $required = true, $placeholder = false, $identical = false, $class = 'form-control') {
 
         $this->add(array(
             'name' => $name,
             'attributes' => array(
                 'type' => 'email',
                 'required' => $required,
-                'class' => 'form-control',
+                'class' => $class,
                 'placeholder' => $placeholder,
                 'id' => $name
             ),
@@ -130,18 +130,16 @@ abstract class Base extends Form {
      * @param int $maxLength (default: 100)
      * @return void
      */
-    protected function genericTextInput($name, $label = false, $required = true, $placeholder = false, $valor = '', $style = '') {
+    protected function genericTextInput($name, $label = false, $required = true, $placeholder = false, $class = 'form-control') {
 
         $this->add(array(
             'name' => $name,
             'attributes' => array(
                 'type' => 'text',
                 'required' => $required,
-                'class' => 'form-control',
+                'class' => $class,
                 'placeholder' => $placeholder,
                 'id'    => $name,
-                'value' => $valor,
-                'style' => $style
             ),
             'options' => array(
                 'label' => $label,
@@ -298,14 +296,14 @@ abstract class Base extends Form {
      * @param string $identical (default: false)
      * @return void
      */
-    protected function _addPassword($name = 'password', $label = false, $placeholder = false, $identical = false, $required = true) {
+    protected function _addPassword($name = 'password', $label = false, $placeholder = false, $identical = false, $required = true, $class = 'form-control') {
         $this->add(array(
             'name' => $name,
             'attributes' => array(
                 'type' => 'password',
                 'autocomplete' => false,
                 'placeholder' => $placeholder,
-                'class' => 'form-control',
+                'class' => $class,
                 'id'    => $name
             ),
             'options' => array(
@@ -418,7 +416,7 @@ abstract class Base extends Form {
      * @param array $valueOptions (default: array())
      * @return void
      */
-    public function _addDropdown($name, $label, $required = true, array $valueOptions = array(), $function = '', $placeholder = false) {
+    public function _addDropdown($name, $label, $required = true, array $valueOptions = array(), $function = '', $class = 'form-control') {
                 
         $options = array(
             'label' => $label,
@@ -432,8 +430,7 @@ abstract class Base extends Form {
             'attributes' => array(
                 'required' => $required,
                 'id' => $name,
-                'class'=> 'form-control',
-                'placeholder' => $placeholder,
+                'class'=> $class,
                 'onChange' => $function,
                 'style' => 'max-width: 216px;'
             ),

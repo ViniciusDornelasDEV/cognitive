@@ -15,7 +15,7 @@
               </tr>
               <?php foreach($categorias as $categoria): ?>
                 <tr>
-                  <td style="text-align: center"><img src="<?= $this->basePath($categoria['icone']) ?>" style="width: 50px; height: 50px;"> <?= $categoria['nome']; ?></td>
+                  <td style="text-align: center"><img src="<?= $this->basePath($categoria['icone']) ?>" style="width: 16px; height: 16px;"> <?= $categoria['nome']; ?></td>
                   <td style="text-align: center"><?= $categoria['ordem']; ?>º</td>
                   <td style="text-align: center;">
                       <a title="Alterar categoria" href="<?= $this->url('alterarCategoria', array('id' => $categoria['id'])); ?>" class="bt-editar"><i class="fas fa-edit"></i></a>
