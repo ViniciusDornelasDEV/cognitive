@@ -7,12 +7,11 @@
         <?php if($clientes->count() > 0): ?>
           <div class="grid">
             <?php foreach($clientes as $cliente): ?>
-              <article class="efeito">
+              <article class="efeito<?= $cliente['id_cliente'] == $clienteSelecionado['id'] ? ' ativa' : '' ?>">
                   <figure><img src="<?= $this->basePath($cliente['logo']); ?>" data-image-id="7" data-image-hash="b71d9060adbbf99ce7394ad39a78e71d" width="700" height="394" alt="servico-1.jpg" title="Serviço 1" class="image-thumb"></figure>
                   <div class="servico-info">
 
-                      <h4><?= $cliente['nome_cliente'] ?></h4>
-                      <p>Clique para mais Detalhes</p>
+                      <h4 style="display:none;"><?= $cliente['nome_cliente'] ?></h4>
                       <a href="<?= $this->url('selecionarCliente', array('id' => $cliente['id_cliente'])); ?>" class="link">Saiba Mais</a>
                   </div>
               </article>

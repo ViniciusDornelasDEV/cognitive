@@ -95,8 +95,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
  <div class="cont-admin"><div class="content-sistema"><div class="controle-topo">
     <div class="icones-controle">
-        <a href="#"><b class="icon-bell"></b><span>1</span></a>
-        <a href="#"><b class="icon-comment"></b></a>
+        <!--<a href="#"><b class="icon-bell"></b><span>1</span></a>
+        <a href="#"><b class="icon-comment"></b></a>-->
         <?php if(in_array($rota, $rotasPesquisa)): ?>
           <a href="#" title="Pesquisar" class="ativar-busca"><b class="icon-search"></b></a>
         <?php endif; ?>
@@ -172,6 +172,14 @@ function signOut() {
         location.href = "<?= $this->url('logout'); ?>";
       <?php endif; ?>
     }
+
+    $().ready(function () {
+      $('.fechar-menu').click(function () {
+          $('.fechar-menu span').toggleClass('cross');
+          $('.menu-sistema').toggleClass('open');
+          $('.cont-admin').toggleClass('open');
+
+      }
 </script> 
 
        </div>

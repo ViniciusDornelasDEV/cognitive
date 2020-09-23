@@ -674,8 +674,10 @@ class ClienteController extends BaseController
         }
       }
       
+      $container = new Container();
       return new ViewModel(array(
-        'clientes'  =>  $clientes
+        'clientes'            =>  $clientes,
+        'clienteSelecionado'  =>  $container->cliente
       ));
     }
 
