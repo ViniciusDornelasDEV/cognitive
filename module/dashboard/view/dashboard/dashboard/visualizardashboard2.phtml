@@ -12,22 +12,8 @@
       embedUrl: "<?= $embed['embedUrl'] ?>",
       //tokenType: models.TokenType.Embed,
       accessToken: "<?= $embed['token'] ?>" ,
-      settings: {
-        filterPaneEnabled: false,
-        navContentPaneEnabled: false
-      },
-      
     };
-    var reportContainer = $('#reportContainer');
-    var report = powerbi.embed(reportContainer.get(0), embedConfiguration);
-
-
-    report.on('loaded', () => {
-      page = 0;
-      <?php if($dashboard['pagina_power_bi'] != ''): ?>
-        page = <?= $dashboard['pagina_power_bi'] ?>;
-      <?php endif; ?>
-      report.getPages().then(pages => pages[page].setActive()); 
-    });
+    var $reportContainer = $('#reportContainer');
+    var report = powerbi.embed($reportContainer.get(0), embedConfiguration);
   </script>
 <?php endif; ?>

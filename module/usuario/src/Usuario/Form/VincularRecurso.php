@@ -26,7 +26,7 @@
         $modulos = $this->serviceLocator->get('Modulo')->getRecordsFromArray(array(), 'nome_modulo');
         
         $modulos = $this->prepareForDropDown($modulos, array('id', 'nome_modulo'));
-        $this->_addDropdown('modulo', '* Modulo:', false, $modulos, 'CarregaRecursos(this.value);');
+        $this->_addDropdown('modulo', '<span class="asterisco-obrigatorio">*</span> Modulo:', false, $modulos, 'CarregaRecursos(this.value);');
 
         //recurso
         $serviceRecurso = $this->serviceLocator->get('Recurso');
@@ -34,7 +34,7 @@
         $recursos = $serviceRecurso->fetchAll()->toArray();
         
         $recursos = $this->prepareForDropDown($recursos, array('id', 'nome'));
-        $this->_addDropdown('recurso', '* Recurso:', true, $recursos, 'BuscaDescricaoRecurso(this.value);');
+        $this->_addDropdown('recurso', '<span class="asterisco-obrigatorio">*</span> Recurso:', true, $recursos, 'BuscaDescricaoRecurso(this.value);');
         
         $this->genericTextArea('descricao_recurso', 'Descrição:', $required = false, 
                                 $placeholder = false, $html = true, $min = 0, $max = 2000, 

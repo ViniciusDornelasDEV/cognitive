@@ -19,7 +19,7 @@
         parent::__construct($name);      
 
       
-        $this->genericTextInput('perfil', '* Nome do perfil:', true, 'Nome do perfil', 'campo-obrigatorio');
+        $this->genericTextInput('perfil', '<span class="asterisco-obrigatorio">*</span> Nome do perfil:', true, 'Nome do perfil', 'campo-obrigatorio');
 
         
         $this->setAttributes(array(

@@ -47,6 +47,7 @@
       if(isset($token['error'])){
         $this->error = $token['error'];
       }
+
       $this->token = $token['access_token'];
     }
 

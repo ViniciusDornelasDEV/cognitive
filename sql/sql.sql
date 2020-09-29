@@ -51,3 +51,12 @@ INSERT INTO `tb_usuario_recurso` (`id`, `usuario_tipo`, `recurso`) VALUES
 INSERT INTO `tb_usuario_recurso` (`id`, `usuario_tipo`, `recurso`) VALUES
 (97, 2, 37),
 (96, 3, 37);
+
+
+
+
+
+
+
+
+ALTER TABLE `tb_dashboard` ADD `pagina_power_bi` INT(2) NULL AFTER `report_id`;

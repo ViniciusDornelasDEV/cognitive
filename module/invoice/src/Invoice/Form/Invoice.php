@@ -18,15 +18,15 @@ use Application\Form\Base as BaseForm;
 
         parent::__construct($name);          
 
-        $this->genericTextInput('descricao', '* Descrição: ', true, 'Descrição do invoice', 'campo-obrigatorio');
+        $this->genericTextInput('descricao', '<span class="asterisco-obrigatorio">*</span> Descrição: ', true, 'Descrição do invoice', 'campo-obrigatorio');
 
-        $this->genericTextInput('valor', '* Valor: ', true, 'Valor do invoice', 'campo-obrigatorio');
+        $this->genericTextInput('valor', '<span class="asterisco-obrigatorio">*</span> Valor: ', true, 'Valor do invoice', 'campo-obrigatorio');
 
-        $this->genericTextInput('data_vencimento', '* Data de vencimento: ', true, 'Data de vencimento', 'campo-obrigatorio');
+        $this->genericTextInput('data_vencimento', '<span class="asterisco-obrigatorio">*</span> Data de vencimento: ', true, 'Data de vencimento', 'campo-obrigatorio');
 
         $this->addImageFileInput('arquivo', 'Arquivo: ', false, false, false, false, false, 'application/pdf');
         
-        $this->_addDropdown('pago', '* Status:', true, array('N' => 'Em aberto', 'S' => 'Pago'), '', 'campo-obrigatorio');
+        $this->_addDropdown('pago', '<span class="asterisco-obrigatorio">*</span> Status:', true, array('N' => 'Em aberto', 'S' => 'Pago'), '', 'campo-obrigatorio');
 
         $this->setAttributes(array(
             'class'  => 'form-inline'

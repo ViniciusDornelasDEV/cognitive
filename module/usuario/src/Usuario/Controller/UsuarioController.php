@@ -127,7 +127,7 @@ class UsuarioController extends BaseController
   public function logingoogleAction(){
     $dados = $this->getRequest()->getPost();
     //pesquisar email na base de dados
-    $usuario = $this->getServiceLocator()->get('Usuario')->getRecord($dados['userEmail'], 'login');
+    $usuario = $this->getServiceLocator()->get('Usuario')->getRecordFromArray(array('login' => $dados['userEmail'], 'ativo' => 'S'));
     $retorno = 'erro';
     if($usuario){
       $session = $this->getServiceLocator()->get('session'); 
@@ -162,112 +162,109 @@ class UsuarioController extends BaseController
   }
 
   public function loginmicrosoftAction(){
+    $this->layout('layout/vazio');
     $acao = $this->params()->fromRoute('acao');
     $client_id = "70ff2ef4-e265-4822-a326-b4d3570765f5";
     $redirect_uri = 'https://' . $this->getRequest()->getUri()->getHost().
                 '/login/microsoft';
+
       $scopes = "wl.basic,wl.offline_access,wl.signin,wl.emails";
     if($acao && $acao == 'S'){
-      header("Location: " . "https://login.live.com/oauth20_authorize.srf?client_id=" . $client_id . "&scope=bingads.manage&response_type=code&redirect_uri=" . $redirect_uri);
+      //header("Location: " . "https://login.live.com/oauth20_authorize.srf?client_id=" . $client_id . "&scope=" . $scopes . "&response_type=token&redirect_uri=" . $redirect_uri);
+
+      $urls = 'https://login.live.com/oauth20_authorize.srf?client_id='.$client_id.'&scope=wl.signin%20wl.basic%20wl.emails%20wl.contacts_emails&response_type=code&redirect_uri='.$redirect_uri;
+      header("Location: " .$urls);
       die();
-    }else{
-      if($acao == 'N'){
-        $dados = $this->getRequest()->getPost();
-        print_r($dados['token']);
-        $token = strstr($dados['token'], 'access_token=');
-        $token = str_replace('access_token=', '', $token);
-        $token = strstr($token, '&', true);
-        if(isset($token)){
-          //user granted permission
-          //get access token using the authorization code
-          $url = "https://login.live.com/oauth20_token.srf";
-          $fields = array("client_id" => $client_id, "redirect_uri" => $redirect_uri, "client_secret" => 'wpF3MyPI470F_i0~Yxt--b_AZPA2amhIUf', "code" => $token, "grant_type" => "authorization_code");
-
-
-          $fields_string = '';
-          foreach($fields as $key=>$value) { $fields_string .= $key."=".$value."&"; }
-          rtrim($fields_string, "&");
-          $ch = curl_init();
-         
-          //retirar em produção
-          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-          
-          curl_setopt($ch,CURLOPT_URL, $url);
-          curl_setopt($ch,CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
-          curl_setopt($ch,CURLOPT_POST, count($fields));
-          curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-          curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-          /*curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization: '."Bearer ".$token,
-          ));*/
-
-          $result = curl_exec($ch);
-          $result = json_decode($result);
-
-          var_dump(curl_error($ch));
-          curl_close($ch);
-          var_dump($result);
-          die();
-          //this is the refresh token used to access Microsoft Live REST APIs
-          $access_token = $result->access_token;
-          $refresh_token = $result->refresh_token;
-        
-          echo file_get_contents("https://apis.live.net/v5.0/me?access_token=". $access_token);
-
-        }else{
-          echo "An error occured";
-        }
-
-      }else{
-        $this->layout('layout/login');
-        return new ViewModel();  
-      }
-      /*var_dump($this->serverUrl(true));
-    die();
-      $token = 'EwAoA61DBAAUzl/nWKUlBg14ZGcybuC4/OHFdfEAAYJrX5Ly5KtaLi20jEZP%2bUfqG28O1242UXqOM40HNXTysSPMwTqBZrStnlv/a75e28Y1FClc8kP19dLuTU9a/EBt/Ml/ngZ4isKImYxvbDwCgmvj/I/deKngzqZ4KSQIlIJK2Ai73q7ifkuYfzdDSAJoFqHGny2R6od9CtIrJG5tNE67tBLTgUqZcDMy/QcZOk13FtGUhQ2qFv2yV8o0vGZc0L8kOtq2ABWcVctsB720kpJrMv7OldFq4mnxITm0UvBcEOSa8b5t87zBkT79q0V%2bshygZJqeZOIRLNEofpkYu2dUz/7H4P/EQJyDosKJlJSszu2gvtXYKJjNAE57uS8DZgAACN%2bqCUqvLctk%2bAFebLSuk8eGgshlQGfkl72i87sThaHVYbFmGJ9OkPARb8GemGAApBHQdy4jBCHxijS9C2TQNL2PUwV4XXDRowXupL22tr8yn/NS4IbBN/l%2b9fOB5ZJVuCEmHpGIcmAsMN9lMSAO9So7uiCfktuB5Tn6UzEW0S%2bduVM66iNMQrcobPLwetFSUXBhGTXqOP8MQRCj1iMMpliwF1jKdzoNGg%2bhjmnlSsK/7FD4wI8FPxJxCc7aFmFgL2QTW414wy27ggyVBaWkusto/aZhymo5tUSChhQAlXs%2bT77%2b7OfqPnoIEu%2bUz%2bca7LW/%2bD6XqK/T0x5wZROi2hRAjjIZVL6KfugruHIFvsZNFL0zaGizkceFHpNMGRzDZRkMhSLqQ0kBePg/ijz2FFhn4eYwZt5yik1fKZoHcH0FO/dRwjGyrnOtAefvbrMIEmIjv3c4%2blPTdduFV9gLrKrBrE/r4P9zIVI6w8g2u02efYG1uaGoLQci3Bw/XRHJxffVoGUZtXiZGrM8qQm2AzYBw1IvfuYLmXMMqcCU2Xwp9ozrHrwXM/dyf%2bcg5wYt9R9Rsil4ZfDqrrNkuvctDoCj3Z4/kXbl9ddRWTWGExj4CN%2bIVqWekGifzzVY2s1KQQOdPuWDmdMvhLAXQVFxT4%2bGZ666suLgJw3bUPETEE1FLcU5Ag%3d%3d';
-      if(isset($token)){
-        //user granted permission
-        //get access token using the authorization code
-        $url = "https://login.live.com/oauth20_token.srf";
-        $fields = array("client_id" => $client_id, "redirect_uri" => $redirect_uri, "client_secret" => 'painel@2020', "code" => $token, "grant_type" => "authorization_code");
-        $fields_string = '';
-        foreach($fields as $key=>$value) { $fields_string .= $key."=".$value."&"; }
-        rtrim($fields_string, "&");
-        $ch = curl_init();
-        
-        //retirar em produção
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
-        curl_setopt($ch,CURLOPT_POST, count($fields));
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-
-        $result = curl_exec($ch);
-        $result = json_decode($result);
-
-        var_dump(curl_error($ch));
-        curl_close($ch);
-        var_dump($result);
-        die();
-        //this is the refresh token used to access Microsoft Live REST APIs
-        $access_token = $result->access_token;
-        $refresh_token = $result->refresh_token;
-      
-        echo file_get_contents("https://apis.live.net/v5.0/me?access_token=". $access_token);
-
-      }else{
-        echo "An error occured";
-      }
-      $view = new ViewModel();
-      $view->setTerminal(true);
-      $view->setVariables(array());
-      return $view;*/
     }
 
+    //processar o login
+    if(isset($_GET['code']) && $_GET['code'] != "") {
+      $auth_code = $_GET["code"];
+      $client_id = "70ff2ef4-e265-4822-a326-b4d3570765f5";
+      $client_secret = "-Z9W.ASaEi4m2nK1_~F86.2.McK39Ye~8s";
+      $redirect_uri = 'https://' . $this->getRequest()->getUri()->getHost().
+                '/login/microsoft';
+
+      $fields=array(
+          'code'=>  urlencode($auth_code),
+          'client_id'=>  urlencode($client_id),
+          'client_secret'=>  urlencode($client_secret),
+          'redirect_uri'=>  urlencode($redirect_uri),
+          'grant_type'=>  urlencode('authorization_code')
+      );
+
+      $post = '';
+      foreach($fields as $key=>$value) { $post .= $key.'='.$value.'&'; }
+      $post = rtrim($post,'&');
+
+      $curl = curl_init();
+      curl_setopt($curl,CURLOPT_URL,'https://login.live.com/oauth20_token.srf');
+      curl_setopt($curl,CURLOPT_POST,5);
+      curl_setopt($curl,CURLOPT_POSTFIELDS,$post);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER,TRUE);
+      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER,0);
+      $result = curl_exec($curl);
+      curl_close($curl);
+      $response =  json_decode($result);
+
+      $accesstoken = $response->access_token;
+      $get_profile_url='https://apis.live.net/v5.0/me?access_token='.$accesstoken;
+      $xmlprofile_res = $this->curl_file_get_contents($get_profile_url);
+      $profile_res = json_decode($xmlprofile_res, true);
+
+      if($profile_res){
+        $result = $this->processarLoginMicrosoft($profile_res);    
+      }else{
+        $this->flashMessenger()->addWarningMessage('Erro ao tentar logar-se com sua conta microsoft');
+        return $this->redirect()->toRoute('login');
+      }
+    } 
+
+    return new ViewModel(array('acao' =>  $acao));
+  }
+
+  public function curl_file_get_contents($url) {
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
+    $data = curl_exec($curl);
+    curl_close($curl);
+    return $data;
+    }
+
+  private function processarLoginMicrosoft($user){
+    //pesquisar email na base de dados
+    $usuario = $this->getServiceLocator()->get('Usuario')->getRecordFromArray(array('login' => $user['emails']['account'], 'ativo' => 'S'));
+    if($usuario){
+      $session = $this->getServiceLocator()->get('session'); 
+      $session->write($usuario);
+      $sessao = new Container();
+      $sessao->acl = $this->criarAutorizacao();
+      if($usuario['id_usuario_tipo'] == 3 || $usuario['id_usuario_tipo'] == 4){
+        //verificar se cliente está ativo
+        $cliente = $this->getServiceLocator()->get('Usuario')->getClientesByUsuario($usuario['id'])->current();
+                    
+        if($cliente){
+          $sessao->cliente = $this->getServiceLocator()->get('Cliente')->getRecord($cliente['id_cliente']);
+          return $this->redirect()->toRoute('selecionarCliente');
+        }else{
+          $this->flashMessenger()->addWarningMessage('Cliente não encontrado ou inativo!');
+          return $this->redirect()->toRoute('login');
+        }
+      }else{
+        $sessao->cliente = $this->getServiceLocator()
+          ->get('Cliente')
+          ->getRecordsFromArray(array('ativo' => 'S'))
+          ->current();
+        return $this->redirect()->toRoute('selecionarCliente');
+      } 
+    }else{
+      $this->flashMessenger()->addWarningMessage('Nenhum usuário com o email informado!');
+          return $this->redirect()->toRoute('login');
+    }
   }
 
   public function logoutAction() {

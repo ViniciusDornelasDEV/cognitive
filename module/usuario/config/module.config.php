@@ -33,6 +33,7 @@ return array(
                     ),
                 ),
             ),
+
             'logout' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(

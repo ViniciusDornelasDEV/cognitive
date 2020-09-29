@@ -17,11 +17,11 @@ use Application\Form\Base as BaseForm;
     {
 
         parent::__construct($name);          
-        $this->genericTextInput('login', '* Email: ', false);
+        $this->genericTextInput('login', '<span class="asterisco-obrigatorio">*</span> Email: ', false);
 
-        $this->_addPassword('senha', '* Senha: ', 'Crie uma nova senha', false, true, 'campo-obrigatorio');
+        $this->_addPassword('senha', '<span class="asterisco-obrigatorio">*</span> Senha: ', 'Crie uma nova senha', false, true, 'campo-obrigatorio');
         
-        $this->_addPassword('confirma_senha', '* Confirma senha: ', 'Confirmar nova senha', 'senha', true, 'campo-obrigatorio');
+        $this->_addPassword('confirma_senha', '<span class="asterisco-obrigatorio">*</span> Confirma senha: ', 'Confirmar nova senha', 'senha', true, 'campo-obrigatorio');
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

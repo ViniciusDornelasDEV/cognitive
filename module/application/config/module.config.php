@@ -57,6 +57,7 @@ return array(
             'layout/cliente/admin'    => __DIR__ . '/../view/layout/layoutClienteAdmin.phtml',
             'layout/cliente'          => __DIR__ . '/../view/layout/layoutCliente.phtml',
             'layout/edicao'           => __DIR__ . '/../view/layout/layoutEdicao.phtml',
+            'layout/vazio'           => __DIR__ . '/../view/layout/layoutVazio.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',

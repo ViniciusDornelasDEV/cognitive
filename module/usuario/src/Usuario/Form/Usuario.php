@@ -21,9 +21,9 @@ use Usuario\Validator\Email;
            $this->setServiceLocator($serviceLocator);
 
         parent::__construct($name);
-        $this->genericTextInput('nome', '* Nome do usuário:', true, 'Nome do usuário', 'campo-obrigatorio');
+        $this->genericTextInput('nome', '<span class="asterisco-obrigatorio">*</span> Nome do usuário:', true, 'Nome do usuário', 'campo-obrigatorio');
 
-        $this->addEmailElement('login', '* Email', true, 'Email', false, 'campo-obrigatorio');
+        $this->addEmailElement('login', '<span class="asterisco-obrigatorio">*</span> Email', true, 'Email', false, 'campo-obrigatorio');
         
         //Tipo de usuário
         $serviceTipoUsuario = $this->serviceLocator->get('UsuarioTipo');
@@ -35,9 +35,9 @@ use Usuario\Validator\Email;
         $tipos = $this->prepareForDropDown($tipos, array('id', 'perfil'));
         unset($tipos[3]);
         unset($tipos[4]);
-        $this->_addDropdown('id_usuario_tipo', '* Tipo de usuário: ', true, $tipos, 'exibirCliente(this.value);', 'campo-obrigatorio');
+        $this->_addDropdown('id_usuario_tipo', '<span class="asterisco-obrigatorio">*</span> Tipo de usuário: ', true, $tipos, 'exibirCliente(this.value);', 'campo-obrigatorio');
 
-        $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo', 'A' => 'Aguardando ativação'), '', 'campo-obrigatorio');
+        $this->_addDropdown('ativo', '<span class="asterisco-obrigatorio">*</span> Status:', true, array('S' => 'Ativo', 'N' => 'Inativo', 'A' => 'Aguardando ativação'), '', 'campo-obrigatorio');
 
         $this->setAttributes(array(
             'class'  => 'form-signin',

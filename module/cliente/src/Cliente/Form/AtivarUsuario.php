@@ -18,9 +18,9 @@ use Application\Form\Base as BaseForm;
 
         parent::__construct($name);   
         $this->setServiceLocator($serviceLocator);        
-        $this->genericTextInput('nome', '* Nome: ', true, '* Nome', 'campo-obrigatorio');
+        $this->genericTextInput('nome', '<span class="asterisco-obrigatorio">*</span> Nome: ', true, '* Nome', 'campo-obrigatorio');
 
-        $this->genericTextInput('sobrenome', '* Sobrenome: ', true, '* Sobrenome', 'campo-obrigatorio');
+        $this->genericTextInput('sobrenome', '<span class="asterisco-obrigatorio">*</span> Sobrenome: ', true, '* Sobrenome', 'campo-obrigatorio');
         
         $estados = $this->serviceLocator->get('Estado')->getRecordsFromArray(array(), 'nome')->toArray();
         $estados = $this->prepareForDropDown($estados, array('nome', 'nome'), array('' => 'Selecionar estado'));
@@ -28,11 +28,11 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('telefone', 'Telefone: ', false, 'Telefone');
 
-        $this->addEmailElement('login', '* Email de acesso: ', false,'* Email de acesso');
+        $this->addEmailElement('login', '<span class="asterisco-obrigatorio">*</span> Email de acesso: ', false,'* Email de acesso');
 
-        $this->_addPassword('senha', '* Senha: ', 'Senha', false, true, 'campo-obrigatorio');
+        $this->_addPassword('senha', '<span class="asterisco-obrigatorio">*</span> Senha: ', 'Senha', false, true, 'campo-obrigatorio');
         
-        $this->_addPassword('confirma_senha', '* Confirma senha: ', 'Confirmar senha', 'senha', true, 'campo-obrigatorio');
+        $this->_addPassword('confirma_senha', '<span class="asterisco-obrigatorio">*</span> Confirma senha: ', 'Confirmar senha', 'senha', true, 'campo-obrigatorio');
         
         $this->setAttributes(array(
             'class'  => 'form-inline'

@@ -18,11 +18,11 @@ use Application\Form\Base as BaseForm;
 
         parent::__construct($name); 
         $this->setServiceLocator($serviceLocator);         
-        $this->genericTextInput('nome', '* Nome: ', true, 'Digite seu nome', 'campo-obrigatorio');
+        $this->genericTextInput('nome', '<span class="asterisco-obrigatorio">*</span> Nome: ', true, 'Digite seu nome', 'campo-obrigatorio');
 
         $this->genericTextInput('sobrenome', 'Sobrenome: ', false);
 
-        $this->addEmailElement('login', '* Email corporativo', true, 'Email de acesso', false, 'campo-obrigatorio');
+        $this->addEmailElement('login', '<span class="asterisco-obrigatorio">*</span> Email corporativo', true, 'Email de acesso', false, 'campo-obrigatorio');
 
         
         $estados = $this->serviceLocator->get('Estado')->getRecordsFromArray(array(), 'nome')->toArray();
@@ -32,9 +32,9 @@ use Application\Form\Base as BaseForm;
 
         $this->genericTextInput('telefone', 'Telefone: ', false);
 
-        $this->_addDropdown('id_usuario_tipo', '* Tipo de cliente:', true, array(3 => 'Cliente admin', 4 => 'Visualizar'), '', 'campo-obrigatorio');
+        $this->_addDropdown('id_usuario_tipo', '<span class="asterisco-obrigatorio">*</span> Tipo de cliente:', true, array(3 => 'Cliente admin', 4 => 'Visualizar'), '', 'campo-obrigatorio');
 
-        $this->_addDropdown('ativo', '* Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'), '', 'campo-obrigatorio');
+        $this->_addDropdown('ativo', '<span class="asterisco-obrigatorio">*</span> Status:', true, array('S' => 'Ativo', 'N' => 'Inativo'), '', 'campo-obrigatorio');
         
         $this->setAttributes(array(
             'class'  => 'form-inline'
