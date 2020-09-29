@@ -208,24 +208,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script>
 function signOut() {
-      <?php if(isset($usuario['google']) && $usuario['google'] == true): ?>
-        gapi.auth2.init();
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-          location.href = "<?= $this->url('logout'); ?>";
-        });
-      <?php else: ?>
-        location.href = "<?= $this->url('logout'); ?>";
-      <?php endif; ?>
-    }
-
+  <?php if(isset($usuario['google']) && $usuario['google'] == true): ?>
+    gapi.auth2.init();
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      location.href = "<?= $this->url('logout'); ?>";
+    });
+  <?php else: ?>
+    location.href = "<?= $this->url('logout'); ?>";
+  <?php endif; ?>
+}
+ 
+    var menuHidden = 'N';
     $().ready(function () {
+      <?php if($usuario['menu_hidden'] == 'S'): ?>
+        menuHidden = 'S';
+        $('.fechar-menu span').toggleClass('cross');
+        $('.menu-sistema').toggleClass('open');
+        $('.cont-admin').toggleClass('open');
+      <?php else: ?>
+        <?php if($rota == 'selecionarCliente'): ?>
+          $('.fechar-menu span').toggleClass('cross');
+          $('.menu-sistema').toggleClass('open');
+          $('.cont-admin').toggleClass('open');
+        <?php endif; ?>
+      <?php endif; ?>
+      
       $('.fechar-menu').click(function () {
           $('.fechar-menu span').toggleClass('cross');
           $('.menu-sistema').toggleClass('open');
           $('.cont-admin').toggleClass('open');
-
+          <?php if($rota != 'selecionarCliente'): ?>
+            if(menuHidden == 'S'){
+              menuHidden = 'N';
+            }else{
+              menuHidden = 'S';
+            }
+            salvarMenuHidden(menuHidden);
+          <?php endif; ?>
       });
+
     });
 </script> 
 

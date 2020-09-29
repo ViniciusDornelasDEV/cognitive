@@ -95,7 +95,7 @@ class Module
           $viewModel->menuDashboards = $this->serviceManager->get('Dashboard')->getMenu($container->cliente['id']);
         }
         if($session->read()){
-        
+          
           $viewModel->usuario = $session->read();
         }
         $viewModel->rota = $rota;

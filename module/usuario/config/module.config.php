@@ -283,6 +283,16 @@ return array(
                     ),
                 ),
             ),
+            'salvarMenuHidden' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/menu/hidden/salvar',
+                    'defaults' => array(
+                        'controller' => 'Usuario\Controller\Usuario',
+                        'action'     => 'salvarmenu',
+                    ),
+                ),
+            ),
         ),
     ),
 	'controllers' => array(

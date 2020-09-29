@@ -771,7 +771,21 @@ class UsuarioController extends BaseController
     return $view;
   }
 
+  public function salvarmenuAction(){
+    $menu = $this->getRequest()->getPost();
 
+    $usuario = $this->getServiceLocator()->get('session')->read();
+    $usuario['menu_hidden'] = $menu['hidden'];
+    
+    $this->getServiceLocator()->get('session')->write($usuario);
+    $this->getServiceLocator()->get('Usuario')
+      ->update(array('menu_hidden' => $menu['hidden']), array('id' => $usuario['id']));
+
+    $view = new ViewModel();
+    $view->setTerminal(true);
+    $view->setVariables(array());
+    return $view;
+  }
 
 }
 
