@@ -66,14 +66,14 @@ class Mailer extends BaseMailer {
               <table align="center" border="0" cellpadding="0" cellspacing="0" style="width:538px; background-color:#464b51">
                 <tbody>
                   <tr>
-                      <td style="height: 65px; background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(77, 75, 72); text-align: center;"><img alt="" src="http://sistemacognitive.tk/images/logo.png" style="width: 110px; height: 81px; padding-top: 15px; padding-bottom: 15px;" /></td>
+                      <td style="height: 65px; background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(77, 75, 72); text-align: center;"><img alt="" src="https://sigmaflow.com.br/images/logo.png" style="width: 110px; height: 81px; padding-top: 15px; padding-bottom: 15px;" /></td>
                   </tr>
                   <tr>
                       <td>
                         <table align="center" border="0" cellpadding="0" cellspacing="0" style="padding-left:15px; padding-right:15px; padding-bottom:10px" width="470">
                             <tbody>
                               <tr>
-                                  <td style="padding-top:32px"><span style="font-family: Helvetica, Arial, sans-serif, serif, EmojiFont; font-size: 24px; color: rgb(255, 255, 255); font-weight: bold;">Seja bem vindo ao sistema cognitive</span></td>
+                                  <td style="padding-top:32px"><span style="font-family: Helvetica, Arial, sans-serif, serif, EmojiFont; font-size: 24px; color: rgb(255, 255, 255); font-weight: bold;">Seja bem vindo ao sistema Sigmaflow</span></td>
                               </tr>
                               <tr>
                                   <td style="font-family:Helvetica,Arial,sans-serif; font-size:14px; color:#c6d4df; padding-top:16px">
@@ -120,7 +120,7 @@ class Mailer extends BaseMailer {
               <table align="center" border="0" cellpadding="0" cellspacing="0" style="width:538px; background-color:#464b51">
                 <tbody>
                   <tr>
-                      <td style="height: 65px; background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(77, 75, 72); text-align: center;"><img alt="" src="http://sistemacognitive.tk/images/logo.png" style="width: 110px; height: 81px; padding-top: 15px; padding-bottom: 15px;" /></td>
+                      <td style="height: 65px; background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(77, 75, 72); text-align: center;"><img alt="" src="https://sigmaflow.com.br/images/logo.png" style="width: 110px; height: 81px; padding-top: 15px; padding-bottom: 15px;" /></td>
                   </tr>
                   <tr>
                       <td>
@@ -174,7 +174,7 @@ class Mailer extends BaseMailer {
               <table align="center" border="0" cellpadding="0" cellspacing="0" style="width:538px; background-color:#464b51">
                 <tbody>
                   <tr>
-                      <td style="height: 65px; background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(77, 75, 72); text-align: center;"><img alt="" src="http://sistemacognitive.tk/images/logo.png" style="width: 110px; height: 81px; padding-top: 15px; padding-bottom: 15px;" /></td>
+                      <td style="height: 65px; background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(77, 75, 72); text-align: center;"><img alt="" src="https://sigmaflow.com.br/images/logo.png" style="width: 110px; height: 81px; padding-top: 15px; padding-bottom: 15px;" /></td>
                   </tr>
                   <tr>
                       <td>

@@ -18,7 +18,7 @@ use Application\Form\Base as BaseForm;
         parent::__construct($name);          
         $this->genericTextInput('nome', '<span class="asterisco-obrigatorio">*</span> Nome: ', true, 'Nome da categoria', 'campo-obrigatorio');
         
-        $this->addImageFileInput('icone', 'Ícone: ');
+        $this->addImageFileInput('icone', 'Ícone: "Recomendado 16x16"');
 
         $this->setAttributes(array(
             'class'  => 'form-inline'

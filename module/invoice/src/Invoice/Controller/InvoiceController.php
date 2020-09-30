@@ -147,7 +147,7 @@ class InvoiceController extends BaseController
       $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().'/invoice/download/'.$this->params()->fromRoute('id');
       $html = $mailer->emailInvoice($link);
       
-      $mailer->mailUser($container->cliente['usuario_azure'], 'Cognitive, invoice', $html);
+      $mailer->mailUser($container->cliente['usuario_azure'], 'Sigmaflow, invoice', $html);
       $this->flashMessenger()->addSuccessMessage('Email enviado com sucesso!');
       return $this->redirect()->toRoute('alterarInvoice', array('id' => $this->params()->fromRoute('id')));
 

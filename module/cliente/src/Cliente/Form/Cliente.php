@@ -19,7 +19,7 @@ use Application\Form\Base as BaseForm;
         parent::__construct($name);          
         $this->genericTextInput('nome', '<span class="asterisco-obrigatorio">*</span> Nome: ', true, 'Digite seu nome', 'campo-obrigatorio');
 
-        $this->addImageFileInput('logo', 'Logo: ', false, false, false, false, false, 'image/png, image/jpeg');
+        $this->addImageFileInput('logo', 'Logo: "Recomendado 700x394"', false, false, false, false, false, 'image/png, image/jpeg');
 
         $this->genericTextInput('id_azure', 'App id na azure: ', false);
 

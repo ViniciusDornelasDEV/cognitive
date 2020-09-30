@@ -119,7 +119,7 @@ class Usuario Extends BaseTable {
                   }
 
                   if($params['tipo'] == 'E'){
-                    //APENAS DA EMPRESA COGNITIVE
+                    //APENAS DA EMPRESA Sigmaflow
                     $select->where
                         ->nest
                             ->notEqualTo('id_usuario_tipo', 3)

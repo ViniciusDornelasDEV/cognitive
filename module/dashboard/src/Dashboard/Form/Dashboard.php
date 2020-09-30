@@ -24,7 +24,7 @@ use Application\Form\Base as BaseForm;
         $categorias = $this->prepareForDropDown($categorias, array('id', 'nome'));
         $this->_addDropdown('categoria', 'Categoria:', false, $categorias);
 
-        $this->addImageFileInput('icone', 'Ícone: ', false, false, false, false, false, 'image/png, image/jpeg');
+        $this->addImageFileInput('icone', 'Ícone: "Recomendado 16x16"', false, false, false, false, false, 'image/png, image/jpeg');
         
         $this->genericTextInput('nome', '<span class="asterisco-obrigatorio">*</span> Nome: ', true, 'Nome da dashboard', 'campo-obrigatorio');
 

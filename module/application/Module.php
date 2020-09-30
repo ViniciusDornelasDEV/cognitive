@@ -145,7 +145,7 @@ class Module
                 'Mailer' => function() {
 
                     $from = array(
-                        'name' => 'Cognitive',
+                        'name' => 'Sigmaflow',
                         'email' => 'contato@sistemacognitive.tk',
                         'contact_details' => array('rua' => 'Paraopeba 610'));
 

@@ -165,7 +165,7 @@ class ClienteController extends BaseController
               $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
                 '/cliente/ativar/'.$dados['token_ativacao'];
               $html = $mailer->emailAtivacao($link);
-              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
+              $mailer->mailUser($dados['login'], 'Sigmaflow, ativação de conta', $html);
 
               //gerar mensagem de sucesso e redirecionar
               $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
@@ -285,7 +285,7 @@ class ClienteController extends BaseController
               $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
                 '/cliente/ativar/'.$dados['token_ativacao'];
               $html = $mailer->emailAtivacao($link);
-              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
+              $mailer->mailUser($dados['login'], 'Sigmaflow, ativação de conta', $html);
 
               //gerar mensagem de sucesso e redirecionar
               $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
@@ -494,7 +494,7 @@ class ClienteController extends BaseController
               $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
                 '/cliente/ativar/'.$dados['token_ativacao'];
               $html = $mailer->emailAtivacao($link);
-              $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
+              $mailer->mailUser($dados['login'], 'Sigmaflow, ativação de conta', $html);
 
               //gerar mensagem de sucesso e redirecionar
               $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');

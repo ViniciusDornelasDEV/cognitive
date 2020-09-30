@@ -340,7 +340,7 @@ class UsuarioController extends BaseController
                     $this->flashMessenger()->addSuccessMessage('Enviamos um link de recuperação para seu email!');  
                     $mailer = $this->getServiceLocator()->get('mailer');
                     $html = $mailer->emailRecuperarSenha($base);
-                    $mailer->mailUser($usuario->login, 'Cognitive, recuperar senha', $html);
+                    $mailer->mailUser($usuario->login, 'Sigmaflow, recuperar senha', $html);
                     return $this->redirect()->toRoute('login');
                 }else{
                     $this->flashMessenger()->addErrorMessage('Falha ao recuperar senha!');
@@ -538,7 +538,7 @@ class UsuarioController extends BaseController
 
         }
         $html = $mailer->emailAtivacao($link);
-        $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
+        $mailer->mailUser($dados['login'], 'Sigmaflow, ativação de conta', $html);
 
         //gerar mensagem de sucesso e redirecionar
         $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
@@ -577,7 +577,7 @@ class UsuarioController extends BaseController
         $link = $this->getRequest()->getUri()->getScheme() . '://' . $this->getRequest()->getUri()->getHost().
           '/cliente/ativar/'.$dados['token_ativacao'];
         $html = $mailer->emailAtivacao($link);
-        $mailer->mailUser($dados['login'], 'Cognitive, ativação de conta', $html);
+        $mailer->mailUser($dados['login'], 'Sigmaflow, ativação de conta', $html);
 
         //gerar mensagem de sucesso e redirecionar
         $this->flashMessenger()->addSuccessMessage('Usuário inserido com sucesso!');
