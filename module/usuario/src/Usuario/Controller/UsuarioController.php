@@ -666,7 +666,7 @@ class UsuarioController extends BaseController
 
           //gerar mensagem de sucesso e redirecionar
           $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
-          return $this->redirect()->toRoute('usuarioAlterar');  
+          return $this->redirect()->toRoute('usuarioAlterar', array('id' => $usuario['id']));  
         }
       }
     }
