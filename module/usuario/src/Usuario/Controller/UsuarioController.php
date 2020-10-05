@@ -664,8 +664,15 @@ class UsuarioController extends BaseController
           //salvar
           $this->getServiceLocator()->get('Usuario')->update($formUsuario->getData(), array('id' => $usuario['id']));
 
+          //se alterou o usuário logado, mudar as credenciais de acesso
+          $userLogado = $this->getServiceLocator()->get('session')->read();
+          if($userLogado['id'] == $usuario['id']){
+            $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso, favor logar-se novamente!');
+            return $this->redirect()->toRoute('login');
+          }else{
+            $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
+          }
           //gerar mensagem de sucesso e redirecionar
-          $this->flashMessenger()->addSuccessMessage('Usuário alterado com sucesso!');
           return $this->redirect()->toRoute('usuarioAlterar', array('id' => $usuario['id']));  
         }
       }
