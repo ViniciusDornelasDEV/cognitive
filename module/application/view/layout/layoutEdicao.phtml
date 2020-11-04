@@ -212,19 +212,19 @@ function signOut() {
     $().ready(function () {
       <?php if($usuario['menu_hidden'] == 'S'): ?>
         menuHidden = 'S';
-        $('.fechar-menu span').toggleClass('cross');
+        //$('.fechar-menu span').toggleClass('cross');
         $('.menu-sistema').toggleClass('open');
         $('.cont-admin').toggleClass('open');
       <?php else: ?>
         <?php if($rota == 'selecionarCliente'): ?>
-          $('.fechar-menu span').toggleClass('cross');
+          //$('.fechar-menu span').toggleClass('cross');
           $('.menu-sistema').toggleClass('open');
           $('.cont-admin').toggleClass('open');
         <?php endif; ?>
       <?php endif; ?>
       
       $('.fechar-menu').click(function () {
-          $('.fechar-menu span').toggleClass('cross');
+          //$('.fechar-menu span').toggleClass('cross');
           $('.menu-sistema').toggleClass('open');
           $('.cont-admin').toggleClass('open');
           <?php if($rota != 'selecionarCliente'): ?>
